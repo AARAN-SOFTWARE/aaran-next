@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignId('tenant_id')->constrained('tenants')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->index('tenant_id');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

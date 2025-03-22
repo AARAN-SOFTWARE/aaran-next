@@ -13,6 +13,7 @@ class TenantManager
     public static function setTenant(Tenant $tenant): void
     {
         static::$tenant = $tenant;
+
         static::setDatabaseConnection($tenant);
     }
 

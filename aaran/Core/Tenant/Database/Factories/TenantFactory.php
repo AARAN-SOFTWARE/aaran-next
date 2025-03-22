@@ -14,7 +14,7 @@ class TenantFactory extends Factory
         return [
             'name' => $this->faker->company,
             'domain' => $this->faker->domainName,
-            'config' => json_encode(['db' => 'tenant_db']),
+            'config' => json_encode(['database' => 'tenant_db']),
             'is_active' => true,
         ];
     }
