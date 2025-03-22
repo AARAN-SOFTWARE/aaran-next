@@ -12,8 +12,8 @@ return new class extends Migration {
             $table->id();
             $table->string('name')->unique();
             $table->string('domain')->unique();
-            $table->boolean('is_active')->default(true);
             $table->json('config')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

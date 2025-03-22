@@ -1,4 +1,4 @@
-### **🚀 Enterprise-Level Folder Structure (Aaran-Next)**
+### **🚀 Tenant Structure**
 
 ```
 🌍 Core/ 
@@ -53,4 +53,3 @@
 ```
 
 ---
-

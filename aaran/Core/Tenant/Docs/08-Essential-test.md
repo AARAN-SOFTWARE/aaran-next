@@ -1,5 +1,8 @@
 ## **What Tests Cover**
 
+
+overview of tenant and how it uses and step by step process for docs with pros and consh
+
 #### **Tenant Module Structure & Integrity Tests**
 
 1️⃣ **File Existence Test**

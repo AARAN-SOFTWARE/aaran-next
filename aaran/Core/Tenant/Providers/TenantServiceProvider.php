@@ -3,6 +3,7 @@
 namespace Aaran\Core\Tenant\Providers;
 
 use Aaran\Core\Tenant\Http\Middleware\TenantMiddleware;
+use Aaran\Core\Tenant\Services\TenantService;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
