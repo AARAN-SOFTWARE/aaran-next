@@ -4,24 +4,25 @@ namespace Aaran\Common\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\Common\Models\ReceiptType;
+use Aaran\Common\Models\GstPercent;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ReceiptTypeList extends Component
+class GstPercentList extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
+    public string $desc = '';
     public bool $active_id = true;
 
     #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.receipt_types,vname"),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.gst_percents,vname"),
         ];
     }
 
@@ -36,7 +37,7 @@ class ReceiptTypeList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'Receipt Type',
+            'vname' => 'Gst Percent',
         ];
     }
     #endregion
@@ -47,10 +48,11 @@ class ReceiptTypeList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        ReceiptType::on($connection)->updateOrCreate(
+        GstPercent::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
+                'desc' => $this->desc,
                 'active_id' => $this->active_id
             ],
         );
@@ -66,6 +68,7 @@ class ReceiptTypeList extends Component
     {
         $this->vid = null;
         $this->vname = '';
+        $this->desc = '';
         $this->active_id = true;
         $this->searches = '';
     }
@@ -73,16 +76,17 @@ class ReceiptTypeList extends Component
     #region[Fetch Data]
     public function getObj(int $id): void
     {
-        if ($obj = ReceiptType::on($this->getTenantConnection())->find($id)) {
+        if ($obj = GstPercent::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
+            $this->desc = $obj->desc;
             $this->active_id = $obj->active_id;
         }
     }
 
     public function getList()
     {
-        return ReceiptType::on($this->getTenantConnection())
+        return GstPercent::on($this->getTenantConnection())
             ->active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
@@ -95,7 +99,7 @@ class ReceiptTypeList extends Component
     {
         if (!$this->deleteId) return;
 
-        $obj = ReceiptType::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = GstPercent::on($this->getTenantConnection())->find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
@@ -105,7 +109,7 @@ class ReceiptTypeList extends Component
     #region[Render]
     public function render()
     {
-        return view('common::receipt-type-list', [
+        return view('common::gst-percent-list', [
             'list' => $this->getList()
         ]);
     }

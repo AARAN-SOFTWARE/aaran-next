@@ -36,7 +36,7 @@ class CityList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'city name',
+            'vname' => 'City name',
         ];
     }
     #endregion
@@ -76,6 +76,7 @@ class CityList extends Component
         if ($obj = City::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
+            $this->active_id = $obj->active_id;
         }
     }
 

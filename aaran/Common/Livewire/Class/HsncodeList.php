@@ -2,7 +2,8 @@
 
 namespace Aaran\Common\Livewire\Class;
 
-use Aaran\Assets\Traits\CommonTrait;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\Common\Models\Hsncode;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
@@ -10,111 +11,105 @@ use Livewire\Component;
 
 class HsncodeList extends Component
 {
-    use CommonTrait;
+    use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
+    public string $desc = '';
     public bool $active_id = true;
 
     #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : '|unique:hsncodes,vname'),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.hsncodes,vname"),
         ];
     }
 
     public function messages(): array
     {
         return [
-            'vname.required' => 'The :attribute are missing.',
-            'vname.unique' => 'The :attribute is already created.',
+            'vname.required' => ':attribute is missing.',
+            'vname.unique' => 'This :attribute is already created.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'name',
+            'vname' => 'Hsn code',
         ];
     }
+    #endregion
 
-    #endregion[Validation]
-
-    #region[save]
+    #region[Save]
     public function getSave(): void
     {
         $this->validate();
+        $connection = $this->getTenantConnection();
 
-        if ($this->vid == "") {
-            Hsncode::create([
+        Hsncode::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
                 'vname' => Str::ucfirst($this->vname),
-                'active_id' => $this->active_id,
-            ]);
-            $message = "Saved";
+                'desc' => $this->desc,
+                'active_id' => $this->active_id
+            ],
+        );
 
-        } else {
-            $obj = Hsncode::find($this->vid);
-            $obj->vname = Str::ucfirst($this->vname);
-            $obj->active_id = $this->active_id;
-            $obj->save();
-            $message = "Updated";
-        }
-
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
     }
+
     #endregion
 
-    #region[Clear Fields]
+
     public function clearFields(): void
     {
-        $this->vid = '';
+        $this->vid = null;
         $this->vname = '';
-        $this->active_id = '1';
+        $this->desc = '';
+        $this->active_id = true;
         $this->searches = '';
     }
-    #endregion[Clear Fields]
 
-    #region[obj]
-    public function getObj($id): void
+    #region[Fetch Data]
+    public function getObj(int $id): void
     {
-        if ($id) {
-            $obj = Hsncode::find($id);
+        if ($obj = Hsncode::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
+            $this->desc = $obj->desc;
             $this->active_id = $obj->active_id;
         }
     }
-    #endregion
 
-    #region[list]
     public function getList()
     {
-        return Hsncode::search($this->searches)
-            ->where('active_id', '=', $this->activeRecord)
+        return Hsncode::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
     #endregion
 
-    #region[delete]
-    public function deleteFunction($id): void
+    #region[Delete]
+    public function deleteFunction(): void
     {
-        if ($id) {
-            $obj = Hsncode::find($id);
-            if ($obj) {
-                $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
-            }
+        if (!$this->deleteId) return;
+
+        $obj = Hsncode::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
     }
     #endregion
 
-    #region[render]
+    #region[Render]
     public function render()
     {
-        return view('common::hsncode-list')->with([
+        return view('common::hsncode-list', [
             'list' => $this->getList()
         ]);
     }

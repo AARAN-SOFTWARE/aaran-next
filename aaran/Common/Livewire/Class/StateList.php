@@ -2,7 +2,8 @@
 
 namespace Aaran\Common\Livewire\Class;
 
-use Aaran\Assets\Traits\CommonTrait;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\Common\Models\State;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
@@ -10,18 +11,19 @@ use Livewire\Component;
 
 class StateList extends Component
 {
-    use CommonTrait;
+    use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
+    public string $state_code = '';
     public bool $active_id = true;
-    public $state_code;
 
     #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : '|unique:states,vname'),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.states,vname"),
+            'state_code' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.states,state_code"),
         ];
     }
 
@@ -30,96 +32,89 @@ class StateList extends Component
         return [
             'vname.required' => ':attribute is missing.',
             'vname.unique' => 'This :attribute is already created.',
+
+            'state_code.required' => ':attribute is missing.',
+            'state_code.unique' => 'This :attribute is already created.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'state name',
+            'vname' => 'State name',
+            'state_code' => 'State Code',
         ];
-    }
-
-    #endregion[Validation]
-
-    #region[save]
-    public function getSave(): void
-    {
-        $this->validate();
-
-        if ($this->vid == "") {
-            State::create([
-                'vname' => Str::ucfirst($this->vname),
-                'state_code' => $this->state_code,
-                'active_id' => $this->active_id,
-            ]);
-            $message = "Saved";
-
-        } else {
-            $obj = State::find($this->vid);
-            $obj->vname = Str::ucfirst($this->vname);
-            $obj->state_code = $this->state_code;
-            $obj->active_id = $this->active_id;
-            $obj->save();
-            $message = "Updated";
-        }
-
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
     }
     #endregion
 
-    #region[Clear Fields]
+    #region[Save]
+    public function getSave(): void
+    {
+        $this->validate();
+        $connection = $this->getTenantConnection();
+
+        State::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
+                'vname' => Str::ucfirst($this->vname),
+                'state_code' => $this->state_code,
+                'active_id' => $this->active_id
+            ],
+        );
+
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
+    }
+
+    #endregion
+
+
     public function clearFields(): void
     {
-        $this->vid = '';
+        $this->vid = null;
         $this->vname = '';
         $this->state_code = '';
-        $this->active_id = '1';
+        $this->active_id = true;
         $this->searches = '';
     }
-    #endregion[Clear Fields]
 
-    #region[obj]
-    public function getObj($id): void
+    #region[Fetch Data]
+    public function getObj(int $id): void
     {
-        if ($id) {
-            $obj = State::find($id);
+        if ($obj = State::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
             $this->state_code = $obj->state_code;
             $this->active_id = $obj->active_id;
         }
     }
-    #endregion
 
-    #region[list]
     public function getList()
     {
-        return State::search($this->searches)
-            ->where('active_id', '=', $this->activeRecord)
+        return State::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
     #endregion
 
-    #region[delete]
-    public function deleteFunction($id): void
+    #region[Delete]
+    public function deleteFunction(): void
     {
-        if ($id) {
-            $obj = State::find($id);
-            if ($obj) {
-                $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
-            }
+        if (!$this->deleteId) return;
+
+        $obj = State::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
     }
     #endregion
 
-    #region[render]
+    #region[Render]
     public function render()
     {
-        return view('common::state-list')->with([
+        return view('common::state-list', [
             'list' => $this->getList()
         ]);
     }

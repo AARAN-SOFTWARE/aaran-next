@@ -2,7 +2,8 @@
 
 namespace Aaran\Common\Livewire\Class;
 
-use Aaran\Assets\Traits\CommonTrait;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\Common\Models\PaymentMode;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
@@ -10,7 +11,7 @@ use Livewire\Component;
 
 class PaymentModeList extends Component
 {
-    use CommonTrait;
+    use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
@@ -20,7 +21,7 @@ class PaymentModeList extends Component
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : '|unique:payment_modes,vname'),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.payment_modes,vname"),
         ];
     }
 
@@ -35,86 +36,76 @@ class PaymentModeList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'payment mode name',
+            'vname' => 'Payment Mode',
         ];
-    }
-
-    #endregion[Validation]
-
-    #region[getSave]
-    public function getSave(): void
-    {
-        $this->validate();
-
-        if ($this->vid == "") {
-            PaymentMode::create([
-                'vname' => Str::ucfirst($this->vname),
-                'active_id' => $this->active_id,
-            ]);
-            $message = "Saved";
-
-        } else {
-            $obj = PaymentMode::find($this->vid);
-            $obj->vname = Str::ucfirst($this->vname);
-            $obj->active_id = $this->active_id;
-            $obj->save();
-            $message = "Updated";
-        }
-
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
     }
     #endregion
 
-    #region[Clear Fields]
+    #region[Save]
+    public function getSave(): void
+    {
+        $this->validate();
+        $connection = $this->getTenantConnection();
+
+        PaymentMode::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
+                'vname' => Str::ucfirst($this->vname),
+                'active_id' => $this->active_id
+            ],
+        );
+
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
+    }
+
+    #endregion
+
+
     public function clearFields(): void
     {
-        $this->vid = '';
+        $this->vid = null;
         $this->vname = '';
-        $this->active_id = '1';
+        $this->active_id = true;
         $this->searches = '';
     }
-    #endregion[Clear Fields]
 
-    #region[getObj]
-    public function getObj($id): void
+    #region[Fetch Data]
+    public function getObj(int $id): void
     {
-        if ($id) {
-            $obj = PaymentMode::find($id);
+        if ($obj = PaymentMode::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
             $this->active_id = $obj->active_id;
         }
     }
-    #endregion
 
-    #region[getList]
     public function getList()
     {
-        return PaymentMode::search($this->searches)
-            ->where('active_id', '=', $this->activeRecord)
+        return PaymentMode::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
     #endregion
 
-    #region[delete]
-    public function deleteFunction($id): void
+    #region[Delete]
+    public function deleteFunction(): void
     {
-        if ($id) {
-            $obj = PaymentMode::find($id);
-            if ($obj) {
-                $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
-            }
+        if (!$this->deleteId) return;
+
+        $obj = PaymentMode::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
     }
     #endregion
 
-    #region[render]
+    #region[Render]
     public function render()
     {
-        return view('common::payment-mode-list')->with([
+        return view('common::payment-mode-list', [
             'list' => $this->getList()
         ]);
     }
