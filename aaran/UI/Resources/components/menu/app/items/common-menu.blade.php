@@ -7,11 +7,11 @@
 <x-Ui::menu.app.base.li-menuitem  :routes="'categories'" :label="'Categories'"/>
 <x-Ui::menu.app.base.li-menuitem  :routes="'colours'" :label="'Colours'"/>
 <x-Ui::menu.app.base.li-menuitem  :routes="'sizes'" :label="'Sizes'"/>
-<x-Ui::menu.app.base.li-menuitem  :routes="'department'" :label="'Departments'"/>
-<x-Ui::menu.app.base.li-menuitem  :routes="'transports'" :label="'Transport'"/>
+<x-Ui::menu.app.base.li-menuitem  :routes="'departments'" :label="'Departments'"/>
+{{--<x-Ui::menu.app.base.li-menuitem  :routes="'transports'" :label="'Transport'"/>--}}
 <x-Ui::menu.app.base.li-menuitem  :routes="'banks'" :label="'Bank'"/>
 <x-Ui::menu.app.base.li-menuitem  :routes="'receipt-types'" :label="'Receipt Types'"/>
-<x-Ui::menu.app.base.li-menuitem  :routes="'dispatches'" :label="'Dispatches'"/>
-<x-Ui::menu.app.base.li-menuitem  :routes="'gst-percent'" :label="'Gst Percent'"/>
+<x-Ui::menu.app.base.li-menuitem  :routes="'despatches'" :label="'Despatches'"/>
+<x-Ui::menu.app.base.li-menuitem  :routes="'gst-percents'" :label="'Gst Percents'"/>
 <x-Ui::menu.app.base.li-menuitem  :routes="'contact-types'" :label="'Contact Types'"/>
 <x-Ui::menu.app.base.li-menuitem  :routes="'payment-modes'" :label="'Payment Modes'"/>
