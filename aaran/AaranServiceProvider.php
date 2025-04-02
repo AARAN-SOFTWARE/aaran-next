@@ -2,6 +2,8 @@
 
 namespace Aaran;
 
+use Aaran\Assets\Config\Software;
+use Aaran\Assets\Providers\AssetsServiceProvider;
 use Aaran\Common\Providers\CommonServiceProvider;
 use Aaran\Core\Setup\Providers\SetupServiceProvider;
 use Aaran\Core\Tenant\Providers\TenantServiceProvider;
@@ -15,6 +17,9 @@ class AaranServiceProvider extends ServiceProvider
 {
     public function register()
     {
+
+        $this->app->register(AssetsServiceProvider::class);
+
         $this->app->register(TenantServiceProvider::class);
 
         $this->app->register(UiServiceProvider::class);

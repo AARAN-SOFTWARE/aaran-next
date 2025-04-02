@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-//        if (Aaran\Core\Tenant\Features\Customise::hasCommon()) {
+//        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('slider_images', function (Blueprint $table) {
                 $table->id();

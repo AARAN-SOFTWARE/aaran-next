@@ -2,7 +2,6 @@
 
 namespace Aaran\Dashboard\Livewire\Class;
 
-use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Index extends Component

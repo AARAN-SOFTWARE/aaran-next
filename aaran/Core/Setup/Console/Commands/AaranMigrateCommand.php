@@ -6,35 +6,36 @@ use Aaran\Core\Tenant\Facades\TenantManager;
 use Aaran\Core\Tenant\Models\Tenant;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Console\Input\ArrayInput;
 
 class AaranMigrateCommand extends Command
 {
-    protected $signature = 'aaran:migrate {tenant} {--fresh} {--refresh} {--seed} {--force}';
-    protected $description = 'Refresh migrations for a specific tenant';
+    protected $signature = 'aaran:migrate {tenant} {--fresh} {--seed}';
+    protected $description = 'Run migrations for a specific tenant without running default migrations.';
 
     public function handle()
     {
-        $arg = $this->argument('tenant');
-        $seed = $this->option('seed');
+        $tenantName = $this->argument('tenant');
 
-
-        // Choose the correct migration command
-        $migrationCommand = 'migrate';
-        if ($this->option('fresh')) {
-            $migrationCommand = 'migrate:fresh';
-        } elseif ($this->option('refresh')) {
-            $migrationCommand = 'migrate:refresh';
-        }
-
-        $tenant = Tenant::where('t_name', $arg)->first();
+        $tenant = Tenant::where('t_name', $tenantName)->first();
 
         if (!$tenant) {
-            $this->error("Tenant '{$arg}' not found.");
+            $this->error("Tenant '{$tenantName}' not found.");
             return;
         }
 
-        // List of migration directories
+        TenantManager::switchTenant($tenant);
+
+        $this->info("Migrating for tenant: {$tenant->b_name}");
+
+        // If `--fresh` is used, drop all tables before running migrations
+        if ($this->option('fresh')) {
+            $this->dropAllTables();
+        }
+
+        // List of migration directories (custom migrations only)
         $paths = [
             'aaran/Common/Database/Migrations',
             'aaran/Master/Contact/Database/Migrations',
@@ -48,65 +49,74 @@ class AaranMigrateCommand extends Command
                 continue;
             }
 
-            $this->info("Running migration for tenant: {$tenant->name}");
-
-            $this->migrate($path, $tenant, $migrationCommand);
+            $this->runMigration('migrate', $path);
         }
 
         // Run seeders if requested
         if ($this->option('seed')) {
-            $this->seed($tenant);
+            $this->runSeeder();
         }
-
-
     }
 
-    private function migrate($path, $tenant, $migrationCommand)
+    private function dropAllTables()
+    {
+        $this->warn("Dropping all tables in the tenant database...");
+
+        $database = config('database.connections.tenant.database');
+
+        // Fetch all tables
+        $tables = DB::connection('tenant')->select("SHOW TABLES");
+
+        if (empty($tables)) {
+            $this->info("No tables found in the database.");
+            return;
+        }
+
+        // Build SQL to drop all tables
+        DB::connection('tenant')->statement('SET FOREIGN_KEY_CHECKS = 0;');
+
+        foreach ($tables as $table) {
+            $tableName = array_values((array) $table)[0]; // Get table name from the result
+            DB::connection('tenant')->statement("DROP TABLE `$tableName`;");
+        }
+
+        DB::connection('tenant')->statement('SET FOREIGN_KEY_CHECKS = 1;');
+
+        $this->info("All tables have been dropped successfully.");
+    }
+
+    private function runMigration(string $command, string $path)
     {
         if (!File::exists($path) || empty(File::files($path))) {
             $this->warn("No migrations found in folder '{$path}'.");
             return;
         }
 
-        TenantManager::switchTenant($tenant);
-
-//        Artisan::call($migrationCommand, [
-//            '--database' => 'tenant',
-//            '--path' => str_replace(base_path(), '', $path), // Pass the FOLDER, not individual files
-//            '--force' => true,
-//        ]);
-//
-//        $this->info(Artisan::output());
-
-        // Prepare the command
-        $command = [
-            $migrationCommand,
+        $input = [
+            'command' => $command,
             '--database' => 'tenant',
-            '--path' => str_replace(base_path(), '', $path),
-            '--force' => true
+            '--path' => str_replace(base_path(), '', $path), // Ensures only specific migrations run
+            '--force' => true,
         ];
 
-        // Run Artisan command and stream the output
-        Artisan::handle(
-            new \Symfony\Component\Console\Input\ArrayInput($command),
-            $this->output // Directly pass the command output to the console
-        );
+        $this->info("Running migrations from: {$path}");
 
+        // Run Artisan command and stream output
+        Artisan::handle(new ArrayInput($input), $this->output);
     }
 
-
-    private function seed($tenant)
+    private function runSeeder()
     {
-        TenantManager::switchTenant($tenant);
+        $this->info("Seeding data...");
 
-        Artisan::call('db:seed', [
+        $command = [
+            'command' => 'db:seed',
             '--database' => 'tenant',
-            '--class' => 'Aaran\Core\Setup\TenantDatabaseSeeder',
-            '--force' => $this->option('force'),
-        ]);
+            '--class' => 'Aaran\Core\Setup\Database\Seeders\ClientSeeder',
+            '--force' => true,
+        ];
 
-        $this->info(Artisan::output());
+        // Run Artisan command and stream output
+        Artisan::handle(new ArrayInput($command), $this->output);
     }
-
-
 }

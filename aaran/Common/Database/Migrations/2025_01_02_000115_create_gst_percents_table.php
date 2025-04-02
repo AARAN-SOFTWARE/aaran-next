@@ -8,7 +8,7 @@ return new class extends Migration {
 
     public function up(): void
     {
-        if (Aaran\Core\Tenant\Features\Customise::hasCommon()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('gst_percents', function (Blueprint $table) {
                 $table->id();
