@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Aaran\Common\Database\Seeders\S000_CommonSeeder;
+use Aaran\BMS\Billing\Common\Database\Seeders\S000_CommonSeeder;
 use Aaran\Core\Tenant\Database\Seeders\TenantSeeder;
 use Aaran\Core\User\Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
