@@ -1,21 +1,19 @@
 <?php
 
-namespace Aaran\BMS\Billing\Common\Models;
+namespace Aaran\BMS\Billing\Books\Models;
 
-use Aaran\BMS\Billing\Common\Database\Factories\AccountTypeFactory;
+use Aaran\Core\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AccountType extends Model
+class AccountHeads extends Model
 {
+
     use HasFactory;
 
-    protected $table = 'account_types';
-
     protected $guarded = [];
-
-    public $timestamps = false;
 
     public function scopeActive(Builder $query, $status = '1'): Builder
     {
@@ -27,8 +25,9 @@ class AccountType extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-    protected static function newFactory(): AccountTypeFactory
+    public function user(): BelongsTo
     {
-        return new AccountTypeFactory();
+        return $this->belongsTo(User::class);
     }
+
 }
