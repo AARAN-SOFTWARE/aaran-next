@@ -5,8 +5,11 @@ namespace Aaran\BMS\Billing\Books\Livewire\Class;
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Books\Models\Ledger;
+use Aaran\BMS\Billing\Books\Models\LedgerGroup;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -19,6 +22,7 @@ class LedgerList extends Component
     #[Validate]
     public string $vname = '';
     public string $desc = '';
+    public $ledger_group_id = '';
     public mixed $opening;
     public mixed $opening_date;
     public mixed $current;
@@ -60,6 +64,7 @@ class LedgerList extends Component
             [
                 'vname' => Str::ucfirst($this->vname),
                 'desc' => $this->desc,
+                'ledger_group_id' => $this->ledger_group_id,
                 'opening' => $this->opening,
                 'opening_date' => $this->opening_date,
                 'current' => $this->current,
@@ -79,6 +84,7 @@ class LedgerList extends Component
         $this->vid = null;
         $this->vname = '';
         $this->desc = '';
+        $this->ledger_group_id = '';
         $this->opening = '';
         $this->opening_date = Carbon::now()->format('Y-m-d');
         $this->current = '';
@@ -94,6 +100,7 @@ class LedgerList extends Component
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
             $this->desc = $obj->desc;
+            $this->ledger_group_id = $obj->ledger_group_id;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
             $this->current = $obj->current;
@@ -123,9 +130,71 @@ class LedgerList extends Component
     }
     #endregion
 
+    #region[ledger Group]
+
+
+    public $ledger_name = '';
+    public Collection $ledgerCollection;
+    public $highlightLedger = 0;
+    public $ledgerTyped = false;
+
+    public function decrementLedger(): void
+    {
+        if ($this->highlightLedger === 0) {
+            $this->highlightLedger = count($this->ledgerCollection) - 1;
+            return;
+        }
+        $this->highlightLedger--;
+    }
+
+    public function incrementLedger(): void
+    {
+        if ($this->highlightLedger === count($this->ledgerCollection) - 1) {
+            $this->highlightLedger = 0;
+            return;
+        }
+        $this->highlightLedger++;
+    }
+
+    public function setLedger($name, $id): void
+    {
+        $this->ledger_name = $name;
+        $this->ledger_group_id = $id;
+        $this->getLedgerList();
+    }
+
+    public function enterLedger(): void
+    {
+        $obj = $this->ledgerCollection[$this->highlightLedger] ?? null;
+
+        $this->ledger_name = '';
+        $this->ledgerCollection = Collection::empty();
+        $this->highlightLedger = 0;
+
+        $this->ledger_name = $obj['vname'] ?? '';
+        $this->ledger_group_id = $obj['id'] ?? '';
+    }
+
+    #[On('refresh-Ledger')]
+    public function refreshLedger($v): void
+    {
+        $this->ledger_group_id = $v['id'];
+        $this->ledger_name = $v['name'];
+        $this->ledgerTyped = false;
+    }
+
+    public function getLedgerList(): void
+    {
+        $this->ledgerCollection = $this->ledger_name ? LedgerGroup::search(trim($this->ledger_name))
+            ->get() : LedgerGroup::all();
+    }
+#endregion
+
     #region[Render]
     public function render()
     {
+        $this->getLedgerList();
+
         return view('books::ledger-list')->with([
             'list' => $this->getList(),
         ]);
