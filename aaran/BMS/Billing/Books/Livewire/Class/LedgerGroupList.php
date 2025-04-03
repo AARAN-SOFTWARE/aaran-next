@@ -6,8 +6,10 @@ use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Books\Models\AccountHeads;
 use Aaran\BMS\Billing\Books\Models\LedgerGroup;
+use Aaran\Core\Tenant\Facades\TenantManager;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -57,6 +59,7 @@ class LedgerGroupList extends Component
     public function getSave(): void
     {
         $this->validate();
+
         $connection = $this->getTenantConnection();
 
         LedgerGroup::on($connection)->updateOrCreate(
@@ -171,8 +174,8 @@ class LedgerGroupList extends Component
         $this->accountCollection = Collection::empty();
         $this->highlightAccount = 0;
 
-        $this->account_name = $obj['vname'] ?? '';
-        $this->account_head_id = $obj['id'] ?? '';
+        $this->account_name = $obj->vname ?? '';
+        $this->account_head_id = $obj->id ?? '';
     }
 
     #[On('refresh-Account')]
@@ -185,9 +188,16 @@ class LedgerGroupList extends Component
 
     public function getAccountList(): void
     {
-        $this->accountCollection = $this->account_name ? AccountHeads::search(trim($this->account_name))
-            ->get() : AccountHeads::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->accountCollection = DB::connection($this->getTenantConnection())
+            ->table('account_heads')
+            ->when($this->account_name, fn($query) => $query->where('vname', 'like', "%{$this->account_name}%"))
+            ->get();
     }
+
     #endregion
 
     #region[Render]

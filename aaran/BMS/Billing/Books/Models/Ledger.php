@@ -3,6 +3,7 @@
 namespace Aaran\BMS\Billing\Books\Models;
 
 use Aaran\Core\User\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,19 +14,18 @@ class Ledger extends Model
 
     protected $guarded = [];
 
-    public static function search(string $searches)
+    public function scopeActive(Builder $query, $status = '1'): Builder
     {
-        return empty($searches) ? static::query()
-            : static::where('vname', 'like', '%' . $searches . '%');
+        return $query->where('active_id', $status);
     }
 
-    public function user(): BelongsTo
+    public function scopeSearchByName(Builder $query, string $search): Builder
     {
-        return $this->belongsTo(User::class);
+        return $query->where('vname', 'like', "%$search%");
     }
 
     public function ledger_group(): BelongsTo
     {
-        return $this->belongsTo(LedgerGroup::class);
+        return $this->belongsTo(LedgerGroup::class, 'ledger_group_id')->on($this->getTenantConnection());
     }
 }

@@ -19,6 +19,7 @@ class TenantDatabaseService
     public static function switchTenant(int|Tenant $tenant): bool
     {
         DB::beginTransaction();
+
         try {
             $tenantId = $tenant instanceof Tenant ? $tenant->id : $tenant;
 

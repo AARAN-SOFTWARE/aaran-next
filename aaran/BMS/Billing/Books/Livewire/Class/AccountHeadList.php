@@ -53,6 +53,7 @@ class AccountHeadList extends Component
     public function getSave(): void
     {
         $this->validate();
+
         $connection = $this->getTenantConnection();
 
         AccountHeads::on($connection)->updateOrCreate(
@@ -64,7 +65,6 @@ class AccountHeadList extends Component
                 'opening_date' => $this->opening_date,
                 'current' => $this->current,
                 'active_id' => $this->active_id,
-                'user_id' => auth()->id(),
             ],
         );
 

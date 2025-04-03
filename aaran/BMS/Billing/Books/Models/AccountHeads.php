@@ -2,11 +2,9 @@
 
 namespace Aaran\BMS\Billing\Books\Models;
 
-use Aaran\Core\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AccountHeads extends Model
 {
@@ -14,6 +12,8 @@ class AccountHeads extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $connection = 'tenant'; // Ensure it's tenant-aware
 
     public function scopeActive(Builder $query, $status = '1'): Builder
     {
@@ -25,9 +25,12 @@ class AccountHeads extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-    public function user(): BelongsTo
+
+    public static function search(string $searches)
     {
-        return $this->belongsTo(User::class);
+        return empty($searches) ? static::query()
+            : static::where('vname', 'like', '%' . $searches . '%');
     }
+
 
 }

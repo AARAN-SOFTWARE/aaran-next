@@ -193,7 +193,7 @@ class LedgerList extends Component
     #region[Render]
     public function render()
     {
-        $this->getLedgerList();
+//        $this->getLedgerList();
 
         return view('books::ledger-list')->with([
             'list' => $this->getList(),
