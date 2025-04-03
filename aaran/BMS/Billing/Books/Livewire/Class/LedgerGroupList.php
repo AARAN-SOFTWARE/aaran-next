@@ -4,9 +4,12 @@ namespace Aaran\BMS\Billing\Books\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Books\Models\AccountHeads;
 use Aaran\BMS\Billing\Books\Models\LedgerGroup;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -76,6 +79,7 @@ class LedgerGroupList extends Component
 
     #endregion
 
+    #region[Clear Fields]
     public function clearFields(): void
     {
         $this->vid = null;
@@ -88,7 +92,7 @@ class LedgerGroupList extends Component
         $this->active_id = true;
         $this->searches = '';
     }
-
+    #endregion
 
     #region[Fetch Data]
     public function getObj(int $id): void
@@ -127,9 +131,70 @@ class LedgerGroupList extends Component
     }
     #endregion
 
+    #region[account head]
+
+    public $account_name = '';
+    public Collection $accountCollection;
+    public $highlightAccount = 0;
+    public $accountTyped = false;
+
+    public function decrementAccount(): void
+    {
+        if ($this->highlightAccount === 0) {
+            $this->highlightAccount = count($this->accountCollection) - 1;
+            return;
+        }
+        $this->highlightAccount--;
+    }
+
+    public function incrementAccount(): void
+    {
+        if ($this->highlightAccount === count($this->accountCollection) - 1) {
+            $this->highlightAccount = 0;
+            return;
+        }
+        $this->highlightAccount++;
+    }
+
+    public function setAccount($name, $id): void
+    {
+        $this->account_name = $name;
+        $this->account_head_id = $id;
+        $this->getAccountList();
+    }
+
+    public function enterAccount(): void
+    {
+        $obj = $this->accountCollection[$this->highlightAccount] ?? null;
+
+        $this->account_name = '';
+        $this->accountCollection = Collection::empty();
+        $this->highlightAccount = 0;
+
+        $this->account_name = $obj['vname'] ?? '';
+        $this->account_head_id = $obj['id'] ?? '';
+    }
+
+    #[On('refresh-Account')]
+    public function refreshAccount($v): void
+    {
+        $this->account_head_id = $v['id'];
+        $this->account_name = $v['name'];
+        $this->accountTyped = false;
+    }
+
+    public function getAccountList(): void
+    {
+        $this->accountCollection = $this->account_name ? AccountHeads::search(trim($this->account_name))
+            ->get() : AccountHeads::all();
+    }
+    #endregion
+
     #region[Render]
     public function render()
     {
+        $this->getAccountList();
+
         return view('books::ledger-group-list')->with([
             'list' => $this->getList(),
         ]);

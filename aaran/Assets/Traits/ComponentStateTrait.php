@@ -41,12 +41,6 @@ trait ComponentStateTrait
         $this->showFilters = false;
     }
 
-    public function clearFields(): void
-    {
-        $this->vid = null;
-        $this->searches = '';
-    }
-
     public function edit($id): void
     {
         $this->clearFields();

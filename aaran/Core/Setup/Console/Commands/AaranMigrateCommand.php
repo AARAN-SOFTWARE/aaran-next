@@ -37,8 +37,9 @@ class AaranMigrateCommand extends Command
 
         // List of migration directories (custom migrations only)
         $paths = [
-            'aaran/Common/Database/Migrations',
-            'aaran/Master/Contact/Database/Migrations',
+            'aaran/BMS/Billing/Common/Database/Migrations',
+            'aaran/BMS/Billing/Books/Database/Migrations',
+            'aaran/BMS/Billing/Master/Database/Migrations',
         ];
 
         foreach ($paths as $row) {

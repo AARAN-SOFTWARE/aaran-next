@@ -18,7 +18,6 @@ return new class extends Migration {
                 $table->string('opening_date')->nullable();
                 $table->string('current')->nullable();
                 $table->tinyInteger('active_id')->nullable();
-                $table->foreignId('user_id')->references('id')->on('users');
                 $table->timestamps();
             });
         }
