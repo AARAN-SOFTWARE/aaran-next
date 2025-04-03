@@ -6,7 +6,7 @@
 
     <x-Ui::forms.m-panel>
 
-{{--        <x-Ui::alerts.notification />--}}
+        {{--        <x-Ui::alerts.notification />--}}
 
 
         <x-Ui::forms.top-controls :show-filters="$showFilters"/>
@@ -15,7 +15,7 @@
             {{$list->count()}}
         </x-Ui::caption>
 
-         <x-Ui::table.form>
+        <x-Ui::table.form>
 
             <!-- Table Header ----------------------------------------------------------------------------------------->
 
@@ -41,7 +41,7 @@
 
                 @foreach($list as $index=>$row)
 
-                   <x-Ui::table.row>
+                    <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->account_head->vname}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
@@ -62,20 +62,27 @@
 
             <div class="flex flex-col  gap-3">
 
+
+                <div>
+                    <x-Ui::input.floating autofocus wire:model="vname" label="Ledger Group"/>
+                    <x-Ui::input.error-text wire:model="vname"/>
+                </div>
+
+
                 <x-Ui::dropdown.wrapper label="Account Name" type="accountTyped">
                     <div class="relative">
 
-                        <x-Ui::dropdown.input label="Account Name*" id="account_name"
-                                          wire:model.live="account_name"
-                                          wire:keydown.arrow-up="decrementAccount"
-                                          wire:keydown.arrow-down="incrementAccount"
-                                          wire:keydown.enter="enterAccount"/>
+                        <x-Ui::dropdown.input label="Account Head" id="account_name"
+                                              wire:model.live="account_name"
+                                              wire:keydown.arrow-up="decrementAccount"
+                                              wire:keydown.arrow-down="incrementAccount"
+                                              wire:keydown.enter="enterAccount"/>
                         <x-Ui::dropdown.select>
 
                             @if($accountCollection)
                                 @forelse ($accountCollection as $i => $account)
                                     <x-Ui::dropdown.option highlight="{{ $highlightAccount === $i }}"
-                                                       wire:click.prevent="setAccount('{{$account->vname}}','{{$account->id}}')">
+                                                           wire:click.prevent="setAccount('{{$account->vname}}','{{$account->id}}')">
                                         {{ $account->vname }}
                                     </x-Ui::dropdown.option>
                                 @empty
@@ -86,11 +93,6 @@
                         </x-Ui::dropdown.select>
                     </div>
                 </x-Ui::dropdown.wrapper>
-
-                <div>
-                    <x-Ui::input.floating wire:model="vname" label="Name"/>
-                    <x-Ui::input.error-text wire:model="vname"/>
-                </div>
 
                 <x-Ui::input.lookup-text wire:model="desc" label="Desc"/>
 
@@ -104,7 +106,7 @@
 
         </x-Ui::forms.create>
 
-     </x-Ui::forms.m-panel>
+    </x-Ui::forms.m-panel>
 
     <x-Ui::modal.delete/>
 

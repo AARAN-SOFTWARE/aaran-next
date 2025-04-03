@@ -102,6 +102,7 @@ class LedgerGroupList extends Component
             $this->vname = $obj->vname;
             $this->description = $obj->description;
             $this->account_head_id = $obj->account_head_id;
+            $this->account_name = $obj->account_head->vname;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
             $this->current = $obj->current;
@@ -132,7 +133,6 @@ class LedgerGroupList extends Component
     #endregion
 
     #region[account head]
-
     public $account_name = '';
     public Collection $accountCollection;
     public $highlightAccount = 0;

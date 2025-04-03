@@ -65,15 +65,15 @@
                     <div class="relative">
 
                         <x-Ui::dropdown.input label="Ledger Name*" id="ledger_name"
-                                          wire:model.live="ledger_name"
+                                          wire:model.live="ledger_group_name"
                                           wire:keydown.arrow-up="decrementLedger"
                                           wire:keydown.arrow-down="incrementLedger"
                                           wire:keydown.enter="enterLedger"/>
                         <x-Ui::dropdown.select>
 
-                            @if($ledgerCollection)
-                                @forelse ($ledgerCollection as $i => $ledger)
-                                    <x-Ui::dropdown.option highlight="{{ $highlightLedger === $i }}"
+                            @if($ledgerGroupCollection)
+                                @forelse ($ledgerGroupCollection as $i => $ledger)
+                                    <x-Ui::dropdown.option highlight="{{ $highlightLedgerGroup === $i }}"
                                                        wire:click.prevent="setLedger('{{$ledger->vname}}','{{$ledger->id}}')">
                                         {{ $ledger->vname }}
                                     </x-Ui::dropdown.option>
@@ -86,7 +86,7 @@
                     </div>
                 </x-Ui::dropdown.wrapper>
 
-                <x-Ui::input.floating wire:model="common.vname" label="Name"/>
+                <x-Ui::input.floating wire:model="vname" label="Name"/>
 
                 <x-Ui::input.lookup-text wire:model="description" label="Desc"/>
 

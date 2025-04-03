@@ -26,6 +26,6 @@ class Ledger extends Model
 
     public function ledger_group(): BelongsTo
     {
-        return $this->belongsTo(LedgerGroup::class, 'ledger_group_id')->on($this->getTenantConnection());
+        return $this->belongsTo(LedgerGroup::class, 'ledger_group_id');
     }
 }

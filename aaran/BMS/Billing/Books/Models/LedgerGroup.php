@@ -2,6 +2,7 @@
 
 namespace Aaran\BMS\Billing\Books\Models;
 
+use Aaran\Core\Tenant\Facades\TenantManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class LedgerGroup extends Model
 
     protected $guarded = [];
 
+    protected $table = 'ledger_groups'; // Ensure correct table name
 
     public function scopeActive(Builder $query, $status = '1'): Builder
     {
