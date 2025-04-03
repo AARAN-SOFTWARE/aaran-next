@@ -18,7 +18,7 @@ class AccountHeadList extends Component
 
     #[Validate]
     public string $vname = '';
-    public string $desc = '';
+    public string $description = '';
     public mixed $opening;
     public mixed $opening_date;
     public mixed $current;
@@ -53,18 +53,18 @@ class AccountHeadList extends Component
     public function getSave(): void
     {
         $this->validate();
+
         $connection = $this->getTenantConnection();
 
         AccountHeads::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->desc,
+                'desc' => $this->description,
                 'opening' => $this->opening,
                 'opening_date' => $this->opening_date,
                 'current' => $this->current,
                 'active_id' => $this->active_id,
-                'user_id' => auth()->id(),
             ],
         );
 
@@ -78,7 +78,7 @@ class AccountHeadList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->desc = '';
+        $this->description = '';
         $this->opening = '';
         $this->opening_date = Carbon::now()->format('Y-m-d');
         $this->current = '';
@@ -93,7 +93,7 @@ class AccountHeadList extends Component
         if ($obj = AccountHeads::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->desc = $obj->desc;
+            $this->description = $obj->description;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
             $this->current = $obj->current;

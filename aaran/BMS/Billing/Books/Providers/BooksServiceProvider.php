@@ -21,8 +21,8 @@ class BooksServiceProvider extends ServiceProvider
     {
         // Register Livewire components
         Livewire::component('books::account-head', Class\AccountHeadList::class);
-        Livewire::component('books::ledger-group', Class\AccountHeadList::class);
-        Livewire::component('books::ledger', Class\AccountHeadList::class);
+        Livewire::component('books::ledger-group', Class\LedgerGroupList::class);
+        Livewire::component('books::ledger', Class\LedgerList::class);
     }
 
     protected function loadViews(): void

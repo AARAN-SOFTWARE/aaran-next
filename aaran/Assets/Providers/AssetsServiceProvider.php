@@ -2,7 +2,6 @@
 
 namespace Aaran\Assets\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AssetsServiceProvider extends ServiceProvider
@@ -11,6 +10,13 @@ class AssetsServiceProvider extends ServiceProvider
     {
         $this->getConfig();
     }
+
+    public function register(): void
+    {
+//
+    }
+
+
 
     public function getConfig(): void
     {

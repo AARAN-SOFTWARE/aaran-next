@@ -15,7 +15,7 @@ class GstPercentList extends Component
 
     #[Validate]
     public string $vname = '';
-    public string $desc = '';
+    public string $description = '';
     public bool $active_id = true;
 
     #region[Validation]
@@ -52,7 +52,7 @@ class GstPercentList extends Component
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->desc,
+                'description' => $this->description,
                 'active_id' => $this->active_id
             ],
         );
@@ -68,7 +68,7 @@ class GstPercentList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->desc = '';
+        $this->description = '';
         $this->active_id = true;
         $this->searches = '';
     }
@@ -79,7 +79,7 @@ class GstPercentList extends Component
         if ($obj = GstPercent::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->desc = $obj->desc;
+            $this->description = $obj->description;
             $this->active_id = $obj->active_id;
         }
     }

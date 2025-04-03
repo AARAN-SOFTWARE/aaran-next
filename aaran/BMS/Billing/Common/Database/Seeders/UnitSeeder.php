@@ -46,10 +46,10 @@ class UnitSeeder extends Seeder
             ['CAN', 'Can'],
         ];
 
-        foreach ($units as [$vname, $desc]) {
+        foreach ($units as [$vname, $description]) {
             Unit::create([
                 'vname' => $vname,
-                'desc' => $desc,
+                'description' => $description,
                 'active_id' => '1'
             ]);
         }

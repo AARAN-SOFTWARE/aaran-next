@@ -21,7 +21,7 @@
             <x-slot:table_header name="table_header" class="bg-green-600">
                 <x-Ui::table.header-serial width="20%"/>
 
-                <x-Ui::table.header-text wire:click.prevent="sortBy('vname')" sortIcon="{{$getListForm->sortAsc}}">
+                <x-Ui::table.header-text wire:click.prevent="sortBy('vname')" sortIcon="{{$sortAsc}}">
                     Name
                 </x-Ui::table.header-text>
 
@@ -54,12 +54,14 @@
 
         <!--Create ---------------------------------------------------------------------------------------------------->
 
-        <x-Ui::forms.create :id="$common->vid">
+        <x-Ui::forms.create :id="$vid">
 
             <div class="flex flex-col  gap-3">
-                <x-Ui::input.floating wire:model="common.vname" label="Name"/>
 
-                <x-Ui::input.lookup-text wire:model="description" label="Desc"/>
+                <x-Ui::input.floating wire:model="vname" label="Name"/>
+                <x-Ui::input.error-text wire:model="vname"/>
+
+                <x-Ui::input.lookup-text wire:model="desc" label="Desc"/>
 
                 <x-Ui::input.floating wire:model="opening" label="Opening"/>
 
