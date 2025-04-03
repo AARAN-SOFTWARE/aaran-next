@@ -21,7 +21,7 @@ class LedgerList extends Component
 
     #[Validate]
     public string $vname = '';
-    public string $desc = '';
+    public string $description = '';
     public $ledger_group_id = '';
     public mixed $opening;
     public mixed $opening_date;
@@ -63,7 +63,7 @@ class LedgerList extends Component
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->desc,
+                'desc' => $this->description,
                 'ledger_group_id' => $this->ledger_group_id,
                 'opening' => $this->opening,
                 'opening_date' => $this->opening_date,
@@ -83,7 +83,7 @@ class LedgerList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->desc = '';
+        $this->description = '';
         $this->ledger_group_id = '';
         $this->opening = '';
         $this->opening_date = Carbon::now()->format('Y-m-d');
@@ -99,7 +99,7 @@ class LedgerList extends Component
         if ($obj = Ledger::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->desc = $obj->desc;
+            $this->description = $obj->description;
             $this->ledger_group_id = $obj->ledger_group_id;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
@@ -131,7 +131,6 @@ class LedgerList extends Component
     #endregion
 
     #region[ledger Group]
-
 
     public $ledger_name = '';
     public Collection $ledgerCollection;
@@ -185,15 +184,20 @@ class LedgerList extends Component
 
     public function getLedgerList(): void
     {
-        $this->ledgerCollection = $this->ledger_name ? LedgerGroup::search(trim($this->ledger_name))
-            ->get() : LedgerGroup::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->ledgerCollection = $this->ledger_name ?
+            LedgerGroup::on($this->getTenantConnection())->when($this->ledger_name, fn($query) => $query->where('vname', 'like', "%{$this->ledger_name}%"))->get() :
+            Collection::empty();
     }
-#endregion
+    #endregion
 
     #region[Render]
     public function render()
     {
-//        $this->getLedgerList();
+        $this->getLedgerList();
 
         return view('books::ledger-list')->with([
             'list' => $this->getList(),

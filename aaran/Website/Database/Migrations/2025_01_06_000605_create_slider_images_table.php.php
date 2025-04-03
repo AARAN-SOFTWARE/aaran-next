@@ -13,7 +13,7 @@ return new class extends Migration {
                 $table->id();
                 $table->string('url')->nullable();
                 $table->string('title')->nullable();
-                $table->text('desc')->nullable();
+                $table->text('description')->nullable();
                 $table->timestamps();
             });
 

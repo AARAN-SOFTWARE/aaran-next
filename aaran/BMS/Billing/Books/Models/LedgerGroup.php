@@ -26,6 +26,7 @@ class LedgerGroup extends Model
 
     public function account_head(): BelongsTo
     {
-        return $this->belongsTo(AccountHeads::class, 'account_head_id')->on($this->getTenantConnection());
+        return $this->belongsTo(AccountHeads::class, 'account_head_id');
     }
+
 }

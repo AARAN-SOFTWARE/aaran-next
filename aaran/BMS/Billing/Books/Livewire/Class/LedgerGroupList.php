@@ -4,9 +4,7 @@ namespace Aaran\BMS\Billing\Books\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Books\Models\AccountHeads;
 use Aaran\BMS\Billing\Books\Models\LedgerGroup;
-use Aaran\Core\Tenant\Facades\TenantManager;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +21,7 @@ class LedgerGroupList extends Component
 
     #[Validate]
     public string $vname = '';
-    public string $desc = '';
+    public string $description = '';
     public $account_head_id = '';
     public mixed $opening;
     public mixed $opening_date;
@@ -66,13 +64,12 @@ class LedgerGroupList extends Component
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->desc,
+                'description' => $this->description,
                 'account_head_id' => $this->account_head_id ?: '1',
                 'opening' => $this->opening,
                 'opening_date' => $this->opening_date,
                 'current' => $this->current,
                 'active_id' => $this->active_id,
-                'user_id' => auth()->id(),
             ],
         );
 
@@ -87,7 +84,7 @@ class LedgerGroupList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->desc = '';
+        $this->description = '';
         $this->account_head_id = '';
         $this->opening = '';
         $this->opening_date = Carbon::now()->format('Y-m-d');
@@ -103,7 +100,7 @@ class LedgerGroupList extends Component
         if ($obj = LedgerGroup::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->desc = $obj->desc;
+            $this->description = $obj->description;
             $this->account_head_id = $obj->account_head_id;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;

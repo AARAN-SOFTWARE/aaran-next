@@ -38,10 +38,10 @@ class HsncodeSeeder extends Seeder
             ['550820', 'Sewing thread of artificial staple fibers'],
         ];
 
-        foreach ($hsnCodes as [$code, $desc]) {
+        foreach ($hsnCodes as [$code, $description]) {
             Hsncode::create([
                 'vname' => $code,
-                'desc' => $desc,
+                'description' => $description,
                 'active_id' => '1'
             ]);
         }
