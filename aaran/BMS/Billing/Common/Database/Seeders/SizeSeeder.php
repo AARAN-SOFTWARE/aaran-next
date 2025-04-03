@@ -36,10 +36,10 @@ class SizeSeeder extends Seeder
             ['10Y', '10 Years'],
         ];
 
-        foreach ($sizes as [$vname, $description]) {
+        foreach ($sizes as [$vname, $desc]) {
             Size::create([
                 'vname' => $vname,
-                'description' => $description,
+                'desc' => $desc,
                 'active_id' => '1'
             ]);
         }
