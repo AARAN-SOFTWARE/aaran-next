@@ -2,7 +2,7 @@
 
 namespace Aaran\Website\Tests\Feature;
 
-use Aaran\Common\Models\City;
+use Aaran\BMS\Billing\Common\Models\City;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

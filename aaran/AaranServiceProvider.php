@@ -2,9 +2,8 @@
 
 namespace Aaran;
 
-use Aaran\Assets\Config\Software;
 use Aaran\Assets\Providers\AssetsServiceProvider;
-use Aaran\Common\Providers\CommonServiceProvider;
+use Aaran\BMS\Billing\Common\Providers\CommonServiceProvider;
 use Aaran\Core\Setup\Providers\SetupServiceProvider;
 use Aaran\Core\Tenant\Providers\TenantServiceProvider;
 use Aaran\Core\User\Providers\UserServiceProvider;
