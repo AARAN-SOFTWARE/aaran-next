@@ -9,8 +9,8 @@ Route::middleware(['website'])->group(function () {
     Route::get('/', \Aaran\Website\Livewire\Class\Index::class)->name('home');
 
     Route::get('/about', \Aaran\Website\Livewire\Class\About::class)->name('abouts');
-    Route::get('/contact', \Aaran\Website\Livewire\Class\Contact::class)->name('contacts');
-    Route::post('/contact',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('contact.message');
+//    Route::get('/web-contacts', \Aaran\Website\Livewire\Class\Contact::class)->name('contacts');
+//    Route::post('/web-contacts',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('contact.message');
     Route::get('/service', Service::class)->name('services');
 
     Route::get('/blog', Blog::class)->name('blogs');
@@ -19,7 +19,7 @@ Route::middleware(['website'])->group(function () {
             return view('profile.show');
         })->name('profile.show');
     });
-    Route::post('/contact',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('web-contacts');
+    Route::post('/web-contacts',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('web-contacts');
 
 
 });

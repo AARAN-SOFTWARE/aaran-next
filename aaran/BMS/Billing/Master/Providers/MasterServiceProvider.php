@@ -3,6 +3,7 @@
 namespace Aaran\BMS\Billing\Master\Providers;
 
 use Aaran\BMS\Billing\Master\Livewire\Class\CompanyList;
+use Aaran\BMS\Billing\Master\Livewire\Class\ContactList;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -23,6 +24,7 @@ class MasterServiceProvider extends ServiceProvider
 //        $this->loadMigrations();
 
         Livewire::component('master::company-list', CompanyList::class);
+        Livewire::component('master::contact-list', ContactList::class);
 //        Livewire::component('company.upsert', Company\Upsert::class);
 //
 //        Livewire::component('contact.index', Contact\Index::class);
