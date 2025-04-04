@@ -3,7 +3,7 @@
 return [
     'customise' => [
         'common',
-        'company',
+        'master',
         'entries',
         'blog',
         'core',

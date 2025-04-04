@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasMaster()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('company_details', function (Blueprint $table) {
                 $table->id();

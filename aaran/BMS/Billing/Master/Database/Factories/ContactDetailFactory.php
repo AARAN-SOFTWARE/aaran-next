@@ -6,8 +6,8 @@ use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
-use Aaran\Master\Models\Contact;
-use Aaran\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\Contact;
+use Aaran\BMS\Billing\Master\Models\ContactDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 

@@ -1,17 +1,18 @@
 <?php
 
-namespace Aaran\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class;
 
 use Aaran\Assets\Enums\MsmeType;
-use Aaran\Assets\Trait\CommonTraitNew;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
-use Aaran\Master\Models\Company;
-use Aaran\Tenant\Models\Tenant;
+use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
@@ -22,10 +23,12 @@ class CompanyList extends Component
 {
     use WithFileUploads;
 
-    use CommonTraitNew;
+    use ComponentStateTrait, TenantAwareTrait;
 
     #region[properties]
+    public string $vname = '';
     public string $mobile = '';
+
     public string $email = '';
     public string $gstin = '';
     public mixed $msme_no = '';
@@ -44,7 +47,7 @@ class CompanyList extends Component
     public $ifsc_code;
     public $branch;
     public $isUploaded = false;
-
+    public $active_id = true;
 
     public string $cities;
     public string $states;
@@ -58,8 +61,8 @@ class CompanyList extends Component
     public function rules(): array
     {
         return [
-            'common.vname' => 'required|unique:companies,vname',
-            'gstin' => 'unique:companies,gstin',
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.companies,vname"),
+            'gstin' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.companies,vname"),
             'address_1' => 'required',
             'address_2' => 'required',
             'city_name' => 'required',
@@ -71,7 +74,7 @@ class CompanyList extends Component
     public function messages()
     {
         return [
-            'common.vname.required' => ' :attribute is required.',
+            'vname.required' => ' :attribute is required.',
             'gstin.required' => ' :attribute is required.',
             'vname.unique' => ' :attribute is already taken.',
             'gstin.unique' => ' :attribute is already taken.',
@@ -86,7 +89,7 @@ class CompanyList extends Component
     public function validationAttributes()
     {
         return [
-            'common.vname' => 'Company name',
+            'vname' => 'Company name',
             'gstin' => 'GST No',
             'address_1' => 'Address',
             'address_2' => 'Area Road',
@@ -100,7 +103,7 @@ class CompanyList extends Component
     #region[city]
     public $city_id = '';
     public $city_name = '';
-    public Collection $cityCollection;
+    public $cityCollection;
     public $highlightCity = 0;
     public $cityTyped = false;
 
@@ -137,8 +140,8 @@ class CompanyList extends Component
         $this->cityCollection = Collection::empty();
         $this->highlightCity = 0;
 
-        $this->city_name = $obj['vname'] ?? '';;
-        $this->city_id = $obj['id'] ?? '';;
+        $this->city_name = $obj->vname ?? '';;
+        $this->city_id = $obj->id ?? '';;
     }
 
     #[On('refresh-city')]
@@ -152,7 +155,7 @@ class CompanyList extends Component
 
     public function citySave($name)
     {
-        $obj = City::create([
+        $obj = City::on($this->getTenantConnection())->create([
             'vname' => $name,
             'active_id' => '1'
         ]);
@@ -162,16 +165,22 @@ class CompanyList extends Component
 
     public function getCityList(): void
     {
-        $this->cityCollection = $this->city_name ?
-            City::search(trim($this->city_name))->get() :
-            City::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->cityCollection = DB::connection($this->getTenantConnection())
+            ->table('cities')
+            ->when($this->city_name, fn($query) => $query->where('vname', 'like', "%{$this->city_name}%"))
+            ->get();
+
     }
     #endregion
 
     #region[state]
     public $state_id = '';
     public $state_name = '';
-    public Collection $stateCollection;
+    public $stateCollection;
     public $highlightState = 0;
     public $stateTyped = false;
 
@@ -208,8 +217,8 @@ class CompanyList extends Component
         $this->stateCollection = Collection::empty();
         $this->highlightState = 0;
 
-        $this->state_name = $obj['vname'] ?? '';;
-        $this->state_id = $obj['id'] ?? '';;
+        $this->state_name = $obj->vname ?? '';;
+        $this->state_id = $obj->id ?? '';;
     }
 
     #[On('refresh-state')]
@@ -223,7 +232,7 @@ class CompanyList extends Component
 
     public function stateSave($name): void
     {
-        $obj = State::create([
+        $obj = State::on($this->getTenantConnection())->create([
             'vname' => $name,
             'state_code' => '1',
             'active_id' => '1'
@@ -234,16 +243,21 @@ class CompanyList extends Component
 
     public function getStateList(): void
     {
-        $this->stateCollection = $this->state_name ?
-            State::search(trim($this->state_name))->get() :
-            State::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->stateCollection = DB::connection($this->getTenantConnection())
+            ->table('states')
+            ->when($this->state_name, fn($query) => $query->where('vname', 'like', "%{$this->state_name}%"))
+            ->get();
     }
     #endregion
 
     #region[pin-code]
     public $pincode_id = '';
     public $pincode_name = '';
-    public Collection $pincodeCollection;
+    public $pincodeCollection;
     public $highlightPincode = 0;
     public $pincodeTyped = false;
 
@@ -273,8 +287,8 @@ class CompanyList extends Component
         $this->pincodeCollection = Collection::empty();
         $this->highlightPincode = 0;
 
-        $this->pincode_name = $obj['vname'] ?? '';;
-        $this->pincode_id = $obj['id'] ?? '';;
+        $this->pincode_name = $obj->vname ?? '';;
+        $this->pincode_id = $obj->id ?? '';;
     }
 
     public function setPincode($name, $id): void
@@ -294,7 +308,7 @@ class CompanyList extends Component
 
     public function pincodeSave($name)
     {
-        $obj = Pincode::create([
+        $obj = Pincode::on($this->getTenantConnection())->create([
             'vname' => $name,
             'active_id' => '1'
         ]);
@@ -304,16 +318,22 @@ class CompanyList extends Component
 
     public function getPincodeList(): void
     {
-        $this->pincodeCollection = $this->pincode_name ?
-            Pincode::search(trim($this->pincode_name))->get() :
-            Pincode::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->pincodeCollection = DB::connection($this->getTenantConnection())
+            ->table('pincodes')
+            ->when($this->pincode_name, fn($query) => $query->where('vname', 'like', "%{$this->pincode_name}%"))
+            ->get();
+
     }
     #endregion
 
     #region[country]
     public $country_id = '';
     public $country_name = '';
-    public Collection $countryCollection;
+    public $countryCollection;
     public $highlightCountry = 0;
     public $countryTyped = false;
 
@@ -350,8 +370,8 @@ class CompanyList extends Component
         $this->countryCollection = Collection::empty();
         $this->highlightCountry = 0;
 
-        $this->country_name = $obj['vname'] ?? '';
-        $this->country_id = $obj['id'] ?? '';
+        $this->country_name = $obj->vname ?? '';
+        $this->country_id = $obj->id ?? '';
     }
 
     #[On('refresh-country')]
@@ -364,7 +384,7 @@ class CompanyList extends Component
 
     public function countrySave($name)
     {
-        $obj = Country::create([
+        $obj = Country::on($this->getTenantConnection())->create([
             'vname' => $name,
             'active_id' => '1'
         ]);
@@ -374,9 +394,16 @@ class CompanyList extends Component
 
     public function getCountryList(): void
     {
-        $this->countryCollection = $this->country_name ?
-            Country::search(trim($this->country_name))->get() :
-            Country::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->countryCollection = DB::connection($this->getTenantConnection())
+            ->table('countries')
+            ->when($this->country_name, fn($query) => $query->where('vname', 'like', "%{$this->country_name}%"))
+            ->get();
+
+
     }
     #endregion
 
@@ -407,7 +434,7 @@ class CompanyList extends Component
 
     public function setMsmeType($id): void
     {
-        $id = (int) $id; // Convert to integer before passing it
+        $id = (int)$id; // Convert to integer before passing it
 //        $msmeType = MsmeType::tryFrom((int) $id);
         $msmeType = MsmeType::tryFrom($id);
 
@@ -439,7 +466,7 @@ class CompanyList extends Component
 
     public function getMsmeTypeList(): void
     {
-        $this->msmeTypeCollection = collect(MsmeType::cases())->map(fn ($type) => [
+        $this->msmeTypeCollection = collect(MsmeType::cases())->map(fn($type) => [
             'id' => $type->value,
             'vname' => $type->getName(),
         ])->toArray();
@@ -450,80 +477,52 @@ class CompanyList extends Component
     #region[save]
     public function getSave(): void
     {
-        if ($this->common->vname != '') {
-            if ($this->common->vid == '') {
-                $this->validate($this->rules());
-                $company = new Company();
-                $extraFields = [
-                    'display_name' => $this->display_name,
-                    'address_1' => $this->address_1,
-                    'address_2' => $this->address_2,
-                    'mobile' => $this->mobile,
-                    'landline' => $this->landline,
-                    'gstin' => Str::upper($this->gstin),
-                    'msme_no' => $this->msme_no ?: '-',
-                    'msme_type_id' => $this->msme_type_id ?: '1',
-                    'pan' => Str::upper($this->pan),
-                    'email' => $this->email,
-                    'website' => $this->website,
-                    'city_id' => $this->city_id ?: '1',
-                    'state_id' => $this->state_id ?: '1',
-                    'pincode_id' => $this->pincode_id ?: '1',
-                    'country_id' => $this->country_id ?: '1',
-                    'bank' => $this->bank,
-                    'acc_no' => $this->acc_no,
-                    'ifsc_code' => $this->ifsc_code,
-                    'branch' => $this->branch,
-                    'inv_pfx' => $this->inv_pfx ?: '-',
-                    'iec_no' => $this->iec_no ?: '-',
-                    'user_id' => Auth::id(),
-                    'tenant_id' => $this->tenant_id ?: '1',
-                    'logo' => $this->save_logo(),
-                ];
-                $this->common->save($company, $extraFields);
-                $message = "Saved";
-            } else {
-                $company = Company::find($this->common->vid);
-                $extraFields = [
-                    'display_name' => $this->display_name,
-                    'address_1' => $this->address_1,
-                    'address_2' => $this->address_2,
-                    'mobile' => $this->mobile,
-                    'landline' => $this->landline,
-                    'gstin' => Str::upper($this->gstin),
-                    'msme_no' => $this->msme_no,
-                    'msme_type_id' => $this->msme_type_id,
-                    'pan' => Str::upper($this->pan),
-                    'email' => $this->email,
-                    'website' => $this->website,
-                    'city_id' => $this->city_id ?: '1',
-                    'state_id' => $this->state_id ?: '1',
-                    'pincode_id' => $this->pincode_id ?: '1',
-                    'country_id' => $this->country_id ?: '1',
-                    'bank' => $this->bank,
-                    'acc_no' => $this->acc_no,
-                    'ifsc_code' => $this->ifsc_code,
-                    'branch' => $this->branch,
-                    'inv_pfx' => $this->inv_pfx ?: '-',
-                    'iec_no' => $this->iec_no ?: '-',
-                    'user_id' => Auth::id(),
-                    'tenant_id' => $this->tenant_id ?: '1',
-                    'logo' => $this->save_logo(),
-                ];
-                $this->common->edit($company, $extraFields);
-                $message = "Updated";
-            }
-            $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
-        }
+
+//        $this->validate();
+
+        $connection = $this->getTenantConnection();
+
+        Company::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
+                'display_name' => $this->display_name,
+                'address_1' => $this->address_1,
+                'address_2' => $this->address_2,
+                'mobile' => $this->mobile,
+                'landline' => $this->landline,
+                'gstin' => Str::upper($this->gstin),
+                'msme_no' => $this->msme_no ?: '-',
+                'msme_type_id' => $this->msme_type_id ?: '1',
+                'pan' => Str::upper($this->pan),
+                'email' => $this->email,
+                'website' => $this->website,
+                'city_id' => $this->city_id ?: '1',
+                'state_id' => $this->state_id ?: '1',
+                'pincode_id' => $this->pincode_id ?: '1',
+                'country_id' => $this->country_id ?: '1',
+                'bank' => $this->bank,
+                'acc_no' => $this->acc_no,
+                'ifsc_code' => $this->ifsc_code,
+                'branch' => $this->branch,
+                'inv_pfx' => $this->inv_pfx ?: '-',
+                'iec_no' => $this->iec_no ?: '-',
+                'tenant_id' => $this->tenant_id ?: '1',
+                'active_id' => $this->active_id,
+                'logo' => $this->save_logo(),
+            ],
+        );
+
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
     }
     #endregion
 
     #region[clear fields]
     public function clearFields()
     {
-        $this->common->vid = '';
-        $this->common->vname = '';
-        $this->common->active_id = '1';
+        $this->vid = null;
+        $this->vname = '';
+        $this->active_id = true;
         $this->display_name = '';
         $this->address_1 = '';
         $this->address_2 = '';
@@ -585,9 +584,9 @@ class CompanyList extends Component
     public function getObj($id)
     {
         if ($id) {
-            $obj = Company::find($id);
-            $this->common->vid = $obj->id;
-            $this->common->vname = $obj->vname;
+            $obj = Company::on($this->getTenantConnection())->find($id);
+            $this->vid = $obj->id;
+            $this->vname = $obj->vname;
             $this->display_name = $obj->display_name;
             $this->address_1 = $obj->address_1;
             $this->address_2 = $obj->address_2;
@@ -614,7 +613,7 @@ class CompanyList extends Component
             $this->branch = $obj->branch;
             $this->inv_pfx = $obj->inv_pfx;
             $this->iec_no = $obj->iec_no;
-            $this->common->active_id = $obj->active_id;
+            $this->active_id = $obj->active_id;
             $this->old_logo = $obj->logo;
             return $obj;
         }
@@ -629,11 +628,14 @@ class CompanyList extends Component
     }
     #endregion
 
-    #region[tenants]
-    public function getTenants(): void
+    #region[getList]
+    public function getList()
     {
-        $this->tenants = Tenant::all();
-
+        return Company::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
     }
     #endregion
 
@@ -657,15 +659,12 @@ class CompanyList extends Component
         $this->getCityList();
         $this->getStateList();
         $this->getPincodeList();
-        $this->getTenants();
         $this->getMsmeTypeList();
         $this->getCountryList();
 //        $this->log = Logbook::where('vname', 'Company')->take(5)->get();
-        return view('master::Company.index')->with([
-            'list' => $this->getListForm->getList(Company::class, function ($query) {
-                return $query;
-//                    ->where('tenant_id', session()->get('tenant_id'));
-            }),
+
+        return view('master::company-list')->with([
+            'list' => $this->getList(),
         ]);
     }
     #endregion

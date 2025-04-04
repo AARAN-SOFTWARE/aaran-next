@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Seeders;
 
-use Aaran\Master\Models\Product;
+use Aaran\BMS\Billing\Master\Models\Product;
 use Illuminate\Database\Seeder;
 
 class S203_ProductSeeder extends Seeder

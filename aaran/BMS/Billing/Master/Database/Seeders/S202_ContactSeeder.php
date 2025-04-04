@@ -2,8 +2,8 @@
 
 namespace Aaran\Master\Database\Seeders;
 
-use Aaran\Master\Models\Contact;
-use Aaran\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\Contact;
+use Aaran\BMS\Billing\Master\Models\ContactDetail;
 use Illuminate\Database\Seeder;
 
 class S202_ContactSeeder extends Seeder

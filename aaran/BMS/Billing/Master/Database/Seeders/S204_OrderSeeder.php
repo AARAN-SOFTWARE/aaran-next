@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Seeders;
 
-use Aaran\Master\Models\Order;
+use Aaran\BMS\Billing\Master\Models\Order;
 use Illuminate\Database\Seeder;
 
 class S204_OrderSeeder extends Seeder

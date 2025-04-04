@@ -25,7 +25,6 @@ class AccountHeads extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-
     public static function search(string $searches)
     {
         return empty($searches) ? static::query()

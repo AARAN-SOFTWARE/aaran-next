@@ -49,7 +49,7 @@ class LedgerList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'Ledger Group',
+            'vname' => 'Ledger Name',
         ];
     }
     #endregion

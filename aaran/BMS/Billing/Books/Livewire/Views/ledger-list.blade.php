@@ -1,11 +1,11 @@
 <div>
-    <x-slot name="header">Ledger </x-slot>
+    <x-slot name="header">Ledger</x-slot>
 
     <!-- Top Controls ------------------------------------------------------------------------------------------------->
 
     <x-Ui::forms.m-panel>
 
-        <x-Ui::alerts.notification />
+        <x-Ui::alerts.notification/>
 
         <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
@@ -13,7 +13,7 @@
             {{$list->count()}}
         </x-Ui::caption>
 
-         <x-Ui::table.form>
+        <x-Ui::table.form>
 
             <!-- Table Header ----------------------------------------------------------------------------------------->
 
@@ -40,7 +40,7 @@
 
                 @foreach($list as $index=>$row)
 
-                   <x-Ui::table.row>
+                    <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->ledger_group->vname}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
@@ -61,20 +61,25 @@
 
             <div class="flex flex-col  gap-3">
 
+                <div>
+                    <x-Ui::input.floating wire:model="vname" label="Ledger Name"/>
+                    <x-Ui::input.error-text wire:model="vname"/>
+                </div>
+
                 <x-Ui::dropdown.wrapper label="Ledger Name" type="ledgerTyped">
                     <div class="relative">
 
                         <x-Ui::dropdown.input label="Ledger Name*" id="ledger_name"
-                                          wire:model.live="ledger_group_name"
-                                          wire:keydown.arrow-up="decrementLedger"
-                                          wire:keydown.arrow-down="incrementLedger"
-                                          wire:keydown.enter="enterLedger"/>
+                                              wire:model.live="ledger_group_name"
+                                              wire:keydown.arrow-up="decrementLedger"
+                                              wire:keydown.arrow-down="incrementLedger"
+                                              wire:keydown.enter="enterLedger"/>
                         <x-Ui::dropdown.select>
 
                             @if($ledgerGroupCollection)
                                 @forelse ($ledgerGroupCollection as $i => $ledger)
                                     <x-Ui::dropdown.option highlight="{{ $highlightLedgerGroup === $i }}"
-                                                       wire:click.prevent="setLedger('{{$ledger->vname}}','{{$ledger->id}}')">
+                                                           wire:click.prevent="setLedger('{{$ledger->vname}}','{{$ledger->id}}')">
                                         {{ $ledger->vname }}
                                     </x-Ui::dropdown.option>
                                 @empty
@@ -86,7 +91,6 @@
                     </div>
                 </x-Ui::dropdown.wrapper>
 
-                <x-Ui::input.floating wire:model="vname" label="Name"/>
 
                 <x-Ui::input.lookup-text wire:model="description" label="Desc"/>
 
@@ -100,7 +104,7 @@
 
         </x-Ui::forms.create>
 
-     </x-Ui::forms.m-panel>
+    </x-Ui::forms.m-panel>
 
     <x-Ui::modal.delete/>
 </div>
