@@ -11,7 +11,6 @@ use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
