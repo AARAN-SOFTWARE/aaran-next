@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Seeders;
 
-use Aaran\Master\Models\Style;
+use Aaran\BMS\Billing\Master\Models\Style;
 use Illuminate\Database\Seeder;
 
 class S205_StyleSeeder extends Seeder

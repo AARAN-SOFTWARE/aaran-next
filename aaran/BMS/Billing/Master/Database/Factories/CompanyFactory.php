@@ -7,7 +7,7 @@ use Aaran\BMS\Billing\Common\Models\Bank;
 use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
-use Aaran\Master\Models\Company;
+use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompanyFactory extends Factory

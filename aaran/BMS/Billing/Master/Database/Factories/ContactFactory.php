@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Factories;
 
-use Aaran\Master\Models\Contact;
+use Aaran\BMS\Billing\Master\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ContactFactory extends Factory

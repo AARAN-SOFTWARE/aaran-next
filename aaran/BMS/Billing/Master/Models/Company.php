@@ -1,12 +1,13 @@
 <?php
 
-namespace Aaran\Master\Models;
+namespace Aaran\BMS\Billing\Master\Models;
 
 use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\Master\Database\Factories\CompanyFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +24,18 @@ class Company extends Model
         return empty($searches) ? static::query()
             : static::where('vname', 'like', '%' . $searches . '%');
     }
+
+
+    public function scopeActive(Builder $query, $status = '1'): Builder
+    {
+        return $query->where('active_id', $status);
+    }
+
+    public function scopeSearchByName(Builder $query, string $search): Builder
+    {
+        return $query->where('vname', 'like', "%$search%");
+    }
+
 
     public static function printDetails($ids): Collection
     {

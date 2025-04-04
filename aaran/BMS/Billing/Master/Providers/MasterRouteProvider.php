@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Master\Providers;
+namespace Aaran\BMS\Billing\Master\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;

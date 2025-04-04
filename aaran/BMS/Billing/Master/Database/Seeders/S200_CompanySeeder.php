@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Seeders;
 
-use Aaran\Master\Models\Company;
+use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Seeder;
 
 class S200_CompanySeeder extends Seeder

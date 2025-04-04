@@ -7,7 +7,7 @@ use Aaran\Auth\Identity\Models\User;
 use Aaran\BMS\Billing\Common\Models\GstPercent;
 use Aaran\BMS\Billing\Common\Models\Hsncode;
 use Aaran\BMS\Billing\Common\Models\Unit;
-use Aaran\Master\Models\Product;
+use Aaran\BMS\Billing\Master\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 

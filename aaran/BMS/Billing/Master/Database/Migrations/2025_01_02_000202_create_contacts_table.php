@@ -8,7 +8,7 @@ return new class extends Migration {
 
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasMaster()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('contacts', function (Blueprint $table) {
                 $table->id();
@@ -25,8 +25,8 @@ return new class extends Migration {
                 $table->string('gstin')->nullable();
                 $table->string('email')->nullable();
                 $table->tinyInteger('active_id')->nullable();
-                $table->foreignId('user_id')->references('id')->on('users');
-                $table->foreignId('company_id')->references('id')->on('companies');
+//                $table->foreignId('user_id')->references('id')->on('users');
+//                $table->foreignId('company_id')->references('id')->on('companies');
                 $table->unique(['vname', 'gstin']);
                 $table->timestamps();
             });

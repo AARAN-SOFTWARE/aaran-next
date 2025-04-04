@@ -31,7 +31,7 @@ class Customise
      */
     protected static array $features = [
         'common'        => 'Common',
-        'company'       => 'Master',
+        'master'       => 'Master',
         'entries'       => 'Entries',
         'blog'          => 'Blog',
         'core'          => 'Core',
