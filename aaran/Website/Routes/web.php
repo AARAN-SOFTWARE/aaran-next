@@ -21,5 +21,6 @@ Route::middleware(['website'])->group(function () {
     });
     Route::post('/contact',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('web-contacts');
 
-
 });
+Route::get('/pricing', \Aaran\Website\Livewire\Class\Subscription::class)->name('pricing');
+
