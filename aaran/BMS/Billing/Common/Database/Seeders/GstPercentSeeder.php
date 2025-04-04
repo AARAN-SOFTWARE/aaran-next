@@ -17,10 +17,10 @@ class GstPercentSeeder extends Seeder
             '28' => '28%'
         ];
 
-        foreach ($gstRates as $vname => $desc) {
+        foreach ($gstRates as $vname => $description) {
             GstPercent::create([
                 'vname' => $vname,
-                'desc' => $desc,
+                'description' => $description,
                 'active_id' => '1'
             ]);
         }

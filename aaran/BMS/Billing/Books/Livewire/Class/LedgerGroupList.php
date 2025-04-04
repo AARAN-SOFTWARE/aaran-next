@@ -4,10 +4,10 @@ namespace Aaran\BMS\Billing\Books\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Books\Models\AccountHeads;
 use Aaran\BMS\Billing\Books\Models\LedgerGroup;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -21,7 +21,7 @@ class LedgerGroupList extends Component
 
     #[Validate]
     public string $vname = '';
-    public string $desc = '';
+    public string $description = '';
     public $account_head_id = '';
     public mixed $opening;
     public mixed $opening_date;
@@ -57,19 +57,19 @@ class LedgerGroupList extends Component
     public function getSave(): void
     {
         $this->validate();
+
         $connection = $this->getTenantConnection();
 
         LedgerGroup::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->desc,
+                'description' => $this->description,
                 'account_head_id' => $this->account_head_id ?: '1',
                 'opening' => $this->opening,
                 'opening_date' => $this->opening_date,
                 'current' => $this->current,
                 'active_id' => $this->active_id,
-                'user_id' => auth()->id(),
             ],
         );
 
@@ -84,7 +84,7 @@ class LedgerGroupList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->desc = '';
+        $this->description = '';
         $this->account_head_id = '';
         $this->opening = '';
         $this->opening_date = Carbon::now()->format('Y-m-d');
@@ -100,8 +100,9 @@ class LedgerGroupList extends Component
         if ($obj = LedgerGroup::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->desc = $obj->desc;
+            $this->description = $obj->description;
             $this->account_head_id = $obj->account_head_id;
+            $this->account_name = $obj->account_head->vname;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
             $this->current = $obj->current;
@@ -132,7 +133,6 @@ class LedgerGroupList extends Component
     #endregion
 
     #region[account head]
-
     public $account_name = '';
     public Collection $accountCollection;
     public $highlightAccount = 0;
@@ -171,8 +171,8 @@ class LedgerGroupList extends Component
         $this->accountCollection = Collection::empty();
         $this->highlightAccount = 0;
 
-        $this->account_name = $obj['vname'] ?? '';
-        $this->account_head_id = $obj['id'] ?? '';
+        $this->account_name = $obj->vname ?? '';
+        $this->account_head_id = $obj->id ?? '';
     }
 
     #[On('refresh-Account')]
@@ -185,9 +185,16 @@ class LedgerGroupList extends Component
 
     public function getAccountList(): void
     {
-        $this->accountCollection = $this->account_name ? AccountHeads::search(trim($this->account_name))
-            ->get() : AccountHeads::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->accountCollection = DB::connection($this->getTenantConnection())
+            ->table('account_heads')
+            ->when($this->account_name, fn($query) => $query->where('vname', 'like', "%{$this->account_name}%"))
+            ->get();
     }
+
     #endregion
 
     #region[Render]

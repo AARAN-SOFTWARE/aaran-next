@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasMaster()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
+
             Schema::create('styles', function (Blueprint $table) {
                 $table->id();
                 $table->string('vname')->unique();
-                $table->longText('desc')->nullable();
+                $table->longText('description')->nullable();
                 $table->longText('image')->nullable();
-                $table->foreignId('company_id')->references('id')->on('companies');
+//                $table->foreignId('company_id')->references('id')->on('companies');
                 $table->tinyInteger('active_id')->nullable();
                 $table->timestamps();
             });

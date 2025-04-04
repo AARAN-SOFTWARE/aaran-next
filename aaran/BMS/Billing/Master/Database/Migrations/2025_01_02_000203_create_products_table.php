@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasMaster()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('products', function (Blueprint $table) {
                 $table->id();
@@ -19,8 +19,8 @@ return new class extends Migration {
                 $table->decimal('initial_quantity',12,2)->nullable();
                 $table->decimal('initial_price',12,2)->nullable();
                 $table->tinyInteger('active_id')->nullable();
-                $table->foreignId('user_id')->references('id')->on('users');
-                $table->foreignId('company_id')->references('id')->on('companies');
+//                $table->foreignId('user_id')->references('id')->on('users');
+//                $table->foreignId('company_id')->references('id')->on('companies');
                 $table->timestamps();
             });
         }

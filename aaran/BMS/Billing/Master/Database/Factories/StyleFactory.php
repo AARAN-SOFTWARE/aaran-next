@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Factories;
 
-use Aaran\Master\Models\Style;
+use Aaran\BMS\Billing\Master\Models\Style;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class StyleFactory extends Factory

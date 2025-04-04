@@ -36,7 +36,7 @@ class Style extends Model
         $obj = self::find($ids);
 
         return collect([
-            'description' => $obj->desc,]);
+            'description' => $obj->description,]);
 
     }
 }

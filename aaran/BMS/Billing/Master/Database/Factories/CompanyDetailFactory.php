@@ -2,7 +2,7 @@
 
 namespace Aaran\Master\Database\Factories;
 
-use Aaran\Master\Models\CompanyDetail;
+use Aaran\BMS\Billing\Master\Models\CompanyDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
