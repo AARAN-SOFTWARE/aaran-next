@@ -19,6 +19,7 @@ class CommonServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadMigrations();
         // Register Livewire components
         Livewire::component('common::city-list', Class\CityList::class);
         Livewire::component('common::hsncode-list', Class\HsncodeList::class);
@@ -40,6 +41,11 @@ class CommonServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', 'common');
+    }
+
+    protected function loadMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 
 }

@@ -62,6 +62,21 @@ return [
             ]) : [],
         ],
 
+        'tenant' => [ // Tenant-specific database
+            'driver' => 'mysql',
+            'host' => env('TENANT_DB_HOST', '127.0.0.1'),
+            'port' => env('TENANT_DB_PORT', '3306'),
+            'database' => env('TENANT_DB_DATABASE', 'tenant_1_db'),
+            'username' => env('TENANT_DB_USERNAME', 'root'),
+            'password' => env('TENANT_DB_PASSWORD', ''),
+            'unix_socket' => env('TENANT_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
