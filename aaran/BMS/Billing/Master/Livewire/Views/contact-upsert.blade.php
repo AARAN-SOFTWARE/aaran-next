@@ -216,7 +216,6 @@
                                             <span class="text-red-400"> {{$message}}</span>
                                             @enderror
                                         </div>
-
                                     </div>
 
                                     @foreach( $secondaryAddress as $index => $row )
