@@ -900,7 +900,7 @@ class ContactUpsert extends Component
         $this->getCountryList();
         $this->getMsmeTypeList();
         $this->getContactTypeList();
-        return view('master::Contact.upsert');
+        return view('master::contact-upsert');
     }
     #endregion
 }
