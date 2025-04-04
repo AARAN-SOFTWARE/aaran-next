@@ -68,6 +68,7 @@ class CompanyList extends Component
             'city_name' => 'required',
             'state_name' => 'required',
             'pincode_name' => 'required',
+            'country_name' => 'required',
         ];
     }
 
@@ -83,6 +84,7 @@ class CompanyList extends Component
             'city_name.required' => ' :attribute  is required.',
             'state_name.required' => ' :attribute  is required.',
             'pincode_name.required' => ' :attribute  is required.',
+            'country_name.required' => ' :attribute  is required.',
         ];
     }
 
@@ -96,6 +98,7 @@ class CompanyList extends Component
             'city_name' => 'City',
             'state_name' => 'State',
             'pincode_name' => 'Pincode',
+            'country_name' => 'Pincode',
         ];
     }
     #endregion
@@ -478,13 +481,14 @@ class CompanyList extends Component
     public function getSave(): void
     {
 
-//        $this->validate();
+        $this->validate();
 
         $connection = $this->getTenantConnection();
 
         Company::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
+                'vname' => $this->vname,
                 'display_name' => $this->display_name,
                 'address_1' => $this->address_1,
                 'address_2' => $this->address_2,
@@ -506,9 +510,8 @@ class CompanyList extends Component
                 'branch' => $this->branch,
                 'inv_pfx' => $this->inv_pfx ?: '-',
                 'iec_no' => $this->iec_no ?: '-',
-                'tenant_id' => $this->tenant_id ?: '1',
                 'active_id' => $this->active_id,
-                'logo' => $this->save_logo(),
+                'logo' => 'logo'//$this->save_logo(),
             ],
         );
 
@@ -600,13 +603,13 @@ class CompanyList extends Component
             $this->email = $obj->email;
             $this->website = $obj->website;
             $this->city_id = $obj->city_id;
-            $this->city_name = $obj->city_id ? City::find($obj->city_id)->vname : '';
+            $this->city_name = $obj->city->vname;
             $this->state_id = $obj->state_id;
-            $this->state_name = $obj->state_id ? State::find($obj->state_id)->vname : '';
+            $this->state_name = $obj->state->vname;
             $this->pincode_id = $obj->pincode_id;
-            $this->pincode_name = $obj->pincode_id ? Pincode::find($obj->pincode_id)->vname : '';
+            $this->pincode_name = $obj->pincode->vname;
             $this->country_id = $obj->country_id;
-            $this->country_name = $obj->country_id ? Country::find($obj->country_id)->vname : '';
+            $this->country_name = $obj->country->vname;
             $this->bank = $obj->bank;
             $this->acc_no = $obj->acc_no;
             $this->ifsc_code = $obj->ifsc_code;
