@@ -139,9 +139,9 @@
                                             @endif
                                         </x-Ui::dropdown.select>
                                     </div>
+                                    <x-Ui::input.error-text wire:model="city_name"/>
                                 </x-Ui::dropdown.wrapper>
 
-                                <x-Ui::input.error-text wire:model="city_name"/>
 
                                 <!-- State ---------------------------------------------------------------------------->
 
@@ -167,9 +167,8 @@
                                             @endif
                                         </x-Ui::dropdown.select>
                                     </div>
+                                    <x-Ui::input.error-text wire:model="state_name"/>
                                 </x-Ui::dropdown.wrapper>
-
-                                <x-Ui::input.error-text wire:model="state_name"/>
 
 
                                 <!-- Pin-code ------------------------------------------------------------------------->
@@ -196,9 +195,9 @@
                                             @endif
                                         </x-Ui::dropdown.select>
                                     </div>
+                                    <x-Ui::input.error-text wire:model="pincode_name"/>
                                 </x-Ui::dropdown.wrapper>
 
-                                <x-Ui::input.error-text wire:model="pincode_name"/>
 
                                 <!-- country ------------------------------------------------------------------------->
                                 <x-Ui::dropdown.wrapper label="Country" type="countryTyped">
@@ -223,10 +222,11 @@
                                             @endif
                                         </x-Ui::dropdown.select>
                                     </div>
+                                    <x-Ui::input.error-text wire:model="country_name"/>
                                 </x-Ui::dropdown.wrapper>
-                                @error('country_name')
-                                <span class="text-red-400 text-xs">{{$message}}</span>
-                                @enderror
+{{--                                @error('country_name')--}}
+{{--                                <span class="text-red-400 text-xs">{{$message}}</span>--}}
+{{--                                @enderror--}}
                             </div>
                         </x-Ui::tabs.content>
 

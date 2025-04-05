@@ -97,7 +97,7 @@ class CompanyList extends Component
             'city_name' => 'City',
             'state_name' => 'State',
             'pincode_name' => 'Pincode',
-            'country_name' => 'Pincode',
+            'country_name' => 'Country',
         ];
     }
     #endregion
