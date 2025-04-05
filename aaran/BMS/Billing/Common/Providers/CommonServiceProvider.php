@@ -6,9 +6,6 @@ use Aaran\BMS\Billing\Common\Livewire\Class;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
-// Example
-
-
 class CommonServiceProvider extends ServiceProvider
 {
     public function register(): void
@@ -19,8 +16,6 @@ class CommonServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrations();
-        // Register Livewire components
         Livewire::component('common::city-list', Class\CityList::class);
         Livewire::component('common::hsncode-list', Class\HsncodeList::class);
         Livewire::component('common::state-list', Class\StateList::class);
@@ -42,10 +37,4 @@ class CommonServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', 'common');
     }
-
-    protected function loadMigrations(): void
-    {
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-    }
-
 }
