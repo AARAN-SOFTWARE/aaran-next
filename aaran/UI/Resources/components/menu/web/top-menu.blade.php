@@ -20,53 +20,26 @@
     <!-- Desktop Menu -->
     <ul class="hidden md:flex items-center gap-16">
         @foreach ($menuItems as $route => $label)
-            <li class="hover:tracking-wide hover:font-bold hover:underline transition duration-300">
+            <li class="hover:tracking-wide hover:font-bold hover:underline transition duration-1000">
                 <a href="{{ route($route) }}" class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>{{ $label }}</a>
             </li>
         @endforeach
         @auth
-            <li><a href="{{ route('dashboard') }}" class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>Dashboard</a></li>
-            <li>
+            <li class="hover:tracking-wide hover:font-bold hover:underline transition duration-1000">
+                <a href="{{ route('dashboard') }}" class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>Dashboard</a>
+            </li>
+
+            <li class="hover:tracking-wide hover:font-bold hover:underline transition duration-1000">
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                    class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>Logout</a>
             </li>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
         @else
-            <li><a href="{{ route('login') }}" class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>Login</a></li>
+            <li class="hover:tracking-wide hover:font-bold hover:underline transition duration-1000">
+                <a href="{{ route('login') }}" class="menu-text dark:text-neutral-300 dark:hover:text-white" wire:navigate>Login</a>
+            </li>
         @endauth
     </ul>
-
-{{--    <!-- Mobile Menu Button -->--}}
-{{--    <button @click="mobileMenuIsOpen = !mobileMenuIsOpen" :aria-expanded="mobileMenuIsOpen"--}}
-{{--            class="md:hidden text-neutral-600 dark:text-neutral-300" aria-label="mobile menu">--}}
-{{--        <svg x-show="!mobileMenuIsOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">--}}
-{{--            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>--}}
-{{--        </svg>--}}
-{{--        <svg x-show="mobileMenuIsOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">--}}
-{{--            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>--}}
-{{--        </svg>--}}
-{{--    </button>--}}
-
-{{--    <!-- Mobile Menu -->--}}
-{{--    <ul x-show="mobileMenuIsOpen" x-transition class="fixed inset-x-0 top-0 z-20 flex flex-col divide-y divide-neutral-300 bg-neutral-50 dark:divide-neutral-700 dark:bg-neutral-900 px-6 pb-6 pt-20 md:hidden">--}}
-{{--        @foreach ($menuItems as $route => $label)--}}
-{{--            <li class="py-2"><a href="{{ route($route) }}" class="menu-text-mobile" wire:navigate>{{ $label }}</a></li>--}}
-{{--        @endforeach--}}
-{{--        @auth--}}
-{{--            <li><a href="{{ route('dashboard') }}" class="menu-text-mobile" wire:navigate>Dashboard</a></li>--}}
-{{--            <li>--}}
-{{--                <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"--}}
-{{--                   class="menu-text-mobile" wire:navigate>Logout</a>--}}
-{{--            </li>--}}
-{{--        @else--}}
-{{--            <li><a href="{{ route('login') }}" class="menu-text-mobile" wire:navigate>Login</a></li>--}}
-{{--        @endauth--}}
-{{--    </ul>--}}
-
-
-
-
-
 
     <!-- Mobile Menu Button -->
     <button @click="mobileMenuIsOpen = !mobileMenuIsOpen" :aria-expanded="mobileMenuIsOpen"
