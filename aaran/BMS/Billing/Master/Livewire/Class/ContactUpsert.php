@@ -11,7 +11,7 @@ use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\BMS\Billing\Master\Models\Contact;
-use Aaran\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\ContactDetail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
