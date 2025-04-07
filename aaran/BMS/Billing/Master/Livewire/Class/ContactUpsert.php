@@ -25,44 +25,42 @@ class ContactUpsert extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
-    #region[Contact properties]
+    #region[properties]
+
     #[Validate]
-    public $vname;
-
-    public $active_id;
-
+    public string $vname ='';
     public string $mobile = '';
     public string $whatsapp = '';
     public string $contact_person = '';
-    public mixed $contact_type = '';
+    public mixed $contact_type_id = '';
     public string $msme_no = '';
+    public string $msme_type_id = '';
     public mixed $opening_balance = 0;
     public mixed $outstanding = 0;
     public string $effective_from = '';
-    public mixed $route;
-    #endregion
-
-    #region[Address Properties]
-    #[validate]
-    public $gstin = '';
-    public $email = '';
-    public $address_type;
-    public $log;
+    #[Validate]
+    public string $gstin = '';
+    public string $email = '';
+    public $active_id;
     #endregion
 
     #region[rules]
+    public string $route;
+
     public function rules(): array
     {
         return [
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.contacts,vname"),
             'mobile' => 'required',
-            'gstin' => 'unique:contacts,gstin',
-            'itemList.0.address_1' => 'required',
-            'itemList.0.address_2' => 'required',
-            'itemList.0.city_name' => 'required',
-            'itemList.0.state_name' => 'required',
-            'itemList.0.pincode_name' => 'required',
-            'itemList.0.country_name' => 'required',
+            'gstin' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.contacts,gstin"),
+            'contact_type_name' => 'required',
+
+//            'itemList.0.address_1' => 'required',
+//            'itemList.0.address_2' => 'required',
+//            'itemList.0.city_name' => 'required',
+//            'itemList.0.state_name' => 'required',
+//            'itemList.0.pincode_name' => 'required',
+//            'itemList.0.country_name' => 'required',
         ];
     }
 
@@ -71,14 +69,18 @@ class ContactUpsert extends Component
         return [
             'vname.required' => ' :attribute is required.',
             'gstin.required' => ' :attribute is required.',
+            'mobile.required' => ' :attribute is required.',
+            'contact_type_name.required' => ' :attribute is required.',
+
             'vname.unique' => ' :attribute is already taken.',
             'gstin.unique' => ' :attribute is already taken.',
-            'itemList.0.address_1.required' => ' :attribute  is required.',
-            'itemList.0.address_2.required' => ' :attribute  is required.',
-            'itemList.0.city_name.required' => ' :attribute  is required.',
-            'itemList.0.state_name.required' => ' :attribute  is required.',
-            'itemList.0.pincode_name.required' => ' :attribute  is required.',
-            'itemList.0.country_name' => ' :attribute  is required.',
+
+//            'itemList.0.address_1.required' => ' :attribute  is required.',
+//            'itemList.0.address_2.required' => ' :attribute  is required.',
+//            'itemList.0.city_name.required' => ' :attribute  is required.',
+//            'itemList.0.state_name.required' => ' :attribute  is required.',
+//            'itemList.0.pincode_name.required' => ' :attribute  is required.',
+//            'itemList.0.country_name' => ' :attribute  is required.',
         ];
     }
 
@@ -87,12 +89,15 @@ class ContactUpsert extends Component
         return [
             'vname' => 'contact name',
             'gstin' => 'GST No',
-            'itemList.0.address_1' => 'Address',
-            'itemList.0.address_2' => 'Area Road',
-            'itemList.0.city_name' => 'City name',
-            'itemList.0.state_name' => 'State name',
-            'itemList.0.pincode_name' => 'Pincode name',
-            'itemList.0.country_name' => 'Country name',
+            'mobile' => 'Mobile no',
+            'contact_type_name' => 'Contact Type',
+
+//            'itemList.0.address_1' => 'Address',
+//            'itemList.0.address_2' => 'Area Road',
+//            'itemList.0.city_name' => 'City name',
+//            'itemList.0.state_name' => 'State name',
+//            'itemList.0.pincode_name' => 'Pincode name',
+//            'itemList.0.country_name' => 'Country name',
         ];
     }
     #endregion
@@ -104,6 +109,7 @@ class ContactUpsert extends Component
     public $secondaryAddress = [];
     public $addressIncrement = 0;
     public $openTab = 0;
+
     #endregion
 
     #region[addAddress]
@@ -185,7 +191,7 @@ class ContactUpsert extends Component
         $this->highlightCity++;
     }
 
-    public function setCity($vname, $id, $index=null): void
+    public function setCity($vname, $id, $index = null): void
     {
         $this->city_name = $vname;
         $this->city_id = $id;
@@ -235,12 +241,6 @@ class ContactUpsert extends Component
 
     public function getCityList(): void
     {
-//        $searchTerm = trim($this->itemList[$this->openTab]['city_name'] ?? '');
-//
-//        $this->cityCollection = $searchTerm
-//            ? City::where('vname', 'like', "%{$searchTerm}%")->get()
-//            : City::all();
-
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
@@ -322,19 +322,13 @@ class ContactUpsert extends Component
             'vname' => $vname,
             'active_id' => 1
         ]);
-        $v = ['vname' => $vname, 'id' => $obj->id,'index' => $index];
+        $v = ['vname' => $vname, 'id' => $obj->id, 'index' => $index];
         $this->refreshState($v);
     }
 
 
     public function getStateList(): void
     {
-//        $searchTerm = trim($this->itemList[$this->openTab]['state_name'] ?? '');
-//
-//        $this->stateCollection = $searchTerm
-//            ? State::where('vname', 'like', "%{$searchTerm}%")->get()
-//            : State::all();
-
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
@@ -343,9 +337,9 @@ class ContactUpsert extends Component
             ->table('states')
             ->when($this->state_name, fn($query) => $query->where('vname', 'like', "%{$this->state_name}%"))
             ->get();
-
     }
 
+    #endregion
 
     #region[Pincode]
     #[validate]
@@ -412,7 +406,7 @@ class ContactUpsert extends Component
             'vname' => $vname,
             'active_id' => 1
         ]);
-        $v = ['vname' => $vname, 'id' => $obj->id,'index' => $index];
+        $v = ['vname' => $vname, 'id' => $obj->id, 'index' => $index];
         $this->refreshPincode($v);
     }
 
@@ -496,7 +490,7 @@ class ContactUpsert extends Component
             'vname' => $vname,
             'active_id' => 1
         ]);
-        $v = ['vname' => $vname, 'id' => $obj->id,'index' => $index];
+        $v = ['vname' => $vname, 'id' => $obj->id, 'index' => $index];
         $this->refreshCountry($v);
     }
 
@@ -516,9 +510,8 @@ class ContactUpsert extends Component
     #endregion
 
     #region[Contact Type]
-    public $contact_type_id = '';
     public $contact_type_name = '';
-    public Collection $contactTypeCollection;
+    public $contactTypeCollection;
     public $highlightContactType = 0;
     public $contactTypeTyped = false;
 
@@ -580,15 +573,19 @@ class ContactUpsert extends Component
 
     public function getContactTypeList(): void
     {
-        $this->contactTypeCollection = !empty($this->contact_type_name)
-            ? ContactType::search(trim($this->contact_type_name))->get()
-            : ContactType::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->contactTypeCollection = DB::connection($this->getTenantConnection())
+            ->table('contact_types')
+            ->when($this->contact_type_name, fn($query) => $query->where('vname', 'like', "%{$this->contact_type_name}%"))
+            ->get();
     }
 
-#endregion
+    #endregion
 
     #region[MSME Type]
-    public $msme_type_id = '';
     public $msme_type_name = '';
     public array $msmeTypeCollection = [];
     public $highlightMsmeType = 0;
@@ -614,7 +611,7 @@ class ContactUpsert extends Component
 
     public function setMsmeType($id): void
     {
-        $id = (int) $id; // Convert to integer before passing it
+        $id = (int)$id; // Convert to integer before passing it
         $msmeType = MsmeType::tryFrom($id);
 
         if ($msmeType) {
@@ -644,89 +641,61 @@ class ContactUpsert extends Component
 
     public function getMsmeTypeList(): void
     {
-        $this->msmeTypeCollection = collect(MsmeType::cases())->map(fn ($type) => [
+        $this->msmeTypeCollection = collect(MsmeType::cases())->map(fn($type) => [
             'id' => $type->value,
             'vname' => $type->getName(),
         ])->toArray();
     }
 
-#endregion
+    #endregion
 
     #region[Save]
     public function save(): void
     {
         $this->validate($this->rules());
-//        $company_id = Company::value('id');
 
-        if (!empty($this->vname)) {
-            if (empty($this->vid)) {
-                $contactTypeId = !empty($this->contact_type_id) ? $this->contact_type_id : ContactType::value('id') ?? 124;
+        $connection = $this->getTenantConnection();
 
-                // Creating new contact
-                $obj = Contact::create([
-                    'vname' => Str::upper($this->vname),
-                    'mobile' => $this->mobile ?? null,
-                    'whatsapp' => $this->whatsapp ?? null,
-                    'contact_person' => $this->contact_person ?? null,
-                    'contact_type_id' => $contactTypeId,
-                    'msme_no' => $this->msme_no ?: '-',
-                    'msme_type_id' => $this->msme_type_id ?: '1',
-                    'opening_balance' => $this->opening_balance ?? 0,
-                    'outstanding' => $this->outstanding ?? 0,
-                    'effective_from' => $this->effective_from ?? null,
-                    'gstin' => Str::upper($this->gstin),
-                    'email' => $this->email ?? null,
-                    'active_id' => $this->active_id ?? 1,
-                    'user_id' => auth()->id(),
-//                    'company_id' => $company_id,
-                ]);
-                $this->saveItem($obj->id);
-//                $this->common->logEntry('Contact name: '.$this->common->vname,$this->gstin,'create',$this->vname.'has been created');
-                $message = "Saved";
-                $this->getRoute();
+        $contact = Contact::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
+                'vname' => Str::upper($this->vname),
+                'mobile' => $this->mobile ?? null,
+                'whatsapp' => $this->whatsapp ?? null,
+                'contact_person' => $this->contact_person ?? null,
+                'contact_type_id' => $this->contact_type_id,
+                'msme_no' => $this->msme_no ?: '-',
+                'msme_type_id' => $this->msme_type_id ?: '1',
+                'opening_balance' => $this->opening_balance ?? 0,
+                'outstanding' => $this->outstanding ?? 0,
+                'effective_from' => $this->effective_from ?? null,
+                'gstin' => Str::upper($this->gstin),
+                'email' => $this->email ?? null,
+                'active_id' => $this->active_id ?? 1,
+            ]
+        );
 
-            } else {
-                // Updating existing contact
-                $obj = Contact::findOrFail($this->vid);
-                $obj->update([
-                    'vname' => Str::upper($this->vname),
-                    'mobile' => $this->mobile,
-                    'whatsapp' => $this->whatsapp,
-                    'contact_person' => $this->contact_person,
-                    'contact_type_id' => $this->contact_type_id ?: 124,
-                    'msme_no' => $this->msme_no,
-                    'msme_type_id' => $this->msme_type_id ?: 1,
-                    'opening_balance' => $this->opening_balance ?: 0,
-                    'outstanding' => $this->outstanding ?: 0,
-                    'effective_from' => $this->effective_from,
-                    'gstin' => $this->gstin,
-                    'email' => $this->email,
-                    'active_id' => $this->active_id,
-                    'user_id' => auth()->id(),
-//                    'company_id' => $company_id,
-                ]);
-                $this->saveItem($obj->id);
-//                $this->common->logEntry('Contact name: '.$this->common->vname,'Contact','update',$this->vname.' has been updated');
-                $message = "Updated";
-                $this->getRoute();
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
+        $this->getRoute();
 
-            }
+    }
+    #endregion
 
-            $this->vname = '';
-            $this->mobile = '';
-            $this->whatsapp = '';
-            $this->contact_person = '';
-            $this->contact_type_id = '';
-            $this->msme_no = '';
-            $this->msme_type_id = '';
-            $this->opening_balance = '';
-            $this->effective_from = '';
-            $this->gstin = '';
-            $this->email = '';
-
-            $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
-
-        }
+    #region[clear fields]
+    public function clearFields()
+    {
+        $this->vname = '';
+        $this->mobile = '';
+        $this->whatsapp = '';
+        $this->contact_person = '';
+        $this->contact_type_id = '';
+        $this->msme_no = '';
+        $this->msme_type_id = '';
+        $this->opening_balance = '';
+        $this->effective_from = '';
+        $this->gstin = '';
+        $this->email = '';
     }
     #endregion
 
@@ -758,12 +727,12 @@ class ContactUpsert extends Component
 
                     if ($detail) {
                         $detail->address_type = $sub['address_type'] ?? $detail->address_type;
-                        $detail->address_1    = $sub['address_1'] ?? $detail->address_1;
-                        $detail->address_2    = $sub['address_2'] ?? $detail->address_2;
-                        $detail->city_id      = City::where('id', $sub['city_id'] ?? 0)->exists() ? $sub['city_id'] : $detail->city_id;
-                        $detail->state_id     = State::where('id', $sub['state_id'] ?? 0)->exists() ? $sub['state_id'] : $detail->state_id;
-                        $detail->pincode_id   = Pincode::where('id', $sub['pincode_id'] ?? 0)->exists() ? $sub['pincode_id'] : $detail->pincode_id;
-                        $detail->country_id   = Country::where('id', $sub['country_id'] ?? 0)->exists() ? $sub['country_id'] : $detail->country_id;
+                        $detail->address_1 = $sub['address_1'] ?? $detail->address_1;
+                        $detail->address_2 = $sub['address_2'] ?? $detail->address_2;
+                        $detail->city_id = City::where('id', $sub['city_id'] ?? 0)->exists() ? $sub['city_id'] : $detail->city_id;
+                        $detail->state_id = State::where('id', $sub['state_id'] ?? 0)->exists() ? $sub['state_id'] : $detail->state_id;
+                        $detail->pincode_id = Pincode::where('id', $sub['pincode_id'] ?? 0)->exists() ? $sub['pincode_id'] : $detail->pincode_id;
+                        $detail->country_id = Country::where('id', $sub['country_id'] ?? 0)->exists() ? $sub['country_id'] : $detail->country_id;
 
                         $detail->save();
                     }
@@ -772,19 +741,18 @@ class ContactUpsert extends Component
         } else {
             // Create a default entry if no itemList is provided
             ContactDetail::create([
-                'contact_id'   => $id,
+                'contact_id' => $id,
                 'address_type' => 'Primary',
-                'address_1'    => '-',
-                'address_2'    => '-',
-                'city_id'      => 1,
-                'state_id'     => 1,
-                'pincode_id'   => 1,
-                'country_id'   => 1,
+                'address_1' => '-',
+                'address_2' => '-',
+                'city_id' => 1,
+                'state_id' => 1,
+                'pincode_id' => 1,
+                'country_id' => 1,
             ]);
         }
     }
     #endregion
-
 
     #region[Mount]
     public function mount($id): void
@@ -792,7 +760,7 @@ class ContactUpsert extends Component
         $this->route = url()->previous();
 
         if ($id != 0) {
-            $obj = Contact::find($id);
+            $obj = Contact::on($this->getTenantConnection())->find($id);
 
             if (!$obj) {
                 abort(404, 'Contact not found.');
@@ -804,10 +772,10 @@ class ContactUpsert extends Component
             $this->whatsapp = $obj->whatsapp;
             $this->contact_person = $obj->contact_person;
             $this->contact_type_id = $obj->contact_type_id;
-            $this->contact_type_name = optional(ContactType::find($obj->contact_type_id))->vname ?? '-';
+            $this->contact_type_name = $obj->contact_type->vname;
             $this->msme_no = $obj->msme_no;
             $this->msme_type_id = $obj->msme_type_id;
-            $this->msme_type_name = optional(ContactType::find($obj->msme_type_id))->vname ?? '-';
+            $this->msme_type_name = MsmeType::tryFrom($obj->msme_type_id)->getName();
             $this->opening_balance = $obj->opening_balance;
             $this->outstanding = $obj->outstanding;
             $this->effective_from = $obj->effective_from;
@@ -815,60 +783,60 @@ class ContactUpsert extends Component
             $this->email = $obj->email;
             $this->active_id = $obj->active_id;
 
-            // Fetching contact details with correct table joins
-            $data = DB::table('contact_details')
-                ->select(
-                    'contact_details.*',
-                    'cities.vname as city_name',
-                    'states.vname as state_name',
-                    'countries.vname as country_name',
-                    'pincodes.vname as pincode_name'
-                )
-                ->leftJoin('cities', 'cities.id', '=', 'contact_details.city_id')
-                ->leftJoin('states', 'states.id', '=', 'contact_details.state_id')
-                ->leftJoin('countries', 'countries.id', '=', 'contact_details.country_id')
-                ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_details.pincode_id')
-                ->where('contact_id', '=', $id)
-                ->get()
-                ->map(function ($data) {
-                    return [
-                        'contact_detail_id' => $data->id,
-                        'address_type' => $data->address_type ?? 'Primary',
-                        'city_name' => $data->city_name ?? '-',
-                        'city_id' => $data->city_id ?? '1',
-                        'state_name' => $data->state_name ?? '-',
-                        'state_id' => $data->state_id ?? '1',
-                        'pincode_name' => $data->pincode_name ?? '-',
-                        'pincode_id' => $data->pincode_id ?? '1',
-                        'country_name' => $data->country_name ?? '-',
-                        'country_id' => $data->country_id ?? '1',
-                        'address_1' => $data->address_1 ?? '-',
-                        'address_2' => $data->address_2 ?? '-',
-                    ];
-                });
-
-            $this->itemList = $data->toArray();
-            for ($j = 0; $j < $data->skip(1)->count(); $j++) {
-                $this->secondaryAddress[] = $j + 1;
-            }
-        } else {
-            $this->effective_from = Carbon::now()->format('Y-m-d');
-            $this->active_id = true;
-            $this->itemList = [[
-                "contact_detail_id" => 0,
-                'address_type' => "Primary",
-                "state_name" => "-",
-                "state_id" => "1",
-                "city_id" => "1",
-                "city_name" => "-",
-                "country_id" => "1",
-                "country_name" => "-",
-                "pincode_id" => "1",
-                "pincode_name" => "-",
-                "address_1" => "-",
-                "address_2" => "-",
-            ]];
-            $this->address_type = "Primary";
+//            // Fetching contact details with correct table joins
+//            $data = DB::table('contact_details')
+//                ->select(
+//                    'contact_details.*',
+//                    'cities.vname as city_name',
+//                    'states.vname as state_name',
+//                    'countries.vname as country_name',
+//                    'pincodes.vname as pincode_name'
+//                )
+//                ->leftJoin('cities', 'cities.id', '=', 'contact_details.city_id')
+//                ->leftJoin('states', 'states.id', '=', 'contact_details.state_id')
+//                ->leftJoin('countries', 'countries.id', '=', 'contact_details.country_id')
+//                ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_details.pincode_id')
+//                ->where('contact_id', '=', $id)
+//                ->get()
+//                ->map(function ($data) {
+//                    return [
+//                        'contact_detail_id' => $data->id,
+//                        'address_type' => $data->address_type ?? 'Primary',
+//                        'city_name' => $data->city_name ?? '-',
+//                        'city_id' => $data->city_id ?? '1',
+//                        'state_name' => $data->state_name ?? '-',
+//                        'state_id' => $data->state_id ?? '1',
+//                        'pincode_name' => $data->pincode_name ?? '-',
+//                        'pincode_id' => $data->pincode_id ?? '1',
+//                        'country_name' => $data->country_name ?? '-',
+//                        'country_id' => $data->country_id ?? '1',
+//                        'address_1' => $data->address_1 ?? '-',
+//                        'address_2' => $data->address_2 ?? '-',
+//                    ];
+//                });
+//
+//            $this->itemList = $data->toArray();
+//            for ($j = 0; $j < $data->skip(1)->count(); $j++) {
+//                $this->secondaryAddress[] = $j + 1;
+//            }
+//        } else {
+//            $this->effective_from = Carbon::now()->format('Y-m-d');
+//            $this->active_id = true;
+//            $this->itemList = [[
+//                "contact_detail_id" => 0,
+//                'address_type' => "Primary",
+//                "state_name" => "-",
+//                "state_id" => "1",
+//                "city_id" => "1",
+//                "city_name" => "-",
+//                "country_id" => "1",
+//                "country_name" => "-",
+//                "pincode_id" => "1",
+//                "pincode_name" => "-",
+//                "address_1" => "-",
+//                "address_2" => "-",
+//            ]];
+//            $this->address_type = "Primary";
         }
     }
     #endregion
@@ -894,12 +862,14 @@ class ContactUpsert extends Component
     public function render()
     {
 //        $this->log = Logbook::where('model_name',$this->gstin)->get();
+
         $this->getCityList();
         $this->getStateList();
         $this->getPincodeList();
         $this->getCountryList();
         $this->getMsmeTypeList();
         $this->getContactTypeList();
+
         return view('master::contact-upsert');
     }
     #endregion

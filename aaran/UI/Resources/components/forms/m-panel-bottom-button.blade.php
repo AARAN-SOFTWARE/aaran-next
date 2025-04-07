@@ -21,16 +21,18 @@
         </div>
         <div class="flex flex-wrap gap-3 justify-end ">
 
+            @if($back)
+
+                {{--                <x-button.back/>--}}
+                <x-Ui::button.back-x wire:click="getRoute" />
+            @endif
+
             @if($save)
 
 {{--                <x-button.save/>--}}
                 <x-Ui::button.save-x wire:click.prevent="save" />
             @endif
-            @if($back)
 
-{{--                <x-button.back/>--}}
-                <x-Ui::button.back-x wire:click="getRoute" />
-            @endif
             <div>
                 {{$slot}}
             </div>

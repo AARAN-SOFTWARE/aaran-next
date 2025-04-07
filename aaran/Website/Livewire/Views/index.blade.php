@@ -1,4 +1,4 @@
-<div class="bg-green-500 h-20">
+<div>
     <x-Ui::slider.new/>
     <x-Ui::web.home.cover-details/>
 {{--    <x-Ui::web.home-new.testimony />--}}
