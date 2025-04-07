@@ -31,7 +31,7 @@ class ContactList extends Component
     public function deleteFunction($id): void
     {
         if ($id) {
-            $obj = Contact::find($id);
+            $obj = Contact::on($this->getTenantConnection())->find($id);
             if ($obj) {
                 $obj->delete();
                 $message = "Deleted Successfully";

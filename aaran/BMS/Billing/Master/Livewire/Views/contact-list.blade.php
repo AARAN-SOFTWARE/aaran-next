@@ -87,13 +87,12 @@
 
                         <x-Ui::table.cell-text>{{$row->opening_balance+$row->outstanding}}</x-Ui::table.cell-text>
 
-
                         <td class="max-w-max print:hidden">
                             <div class="flex justify-center items-center sm:gap-4 gap-2 px-1 self-center">
                                 <a href="{{route('contacts.upsert',[$row->id])}}" class="pt-1">
                                     <x-Ui::button.edit/>
                                 </a>
-                                <x-Ui::button.delete wire:click="getDelete({{$row->id}})"/>
+                                <x-Ui::button.delete wire:click="confirmDelete({{$row->id}})"/>
                             </div>
                         </td>
                     </x-Ui::table.row>
