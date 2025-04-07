@@ -1,5 +1,5 @@
 <x-Ui::menu.app.base.li-menuitem :routes="'contacts'" :label="'Contacts'"/>
-{{--<x-Ui::menu.app.base.li-menuitem :routes="'products'" :label="'Product'"/>--}}
+<x-Ui::menu.app.base.li-menuitem :routes="'products'" :label="'Product'"/>
 <x-Ui::menu.app.base.li-menuitem :routes="'companies'" :label="'Company'"/>
 {{--<x-Ui::menu.app.base.li-menuitem :routes="'accBooks'" :label="'Account Book'"/>--}}
 {{--<x-Ui::menu.app.base.li-menuitem :routes="'orders'" :label="'Orders'"/>--}}

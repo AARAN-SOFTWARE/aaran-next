@@ -10,10 +10,12 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/contacts', Class\ContactList::class)->name('contacts');
 
     Route::get('/contacts/{id}/upsert', Class\ContactUpsert::class)->name('contacts.upsert');
-    
+
+    Route::get('/products', Class\ProductList::class)->name('products');
+
 //
 //    Route::get('/companies/{id}/upsert', Aaran\Master\Livewire\Company\Upsert::class)->name('companies.upsert');
-//    Route::get('/products', Aaran\Master\Livewire\Product\Index::class)->name('products');
+
 //
 //    Route::get('/orders', Aaran\Master\Livewire\Orders\Index::class)->name('orders');
 //
