@@ -5,6 +5,7 @@ namespace Aaran\BMS\Billing\Master\Livewire\Class;
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Master\Models\Contact;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class ContactList extends Component
@@ -31,14 +32,26 @@ class ContactList extends Component
     public function deleteFunction($id): void
     {
         if ($id) {
-            $obj = Contact::find($id);
+            $tenantConnection = $this->getTenantConnection();
+
+            // Fetch the contact record
+            $obj = Contact::on($tenantConnection)->find($id);
+
             if ($obj) {
+                // First delete related contact_details
+                DB::connection($tenantConnection)
+                    ->table('contact_details')
+                    ->where('contact_id', $id)
+                    ->delete();
+
+                // Then delete the contact itself
                 $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
+
+                $this->dispatch('notify', ...['type' => 'success', 'content' => 'Deleted Successfully',]);
             }
         }
     }
+
 
     public function getList()
     {

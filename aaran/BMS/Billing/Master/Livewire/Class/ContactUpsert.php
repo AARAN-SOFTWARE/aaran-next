@@ -12,7 +12,6 @@ use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\BMS\Billing\Master\Models\Contact;
 use Aaran\BMS\Billing\Master\Models\ContactDetail;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +27,7 @@ class ContactUpsert extends Component
     #region[properties]
 
     #[Validate]
-    public string $vname ='';
+    public string $vname = '';
     public string $mobile = '';
     public string $whatsapp = '';
     public string $contact_person = '';
@@ -41,7 +40,19 @@ class ContactUpsert extends Component
     #[Validate]
     public string $gstin = '';
     public string $email = '';
-    public $active_id;
+    public bool $active_id = true;
+    public $address_type = '';
+
+    #region[Address Properties]
+    #[validate]
+    public array $itemList = [];
+    public array $secondaryAddress = [];
+    public int $addressIncrement = 0;
+    public int $openTab = 0;
+    public mixed $itemIndex = '';
+
+    #endregion
+
     #endregion
 
     #region[rules]
@@ -102,69 +113,6 @@ class ContactUpsert extends Component
     }
     #endregion
 
-    #region[array]
-    #[validate]
-    public $itemList = [];
-    public mixed $itemIndex = '';
-    public $secondaryAddress = [];
-    public $addressIncrement = 0;
-    public $openTab = 0;
-
-    #endregion
-
-    #region[addAddress]
-    public function addAddress($id)
-    {
-        $this->addressIncrement = $id + 1;
-        if (!in_array($this->addressIncrement, $this->secondaryAddress, true)) {
-            $this->secondaryAddress[] = $this->addressIncrement;
-        } elseif (!in_array(($this->addressIncrement + 1), $this->secondaryAddress, true)) {
-            $this->secondaryAddress[] = $this->addressIncrement + 1;
-        }
-
-
-        $this->itemList[] = [
-            'contact_detail_id' => 0,
-            'address_type' => 'Secondary',
-            "state_name" => "",
-            "state_id" => "",
-            "city_id" => "",
-            "city_name" => "",
-            "country_id" => "",
-            "country_name" => "",
-            "pincode_id" => "",
-            "pincode_name" => "",
-            "address_1" => "",
-            "address_2" => "",
-        ];
-        $this->city_name = "";
-        $this->state_name = "";
-        $this->country_name = "";
-        $this->pincode_name = "";
-        $this->city_id = '';
-        $this->state_id = '';
-        $this->country_id = '';
-        $this->pincode_id = '';
-    }
-    #endregion
-
-    #region[removeAddress]
-    public function removeAddress($id, $value): void
-    {
-        $this->openTab = 0;
-        $this->addressIncrement = $value - 1;
-        unset($this->secondaryAddress[$id]);
-        $this->removeItems($value);
-    }
-    #endregion
-
-    #region[sortSearch]
-    public function sortSearch($id): void
-    {
-        $this->openTab = $id;
-    }
-    #endregion
-
     #region[City]
     #[validate]
     public $city_name = '';
@@ -191,17 +139,17 @@ class ContactUpsert extends Component
         $this->highlightCity++;
     }
 
-    public function setCity($vname, $id, $index = null): void
+    public function setCity($vname, $id, $index = 0): void
     {
-        $this->city_name = $vname;
-        $this->city_id = $id;
-        Arr::set($this->itemList[$index], 'city_name', $vname);
-        Arr::set($this->itemList[$index], 'city_id', $id);
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $vname);
+            Arr::set($this->itemList[$index], 'city_id', $id);
+        }
 
-        $this->getCityList();
+        $this->getCityList($index);
     }
 
-    public function enterCity($index): void
+    public function enterCity($index = 0): void
     {
         $obj = $this->cityCollection[$this->highlightCity] ?? null;
 
@@ -211,25 +159,30 @@ class ContactUpsert extends Component
 
         $this->city_name = $obj['vname'] ?? '';;
         $this->city_id = $obj['id'] ?? '';
-        Arr::set($this->itemList[$index], 'city_name', $obj['vname']);
-        Arr::set($this->itemList[$index], 'city_id', $obj['id']);
+
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $obj['vname']);
+            Arr::set($this->itemList[$index], 'city_id', $obj['id']);
+        }
 
     }
 
     #[On('refresh-city')]
-    public function refreshCity($v, $index): void
+    public function refreshCity($v, $index = 0): void
     {
         $this->city_id = $v['id'];
         $this->city_name = $v['vname'];
 
-        Arr::set($this->itemList[$index], 'city_name', $v['vname']);
-        Arr::set($this->itemList[$index], 'city_id', $v['id']);
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $v['vname']);
+            Arr::set($this->itemList[$index], 'city_id', $v['id']);
+        }
 
         $this->cityTyped = false;
     }
 
 
-    public function citySave($vname, $index)
+    public function citySave($vname, $index = 0)
     {
         $obj = City::on($this->getTenantConnection())->create([
             'vname' => $vname,
@@ -239,15 +192,21 @@ class ContactUpsert extends Component
         $this->refreshCity($v, $index);
     }
 
-    public function getCityList(): void
+    public function getCityList($index = 0): void
     {
+        if ($index !== 0) {
+            dd($index);
+        }
+
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
 
+        $search = $this->itemList[$index]['city_name'] ?? '';
+
         $this->cityCollection = DB::connection($this->getTenantConnection())
             ->table('cities')
-            ->when($this->city_name, fn($query) => $query->where('vname', 'like', "%{$this->city_name}%"))
+            ->when($search, fn($query) => $query->where('vname', 'like', "%{$search}%"))
             ->get();
 
     }
@@ -459,10 +418,11 @@ class ContactUpsert extends Component
         $this->countryCollection = Collection::empty();
         $this->highlightCountry = 0;
 
-        $this->country_name = $obj['vname'] ?? '';;
-        $this->country_id = $obj['id'] ?? '';;
-        Arr::set($this->itemList[$index], 'country_name', $obj['vname']);
-        Arr::set($this->itemList[$index], 'country_id', $obj['id']);
+        $this->country_name = $obj->vname ?? '';;
+        $this->country_id = $obj->id ?? '';;
+
+        Arr::set($this->itemList[$index], 'country_name', $obj->vname);
+        Arr::set($this->itemList[$index], 'country_id', $obj->id);
     }
 
     public function setCountry($vname, $id, $index): void
@@ -548,8 +508,8 @@ class ContactUpsert extends Component
         $this->contactTypeCollection = Collection::empty();
         $this->highlightContactType = 0;
 
-        $this->contact_type_name = $obj['vname'] ?? '';
-        $this->contact_type_id = $obj['id'] ?? '';
+        $this->contact_type_name = $obj->vname ?? '';
+        $this->contact_type_id = $obj->id ?? '';
     }
 
     #[On('refresh-contact-type')]
@@ -675,6 +635,8 @@ class ContactUpsert extends Component
             ]
         );
 
+        $this->saveItem($contact->id);
+
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->clearFields();
         $this->getRoute();
@@ -699,158 +661,230 @@ class ContactUpsert extends Component
     }
     #endregion
 
-    #region[SaveItem]
-    public function saveItem($id): void
-    {
-        if ($this->itemList != null) {
-            foreach ($this->itemList as $sub) {
-                if (!isset($sub['address_1']) || trim($sub['address_1']) === "") {
-                    continue; // Skip empty addresses
-                }
-
-                if (!isset($sub['contact_detail_id']) || $sub['contact_detail_id'] === 0) {
-                    // Create a new ContactDetail entry
-                    ContactDetail::create([
-                        'contact_id' => $id,
-                        'address_type' => $sub['address_type'] ?? 'Primary',
-                        'address_1' => $sub['address_1'] ?? '-',
-                        'address_2' => $sub['address_2'] ?? '-',
-                        'city_id' => $sub['city_id'] ?? 1,
-                        'state_id' => $sub['state_id'] ?? 1,
-                        'pincode_id' => $sub['pincode_id'] ?? 1,
-                        'country_id' => $sub['country_id'] ?? 1,
-                    ]);
-
-                } else {
-                    // Update an existing ContactDetail entry
-                    $detail = ContactDetail::find($sub['contact_detail_id']);
-
-                    if ($detail) {
-                        $detail->address_type = $sub['address_type'] ?? $detail->address_type;
-                        $detail->address_1 = $sub['address_1'] ?? $detail->address_1;
-                        $detail->address_2 = $sub['address_2'] ?? $detail->address_2;
-                        $detail->city_id = City::where('id', $sub['city_id'] ?? 0)->exists() ? $sub['city_id'] : $detail->city_id;
-                        $detail->state_id = State::where('id', $sub['state_id'] ?? 0)->exists() ? $sub['state_id'] : $detail->state_id;
-                        $detail->pincode_id = Pincode::where('id', $sub['pincode_id'] ?? 0)->exists() ? $sub['pincode_id'] : $detail->pincode_id;
-                        $detail->country_id = Country::where('id', $sub['country_id'] ?? 0)->exists() ? $sub['country_id'] : $detail->country_id;
-
-                        $detail->save();
-                    }
-                }
-            }
-        } else {
-            // Create a default entry if no itemList is provided
-            ContactDetail::create([
-                'contact_id' => $id,
-                'address_type' => 'Primary',
-                'address_1' => '-',
-                'address_2' => '-',
-                'city_id' => 1,
-                'state_id' => 1,
-                'pincode_id' => 1,
-                'country_id' => 1,
-            ]);
-        }
-    }
-    #endregion
-
     #region[Mount]
+
     public function mount($id): void
     {
         $this->route = url()->previous();
 
-        if ($id != 0) {
-            $obj = Contact::on($this->getTenantConnection())->find($id);
+        if ($id == 0) return;
 
-            if (!$obj) {
-                abort(404, 'Contact not found.');
-            }
+        $contact = Contact::on($this->getTenantConnection())->find($id) ?? abort(404, 'Contact not found.');
+        $this->fillContactData($contact);
+        $this->loadContactAddresses($id);
 
-            $this->vid = $obj->id;
-            $this->vname = $obj->vname;
-            $this->mobile = $obj->mobile;
-            $this->whatsapp = $obj->whatsapp;
-            $this->contact_person = $obj->contact_person;
-            $this->contact_type_id = $obj->contact_type_id;
-            $this->contact_type_name = $obj->contact_type->vname;
-            $this->msme_no = $obj->msme_no;
-            $this->msme_type_id = $obj->msme_type_id;
-            $this->msme_type_name = MsmeType::tryFrom($obj->msme_type_id)->getName();
-            $this->opening_balance = $obj->opening_balance;
-            $this->outstanding = $obj->outstanding;
-            $this->effective_from = $obj->effective_from;
-            $this->gstin = $obj->gstin;
-            $this->email = $obj->email;
-            $this->active_id = $obj->active_id;
-
-//            // Fetching contact details with correct table joins
-//            $data = DB::table('contact_details')
-//                ->select(
-//                    'contact_details.*',
-//                    'cities.vname as city_name',
-//                    'states.vname as state_name',
-//                    'countries.vname as country_name',
-//                    'pincodes.vname as pincode_name'
-//                )
-//                ->leftJoin('cities', 'cities.id', '=', 'contact_details.city_id')
-//                ->leftJoin('states', 'states.id', '=', 'contact_details.state_id')
-//                ->leftJoin('countries', 'countries.id', '=', 'contact_details.country_id')
-//                ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_details.pincode_id')
-//                ->where('contact_id', '=', $id)
-//                ->get()
-//                ->map(function ($data) {
-//                    return [
-//                        'contact_detail_id' => $data->id,
-//                        'address_type' => $data->address_type ?? 'Primary',
-//                        'city_name' => $data->city_name ?? '-',
-//                        'city_id' => $data->city_id ?? '1',
-//                        'state_name' => $data->state_name ?? '-',
-//                        'state_id' => $data->state_id ?? '1',
-//                        'pincode_name' => $data->pincode_name ?? '-',
-//                        'pincode_id' => $data->pincode_id ?? '1',
-//                        'country_name' => $data->country_name ?? '-',
-//                        'country_id' => $data->country_id ?? '1',
-//                        'address_1' => $data->address_1 ?? '-',
-//                        'address_2' => $data->address_2 ?? '-',
-//                    ];
-//                });
-//
-//            $this->itemList = $data->toArray();
-//            for ($j = 0; $j < $data->skip(1)->count(); $j++) {
-//                $this->secondaryAddress[] = $j + 1;
-//            }
-//        } else {
-//            $this->effective_from = Carbon::now()->format('Y-m-d');
-//            $this->active_id = true;
-//            $this->itemList = [[
-//                "contact_detail_id" => 0,
-//                'address_type' => "Primary",
-//                "state_name" => "-",
-//                "state_id" => "1",
-//                "city_id" => "1",
-//                "city_name" => "-",
-//                "country_id" => "1",
-//                "country_name" => "-",
-//                "pincode_id" => "1",
-//                "pincode_name" => "-",
-//                "address_1" => "-",
-//                "address_2" => "-",
-//            ]];
-//            $this->address_type = "Primary";
-        }
     }
+
     #endregion
 
-    #region[removeItems]
-    public function removeItems($index): void
+    #region[Secondary Address]
+
+    protected function fillContactData($contact): void
     {
-        $items = $this->itemList[$index];
-        unset($this->itemList[$index]);
-        if ($items['contact_detail_id'] != 0) {
-            $obj = ContactDetail::find($items['contact_detail_id']);
-            $obj->delete();
+        $this->vid = $contact->id;
+        $this->vname = $contact->vname;
+        $this->mobile = $contact->mobile;
+        $this->whatsapp = $contact->whatsapp;
+        $this->contact_person = $contact->contact_person;
+        $this->contact_type_id = $contact->contact_type_id;
+        $this->contact_type_name = $contact->contact_type->vname ?? '-';
+        $this->msme_no = $contact->msme_no;
+        $this->msme_type_id = $contact->msme_type_id;
+        $this->msme_type_name = MsmeType::tryFrom($contact->msme_type_id)->getName();
+        $this->opening_balance = $contact->opening_balance;
+        $this->outstanding = $contact->outstanding;
+        $this->effective_from = $contact->effective_from;
+        $this->gstin = $contact->gstin;
+        $this->email = $contact->email;
+        $this->active_id = $contact->active_id;
+    }
+
+    protected function loadContactAddresses($contactId): void
+    {
+        $default = $this->defaultAddress();
+
+        $addresses = DB::connection($this->getTenantConnection())
+            ->table('contact_details')
+            ->select(
+                'contact_details.*',
+                'cities.vname as city_name',
+                'states.vname as state_name',
+                'countries.vname as country_name',
+                'pincodes.vname as pincode_name'
+            )
+            ->leftJoin('cities', 'cities.id', '=', 'contact_details.city_id')
+            ->leftJoin('states', 'states.id', '=', 'contact_details.state_id')
+            ->leftJoin('countries', 'countries.id', '=', 'contact_details.country_id')
+            ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_details.pincode_id')
+            ->where('contact_id', $contactId)
+            ->get();
+
+        if ($addresses->isEmpty()) {
+            $this->itemList = [$default];
+            $this->secondaryAddress = [];
+            return;
+        }
+
+        $primary = $addresses->firstWhere('address_type', 'Primary');
+
+        $secondaries = $addresses->where('address_type', 'Secondary');
+
+        // Reset itemList: primary at 0, others after
+        $this->itemList = [];
+
+        if ($primary) {
+            $this->itemList[0] = (array)$primary;
+        } else {
+            // If no primary, use a default primary
+            $this->itemList[0] = $default;
+        }
+
+        foreach ($secondaries as $i => $address) {
+            $this->itemList[$i + 1] = (array)$address;
+        }
+
+        // Set the secondary indexes for tabs (1, 2, ...)
+        $this->secondaryAddress = collect($this->itemList)
+            ->keys()
+            ->filter(fn($i) => $i !== 0)
+            ->values()
+            ->toArray();
+    }
+
+
+    protected function defaultAddress(): array
+    {
+        return [
+            'address_type' => 'Primary',
+            'address_1' => '-',
+            'address_2' => '-',
+            'city_id' => '1',
+            'city_name' => '-',
+            'state_id' => '1',
+            'state_name' => '-',
+            'pincode_id' => '1',
+            'pincode_name' => '-',
+            'country_id' => '1',
+            'country_name' => '-',
+        ];
+    }
+
+    #endregion
+
+    public function saveItem($contactId): void
+    {
+        // Delete all previous addresses for this contact
+        ContactDetail::on($this->getTenantConnection())
+            ->where('contact_id', $contactId)
+            ->delete();
+
+        // If itemList is empty, add the default address as Primary
+        if (empty($this->itemList) || !isset($this->itemList[0])) {
+            ContactDetail::on($this->getTenantConnection())
+                ->create($this->buildAddressPayload($contactId, (object)$this->defaultAddress()));
+            return;
+        }
+
+        // Re-save all items as new
+        foreach ($this->itemList as $address) {
+            if (is_array($address)) {
+                $address = (object)$address;
+            }
+
+            // Skip blank entries
+            if (empty(trim($address->address_1 ?? '')) && empty(trim($address->address_2 ?? ''))) {
+                continue;
+            }
+
+            ContactDetail::on($this->getTenantConnection())
+                ->create($this->buildAddressPayload($contactId, $address));
         }
     }
+
+    protected function buildAddressPayload($contactId, $data): array
+    {
+        return [
+            'contact_id' => $contactId,
+            'address_type' => $data->address_type ?? 'Primary',
+            'address_1' => $data->address_1 ?? '-',
+            'address_2' => $data->address_2 ?? '-',
+            'city_id' => $data->city_id ?? 1,
+            'state_id' => $data->state_id ?? 1,
+            'pincode_id' => $data->pincode_id ?? 1,
+            'country_id' => $data->country_id ?? 1,
+        ];
+    }
+
+    protected function updateExistingAddress(object $data): void
+    {
+        $detail = ContactDetail::on($this->getTenantConnection())->find($data->contact_detail_id);
+        if (!$detail) return;
+
+        $connection = $this->getTenantConnection();
+
+        $detail->update([
+            'address_type' => $data->address_type ?? $detail->address_type,
+            'address_1' => $data->address_1 ?? $detail->address_1,
+            'address_2' => $data->address_2 ?? $detail->address_2,
+            'city_id' => City::on($connection)->where('id', $data->city_id ?? 0)->exists() ? $data->city_id : $detail->city_id,
+            'state_id' => State::on($connection)->where('id', $data->state_id ?? 0)->exists() ? $data->state_id : $detail->state_id,
+            'pincode_id' => Pincode::on($connection)->where('id', $data->pincode_id ?? 0)->exists() ? $data->pincode_id : $detail->pincode_id,
+            'country_id' => Country::on($connection)->where('id', $data->country_id ?? 0)->exists() ? $data->country_id : $detail->country_id,
+        ]);
+    }
+
+    public function addAddress($currentIndex): void
+    {
+        // Ensure Primary exists
+        if (!array_key_exists(0, $this->itemList)) {
+            $this->itemList[0] = (object)array_merge($this->defaultAddress(), [
+                'address_type' => 'Primary',
+            ]);
+        }
+
+        // Find the next free index for secondary (starting from 1)
+        $usedIndices = array_keys($this->itemList);
+        $nextIndex = 1;
+        while (in_array($nextIndex, $usedIndices)) {
+            $nextIndex++;
+        }
+
+        $this->secondaryAddress[] = $nextIndex;
+
+        $this->itemList[$nextIndex] = (object)array_merge($this->defaultAddress(), [
+            'address_type' => 'Secondary',
+        ]);
+
+        $this->openTab = $nextIndex;
+    }
+
+
+    public function removeAddress($index, $value): void
+    {
+        unset($this->secondaryAddress[$index]);
+        $this->secondaryAddress = array_values($this->secondaryAddress);
+
+        unset($this->itemList[$value]);
+
+        $this->openTab = 0;
+    }
+
+
+    public function removeItems($index): void
+    {
+        $item = $this->itemList[$index] ?? null;
+        unset($this->itemList[$index]);
+
+        if ($item && $item['contact_detail_id'] != 0) {
+            ContactDetail::on($this->getTenantConnection())->find($item['contact_detail_id'])?->delete();
+        }
+    }
+
+    public function sortSearch($tab): void
+    {
+        $this->openTab = $tab;
+    }
+
     #endregion
 
     #region[Route]
@@ -863,7 +897,7 @@ class ContactUpsert extends Component
     {
 //        $this->log = Logbook::where('model_name',$this->gstin)->get();
 
-        $this->getCityList();
+        $this->getCityList(0);
         $this->getStateList();
         $this->getPincodeList();
         $this->getCountryList();
