@@ -5,7 +5,7 @@
 
     <x-Ui::forms.m-panel-auto>
 
-        <x-Ui::alerts.notification />
+        <x-Ui::alerts.notification/>
 
         <x-Ui::tabs.tab-panel>
 
@@ -24,21 +24,53 @@
 
                         <div class="sm:w-1/2 w-full flex flex-col gap-3 ">
 
-                            <x-Ui::input.floating wire:model.live="vname" label="Contact Name"/>
-                            @error('vname')
-                            <span class="text-red-400 text-xs">{{'Contact Name is Required'}}</span>
-                            @enderror
-                            <x-Ui::input.floating wire:model="mobile" label="Mobile"/>
-                            @error('mobile')
-                            <span class="text-red-400 text-xs">{{'Mobile Number is Required'}}</span>
-                            @enderror
+                            <div>
+                                <x-Ui::input.floating wire:model.live="vname" label="Contact Name"/>
+                                <x-Ui::input.error-text wire:model="vname"/>
+                            </div>
+
+                            <div>
+                                <x-Ui::input.floating wire:model="mobile" label="Mobile"/>
+                                <x-Ui::input.error-text wire:model="mobile"/>
+                            </div>
                             <x-Ui::input.floating wire:model="whatsapp" label="Whatsapp"/>
                             <x-Ui::input.floating wire:model="contact_person" label="Contact Person"/>
-                            <x-Ui::input.floating wire:model.live="gstin" label="GST No"/>
-                            @error('gstin')
-                            <span class="text-red-400 text-xs">{{$message}}</span>
-                            @enderror
+
+                            <div>
+                                <x-Ui::input.floating wire:model.live="gstin" label="GST No"/>
+                                <x-Ui::input.error-text wire:model="gstin"/>
+                            </div>
+
                             <x-Ui::input.floating wire:model="email" label="Email"/>
+
+
+                            <x-Ui::dropdown.wrapper label="Contact Type" type="contactTypeTyped">
+                                <div class="relative ">
+                                    <x-Ui::dropdown.input label="Contact Type" id="contact_type_name"
+                                                          wire:model.live="contact_type_name"
+                                                          wire:keydown.arrow-up="decrementContactType"
+                                                          wire:keydown.arrow-down="incrementContactType"
+                                                          wire:keydown.enter="enterContactType"/>
+                                    <x-Ui::dropdown.select>
+                                        @if($contactTypeCollection)
+                                            @forelse ($contactTypeCollection as $i => $contactType)
+                                                <x-Ui::dropdown.option highlight="{{$highlightContactType === $i  }}"
+                                                                       wire:click.prevent="setContactType('{{$contactType->vname}}','{{$contactType->id}}')">
+                                                    {{ $contactType->vname }}
+                                                </x-Ui::dropdown.option>
+                                            @empty
+                                                <x-Ui::dropdown.create
+                                                    wire:click.prevent="contactTypeSave('{{$contact_type_name}}')"
+                                                    label="Contact Type"/>
+                                            @endforelse
+                                        @endif
+                                    </x-Ui::dropdown.select>
+                                </div>
+
+                                <x-Ui::input.error-text wire:model="contact_type_name"/>
+
+                            </x-Ui::dropdown.wrapper>
+
 
                         </div>
 
@@ -90,12 +122,12 @@
                                         <div class="flex flex-col gap-3">
 
                                             <x-Ui::input.floating wire:model.live="itemList.{{0}}.address_1"
-                                                              label="Address"/>
+                                                                  label="Address"/>
                                             @error('itemList.0.address_1')
                                             <span class="text-red-400"> {{$message}}</span>
                                             @enderror
                                             <x-Ui::input.floating wire:model.live="itemList.{{0}}.address_2"
-                                                              label="Area-Road"/>
+                                                                  label="Area-Road"/>
                                             @error('itemList.0.address_2')
                                             <span class="text-red-400">{{$message}}</span>
                                             @enderror
@@ -103,10 +135,10 @@
                                             <x-Ui::dropdown.wrapper label="City" type="cityTyped">
                                                 <div class="relative ">
                                                     <x-Ui::dropdown.input label="City" id="city_name"
-                                                                      wire:model.live="itemList.{{0}}.city_name"
-                                                                      wire:keydown.arrow-up="decrementCity"
-                                                                      wire:keydown.arrow-down="incrementCity"
-                                                                      wire:keydown.enter="enterCity({{0}})"/>
+                                                                          wire:model.live="itemList.{{0}}.city_name"
+                                                                          wire:keydown.arrow-up="decrementCity"
+                                                                          wire:keydown.arrow-down="incrementCity"
+                                                                          wire:keydown.enter="enterCity({{0}})"/>
                                                     <x-Ui::dropdown.select>
                                                         @if($cityCollection)
                                                             @forelse ($cityCollection as $i => $city)
@@ -123,19 +155,19 @@
                                                         @endif
                                                     </x-Ui::dropdown.select>
                                                 </div>
+
+                                                <x-Ui::input.error-text wire:model="itemList.0.city_name"/>
+
                                             </x-Ui::dropdown.wrapper>
-                                            @error('itemList.0.city_name')
-                                            <span class="text-red-400"> {{$message}}</span>
-                                            @enderror
 
                                             <!-- State ------------------------------------------------------------------>
                                             <x-Ui::dropdown.wrapper label="State" type="stateTyped">
                                                 <div class="relative ">
                                                     <x-Ui::dropdown.input label="State" id="state_name"
-                                                                      wire:model.live="itemList.{{0}}.state_name"
-                                                                      wire:keydown.arrow-up="decrementState"
-                                                                      wire:keydown.arrow-down="incrementState"
-                                                                      wire:keydown.enter="enterState({{0}})"/>
+                                                                          wire:model.live="itemList.{{0}}.state_name"
+                                                                          wire:keydown.arrow-up="decrementState"
+                                                                          wire:keydown.arrow-down="incrementState"
+                                                                          wire:keydown.enter="enterState({{0}})"/>
                                                     <x-Ui::dropdown.select>
                                                         @if($stateCollection)
                                                             @forelse ($stateCollection as $i => $states)
@@ -152,20 +184,20 @@
                                                         @endif
                                                     </x-Ui::dropdown.select>
                                                 </div>
+
+                                                <x-Ui::input.error-text wire:model="itemList.0.state_name"/>
+
                                             </x-Ui::dropdown.wrapper>
-                                            @error('itemList.0.state_name')
-                                            <span class="text-red-400"> {{$message}}</span>
-                                            @enderror
 
                                             <!-- Pincode ------------------------------------------------------------------>
 
                                             <x-Ui::dropdown.wrapper label="Pincode" type="pincodeTyped">
                                                 <div class="relative ">
                                                     <x-Ui::dropdown.input label="Pincode" id="pincode_name"
-                                                                      wire:model.live="itemList.{{0}}.pincode_name"
-                                                                      wire:keydown.arrow-up="decrementPincode"
-                                                                      wire:keydown.arrow-down="incrementPincode"
-                                                                      wire:keydown.enter="enterPincode({{0}})"/>
+                                                                          wire:model.live="itemList.{{0}}.pincode_name"
+                                                                          wire:keydown.arrow-up="decrementPincode"
+                                                                          wire:keydown.arrow-down="incrementPincode"
+                                                                          wire:keydown.enter="enterPincode({{0}})"/>
                                                     <x-Ui::dropdown.select>
                                                         @if($pincodeCollection)
                                                             @forelse ($pincodeCollection as $i => $pincode)
@@ -182,19 +214,19 @@
                                                         @endif
                                                     </x-Ui::dropdown.select>
                                                 </div>
+
+                                                <x-Ui::input.error-text wire:model="itemList.0.pincode_name"/>
+
                                             </x-Ui::dropdown.wrapper>
-                                            @error('itemList.0.pincode_name')
-                                            <span class="text-red-400"> {{$message}}</span>
-                                            @enderror
 
                                             <!-- Country -------------------------------------------------------------------------->
                                             <x-Ui::dropdown.wrapper label="Country" type="countryTyped">
                                                 <div class="relative ">
                                                     <x-Ui::dropdown.input label="Country" id="country_name"
-                                                                      wire:model.live="itemList.{{0}}.country_name"
-                                                                      wire:keydown.arrow-up="decrementCountry"
-                                                                      wire:keydown.arrow-down="incrementCountry"
-                                                                      wire:keydown.enter="enterCountry('{{0}}')"/>
+                                                                          wire:model.live="itemList.{{0}}.country_name"
+                                                                          wire:keydown.arrow-up="decrementCountry"
+                                                                          wire:keydown.arrow-down="incrementCountry"
+                                                                          wire:keydown.enter="enterCountry('{{0}}')"/>
                                                     <x-Ui::dropdown.select>
                                                         @if($countryCollection)
                                                             @forelse ($countryCollection as $i => $country)
@@ -211,10 +243,10 @@
                                                         @endif
                                                     </x-Ui::dropdown.select>
                                                 </div>
+
+                                                <x-Ui::input.error-text wire:model="itemList.0.country_name"/>
+
                                             </x-Ui::dropdown.wrapper>
-                                            @error('itemList.0.country_name')
-                                            <span class="text-red-400"> {{$message}}</span>
-                                            @enderror
                                         </div>
                                     </div>
 
@@ -224,17 +256,17 @@
                                             <div class="flex flex-col gap-3">
 
                                                 <x-Ui::input.floating wire:model.live="itemList.{{$row}}.address_1"
-                                                                  label="Address"/>
+                                                                      label="Address"/>
                                                 <x-Ui::input.floating wire:model.live="itemList.{{$row}}.address_2"
-                                                                  label="Area-Road"/>
+                                                                      label="Area-Road"/>
 
                                                 <x-Ui::dropdown.wrapper label="City" type="cityTyped">
                                                     <div class="relative ">
                                                         <x-Ui::dropdown.input label="City" id="city_name"
-                                                                          wire:model.live="itemList.{{$row}}.city_name"
-                                                                          wire:keydown.arrow-up="decrementCity"
-                                                                          wire:keydown.arrow-down="incrementCity"
-                                                                          wire:keydown.enter="enterCity('{{$row}}')"/>
+                                                                              wire:model.live="itemList.{{$row}}.city_name"
+                                                                              wire:keydown.arrow-up="decrementCity"
+                                                                              wire:keydown.arrow-down="incrementCity"
+                                                                              wire:keydown.enter="enterCity('{{$row}}')"/>
                                                         <x-Ui::dropdown.select>
                                                             @if($cityCollection)
                                                                 @forelse ($cityCollection as $i => $city)
@@ -258,10 +290,10 @@
                                                 <x-Ui::dropdown.wrapper label="State" type="stateTyped">
                                                     <div class="relative ">
                                                         <x-Ui::dropdown.input label="State" id="state_name"
-                                                                          wire:model.live="itemList.{{$row}}.state_name"
-                                                                          wire:keydown.arrow-up="decrementState"
-                                                                          wire:keydown.arrow-down="incrementState"
-                                                                          wire:keydown.enter="enterState('{{$row}}')"/>
+                                                                              wire:model.live="itemList.{{$row}}.state_name"
+                                                                              wire:keydown.arrow-up="decrementState"
+                                                                              wire:keydown.arrow-down="incrementState"
+                                                                              wire:keydown.enter="enterState('{{$row}}')"/>
                                                         <x-Ui::dropdown.select>
                                                             @if($stateCollection)
                                                                 @forelse ($stateCollection as $i => $states)
@@ -285,10 +317,10 @@
                                                 <x-Ui::dropdown.wrapper label="Pincode" type="pincodeTyped">
                                                     <div class="relative ">
                                                         <x-Ui::dropdown.input label="Pincode" id="pincode_name"
-                                                                          wire:model.live="itemList.{{$row}}.pincode_name"
-                                                                          wire:keydown.arrow-up="decrementPincode"
-                                                                          wire:keydown.arrow-down="incrementPincode"
-                                                                          wire:keydown.enter="enterPincode('{{$row}}')"/>
+                                                                              wire:model.live="itemList.{{$row}}.pincode_name"
+                                                                              wire:keydown.arrow-up="decrementPincode"
+                                                                              wire:keydown.arrow-down="incrementPincode"
+                                                                              wire:keydown.enter="enterPincode('{{$row}}')"/>
                                                         <x-Ui::dropdown.select>
                                                             @if($pincodeCollection)
                                                                 @forelse ($pincodeCollection as $i => $pincode)
@@ -313,10 +345,10 @@
                                                     <div class="relative ">
 
                                                         <x-Ui::dropdown.input label="Country" id="country_name"
-                                                                          wire:model.live="itemList.{{$row}}.country_name"
-                                                                          wire:keydown.arrow-up="decrementCountry"
-                                                                          wire:keydown.arrow-down="incrementCountry"
-                                                                          wire:keydown.enter="enterCountry('{{$row}}')"/>
+                                                                              wire:model.live="itemList.{{$row}}.country_name"
+                                                                              wire:keydown.arrow-up="decrementCountry"
+                                                                              wire:keydown.arrow-down="incrementCountry"
+                                                                              wire:keydown.enter="enterCountry('{{$row}}')"/>
 
                                                         <x-Ui::dropdown.select>
                                                             @if($countryCollection)
@@ -358,38 +390,17 @@
 
                     <div class="flex flex-col gap-3">
 
-                        <x-Ui::dropdown.wrapper label="Contact Type" type="contactTypeTyped">
-                            <div class="relative ">
-                                <x-Ui::dropdown.input label="Contact Type" id="contact_type_name"
-                                                  wire:model.live="contact_type_name"
-                                                  wire:keydown.arrow-up="decrementContactType"
-                                                  wire:keydown.arrow-down="incrementContactType"
-                                                  wire:keydown.enter="enterContactType"/>
-                                <x-Ui::dropdown.select>
-                                    @if($contactTypeCollection)
-                                        @forelse ($contactTypeCollection as $i => $contactType)
-                                            <x-Ui::dropdown.option highlight="{{$highlightContactType === $i  }}"
-                                                               wire:click.prevent="setContactType('{{$contactType->vname}}','{{$contactType->id}}')">
-                                                {{ $contactType->vname }}
-                                            </x-Ui::dropdown.option>
-                                        @empty
-                                            <x-Ui::dropdown.create
-                                                wire:click.prevent="contactTypeSave('{{$contact_type_name}}')"
-                                                label="Contact Type"/>
-                                        @endforelse
-                                    @endif
-                                </x-Ui::dropdown.select>
-                            </div>
-                        </x-Ui::dropdown.wrapper>
+
 
                         <x-Ui::input.floating wire:model="msme_no" label="MSME No"/>
 
                         <x-Ui::dropdown.wrapper label="MSME Type" type="MsmeTypeTyped">
                             <div class="relative ">
-                                <x-Ui::dropdown.input label="MSME Type" id="msme_type_name" wire:model.live="msme_type_name"
-                                                  wire:keydown.arrow-up="decrementMsmeType"
-                                                  wire:keydown.arrow-down="incrementMsmeType"
-                                                  wire:keydown.enter="enterMsmeType"/>
+                                <x-Ui::dropdown.input label="MSME Type" id="msme_type_name"
+                                                      wire:model.live="msme_type_name"
+                                                      wire:keydown.arrow-up="decrementMsmeType"
+                                                      wire:keydown.arrow-down="incrementMsmeType"
+                                                      wire:keydown.enter="enterMsmeType"/>
                                 <x-Ui::dropdown.select wire:model="msme_type_id">
                                     @if($msmeTypeCollection)
                                         @foreach ($msmeTypeCollection as $msmeType)
@@ -406,7 +417,7 @@
 
                         <x-Ui::input.floating wire:model="opening_balance" label="Opening Balance"/>
 
-{{--                        <x-input.floating wire:model="outstanding" label="Outstanding"/>--}}
+                        {{--                        <x-input.floating wire:model="outstanding" label="Outstanding"/>--}}
 
                         <x-Ui::input.model-date wire:model="effective_from" :label="'Opening Date'"/>
                     </div>
@@ -420,28 +431,28 @@
     <x-Ui::forms.m-panel-bottom-button active save back/>
 
     <div class="px-10 py-16 space-y-4">
-{{--        @if(!$log->isEmpty())--}}
-{{--            <div class="text-xs text-orange-600  font-merri underline underline-offset-4">Activity</div>--}}
-{{--        @endif--}}
-{{--        @foreach($log as $row)--}}
-{{--            <div class="px-6">--}}
-{{--                <div class="relative">--}}
-{{--                    <div class=" border-l-[3px] border-dotted px-8 text-[10px]  tracking-wider py-3">--}}
-{{--                        <div class="flex gap-x-5 ">--}}
-{{--                            <div class="inline-flex text-gray-500 items-center font-sans font-semibold">--}}
-{{--                                <span>Model:</span> <span>{{$row->vname}}</span></div>--}}
-{{--                            <div class="inline-flex  items-center space-x-1 font-merri"><span--}}
-{{--                                    class="text-blue-600">@</span><span--}}
-{{--                                    class="text-gray-500">{{$row->user->name}}</span>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div--}}
-{{--                            class="text-gray-400 text-[8px] font-semibold">{{date('M d, Y', strtotime($row->created_at))}}</div>--}}
-{{--                        <div class="pb-2 font-lex leading-5 py-2 text-justify">{!! $row->description !!}</div>--}}
-{{--                    </div>--}}
-{{--                    <div class="absolute top-0 -left-1 h-2.5 w-2.5  rounded-full bg-teal-600 "></div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        @endforeach--}}
+        {{--        @if(!$log->isEmpty())--}}
+        {{--            <div class="text-xs text-orange-600  font-merri underline underline-offset-4">Activity</div>--}}
+        {{--        @endif--}}
+        {{--        @foreach($log as $row)--}}
+        {{--            <div class="px-6">--}}
+        {{--                <div class="relative">--}}
+        {{--                    <div class=" border-l-[3px] border-dotted px-8 text-[10px]  tracking-wider py-3">--}}
+        {{--                        <div class="flex gap-x-5 ">--}}
+        {{--                            <div class="inline-flex text-gray-500 items-center font-sans font-semibold">--}}
+        {{--                                <span>Model:</span> <span>{{$row->vname}}</span></div>--}}
+        {{--                            <div class="inline-flex  items-center space-x-1 font-merri"><span--}}
+        {{--                                    class="text-blue-600">@</span><span--}}
+        {{--                                    class="text-gray-500">{{$row->user->name}}</span>--}}
+        {{--                            </div>--}}
+        {{--                        </div>--}}
+        {{--                        <div--}}
+        {{--                            class="text-gray-400 text-[8px] font-semibold">{{date('M d, Y', strtotime($row->created_at))}}</div>--}}
+        {{--                        <div class="pb-2 font-lex leading-5 py-2 text-justify">{!! $row->description !!}</div>--}}
+        {{--                    </div>--}}
+        {{--                    <div class="absolute top-0 -left-1 h-2.5 w-2.5  rounded-full bg-teal-600 "></div>--}}
+        {{--                </div>--}}
+        {{--            </div>--}}
+        {{--        @endforeach--}}
     </div>
 </div>

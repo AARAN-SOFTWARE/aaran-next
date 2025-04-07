@@ -404,8 +404,6 @@ class CompanyList extends Component
             ->table('countries')
             ->when($this->country_name, fn($query) => $query->where('vname', 'like', "%{$this->country_name}%"))
             ->get();
-
-
     }
     #endregion
 
@@ -645,7 +643,7 @@ class CompanyList extends Component
     public function deleteFunction($id): void
     {
         if ($id) {
-            $obj = Company::find($id);
+            $obj = Company::on($this->getTenantConnection())->find($id);
             if ($obj) {
                 $obj->delete();
                 $message = "Deleted Successfully";
