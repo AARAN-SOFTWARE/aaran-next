@@ -126,16 +126,16 @@ class ContactUpsert extends Component
         $this->itemList[] = [
             'contact_detail_id' => 0,
             'address_type' => 'Secondary',
-            "state_name" => "",
-            "state_id" => "",
-            "city_id" => "",
-            "city_name" => "",
-            "country_id" => "",
-            "country_name" => "",
-            "pincode_id" => "",
-            "pincode_name" => "",
             "address_1" => "",
             "address_2" => "",
+            "city_id" => "",
+            "city_name" => "",
+            "state_name" => "",
+            "state_id" => "",
+            "pincode_id" => "",
+            "pincode_name" => "",
+            "country_id" => "",
+            "country_name" => "",
         ];
         $this->city_name = "";
         $this->state_name = "";
