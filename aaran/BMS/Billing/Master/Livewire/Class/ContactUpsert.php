@@ -139,17 +139,17 @@ class ContactUpsert extends Component
         $this->highlightCity++;
     }
 
-    public function setCity($vname, $id, $index = null): void
+    public function setCity($vname, $id, $index = 0): void
     {
-        $this->city_name = $vname;
-        $this->city_id = $id;
-        Arr::set($this->itemList[$index], 'city_name', $vname);
-        Arr::set($this->itemList[$index], 'city_id', $id);
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $vname);
+            Arr::set($this->itemList[$index], 'city_id', $id);
+        }
 
-        $this->getCityList();
+        $this->getCityList($index);
     }
 
-    public function enterCity($index): void
+    public function enterCity($index = 0): void
     {
         $obj = $this->cityCollection[$this->highlightCity] ?? null;
 
@@ -159,25 +159,30 @@ class ContactUpsert extends Component
 
         $this->city_name = $obj['vname'] ?? '';;
         $this->city_id = $obj['id'] ?? '';
-        Arr::set($this->itemList[$index], 'city_name', $obj['vname']);
-        Arr::set($this->itemList[$index], 'city_id', $obj['id']);
+
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $obj['vname']);
+            Arr::set($this->itemList[$index], 'city_id', $obj['id']);
+        }
 
     }
 
     #[On('refresh-city')]
-    public function refreshCity($v, $index): void
+    public function refreshCity($v, $index = 0): void
     {
         $this->city_id = $v['id'];
         $this->city_name = $v['vname'];
 
-        Arr::set($this->itemList[$index], 'city_name', $v['vname']);
-        Arr::set($this->itemList[$index], 'city_id', $v['id']);
+        if (!is_null($index)) {
+            Arr::set($this->itemList[$index], 'city_name', $v['vname']);
+            Arr::set($this->itemList[$index], 'city_id', $v['id']);
+        }
 
         $this->cityTyped = false;
     }
 
 
-    public function citySave($vname, $index)
+    public function citySave($vname, $index = 0)
     {
         $obj = City::on($this->getTenantConnection())->create([
             'vname' => $vname,
@@ -187,15 +192,21 @@ class ContactUpsert extends Component
         $this->refreshCity($v, $index);
     }
 
-    public function getCityList(): void
+    public function getCityList($index = 0): void
     {
+        if ($index !== 0) {
+            dd($index);
+        }
+
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
 
+        $search = $this->itemList[$index]['city_name'] ?? '';
+
         $this->cityCollection = DB::connection($this->getTenantConnection())
             ->table('cities')
-            ->when($this->city_name, fn($query) => $query->where('vname', 'like', "%{$this->city_name}%"))
+            ->when($search, fn($query) => $query->where('vname', 'like', "%{$search}%"))
             ->get();
 
     }
@@ -407,10 +418,11 @@ class ContactUpsert extends Component
         $this->countryCollection = Collection::empty();
         $this->highlightCountry = 0;
 
-        $this->country_name = $obj['vname'] ?? '';;
-        $this->country_id = $obj['id'] ?? '';;
-        Arr::set($this->itemList[$index], 'country_name', $obj['vname']);
-        Arr::set($this->itemList[$index], 'country_id', $obj['id']);
+        $this->country_name = $obj->vname ?? '';;
+        $this->country_id = $obj->id ?? '';;
+
+        Arr::set($this->itemList[$index], 'country_name', $obj->vname);
+        Arr::set($this->itemList[$index], 'country_id', $obj->id);
     }
 
     public function setCountry($vname, $id, $index): void
@@ -496,8 +508,8 @@ class ContactUpsert extends Component
         $this->contactTypeCollection = Collection::empty();
         $this->highlightContactType = 0;
 
-        $this->contact_type_name = $obj['vname'] ?? '';
-        $this->contact_type_id = $obj['id'] ?? '';
+        $this->contact_type_name = $obj->vname ?? '';
+        $this->contact_type_id = $obj->id ?? '';
     }
 
     #[On('refresh-contact-type')]
@@ -885,7 +897,7 @@ class ContactUpsert extends Component
     {
 //        $this->log = Logbook::where('model_name',$this->gstin)->get();
 
-        $this->getCityList();
+        $this->getCityList(0);
         $this->getStateList();
         $this->getPincodeList();
         $this->getCountryList();

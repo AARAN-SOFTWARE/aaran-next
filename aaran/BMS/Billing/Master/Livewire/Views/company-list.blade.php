@@ -142,7 +142,6 @@
                                     <x-Ui::input.error-text wire:model="city_name"/>
                                 </x-Ui::dropdown.wrapper>
 
-
                                 <!-- State ---------------------------------------------------------------------------->
 
                                 <x-Ui::dropdown.wrapper label="State" type="stateTyped">
@@ -169,7 +168,6 @@
                                     </div>
                                     <x-Ui::input.error-text wire:model="state_name"/>
                                 </x-Ui::dropdown.wrapper>
-
 
                                 <!-- Pin-code ------------------------------------------------------------------------->
 
@@ -198,7 +196,6 @@
                                     <x-Ui::input.error-text wire:model="pincode_name"/>
                                 </x-Ui::dropdown.wrapper>
 
-
                                 <!-- country ------------------------------------------------------------------------->
                                 <x-Ui::dropdown.wrapper label="Country" type="countryTyped">
                                     <div class="relative">
@@ -224,9 +221,7 @@
                                     </div>
                                     <x-Ui::input.error-text wire:model="country_name"/>
                                 </x-Ui::dropdown.wrapper>
-{{--                                @error('country_name')--}}
-{{--                                <span class="text-red-400 text-xs">{{$message}}</span>--}}
-{{--                                @enderror--}}
+
                             </div>
                         </x-Ui::tabs.content>
 
