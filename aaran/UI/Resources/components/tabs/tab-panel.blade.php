@@ -17,6 +17,7 @@
         }
     }"
     x-id="['tab']"
+    x-cloak
     class="mx-auto w-full"
 >
     <!-- Tab List -->
@@ -41,7 +42,7 @@
     <div class=" border-b   border-gray-200 shadow-md"></div>
 
     <!-- Panels -->
-    <div role="tabpanel" class=" border-l border-r border-b border-gray-200 bg-white text-xs font-lex">
+    <div role="tabpanel" x-cloak class=" border-l border-r border-b border-gray-200 bg-white text-xs font-lex">
 
         <!-- Content -->
 

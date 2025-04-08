@@ -7,13 +7,13 @@ use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\BMS\Billing\Master\Models\Contact;
-use Aaran\BMS\Billing\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
 class ContactDetailFactory extends Factory
 {
-    protected $model = ContactDetail::class;
+    protected $model = ContactAddress::class;
 
     public function definition(): array
     {
