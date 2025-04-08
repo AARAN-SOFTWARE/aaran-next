@@ -10,6 +10,7 @@ class CountrySeeder extends Seeder
     public static function run(): void
     {
         $countries = [
+            ['India', 'IN', '₹'],
             ['-', '-', '-'],
             ['United States', 'US', '$'],
             ['Canada', 'CA', 'C$'],
@@ -19,7 +20,6 @@ class CountrySeeder extends Seeder
             ['Italy', 'IT', '€'],
             ['Spain', 'ES', '€'],
             ['Australia', 'AU', 'A$'],
-            ['India', 'IN', '₹'],
             ['China', 'CN', '¥'],
             ['Japan', 'JP', '¥'],
             ['South Korea', 'KR', '₩'],
