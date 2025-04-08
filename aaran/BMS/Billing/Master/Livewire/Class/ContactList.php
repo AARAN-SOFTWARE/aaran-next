@@ -600,7 +600,7 @@ class ContactList extends Component
             ->where('bank_type', 'primary')
             ->first();
 
-        ContactAddress::on($connection)->updateOrCreate(
+        ContactBank::on($connection)->updateOrCreate(
             [
                 'id' => optional($existingPrimaryBank)->id,
             ],
@@ -635,10 +635,29 @@ class ContactList extends Component
         $this->email = '';
         $this->msme_no = '';
         $this->msme_type_id = '';
+        $this->msme_type_name = '';
         $this->opening_balance = '';
         $this->outstanding = '';
         $this->effective_from = '';
         $this->active_id = true;
+
+        $this->address_type = 'primary';
+        $this->address_1 = '';
+        $this->address_2 = '';
+        $this->city_id = '';
+        $this->state_id = '';
+        $this->pincode_id = '';
+        $this->country_id = '';
+
+        $this->city_name =  '';
+        $this->state_name = '';
+        $this->pincode_name = '';
+        $this->country_name = '';
+
+        $this->acc_no = '';
+        $this->ifsc_code = '';
+        $this->bank = '';
+        $this->branch = '';
     }
     #endregion
 
@@ -697,11 +716,11 @@ class ContactList extends Component
             ->first();
 
         if ($bank) {
-            $this->bank_type = $address->bank_type;
-            $this->acc_no = $address->acc_no;
-            $this->ifsc_code = $address->ifsc_code;
-            $this->bank = $address->bank;
-            $this->branch = $address->branch;
+            $this->bank_type = $bank->bank_type;
+            $this->acc_no = $bank->acc_no;
+            $this->ifsc_code = $bank->ifsc_code;
+            $this->bank = $bank->bank;
+            $this->branch = $bank->branch;
         }
     }
 

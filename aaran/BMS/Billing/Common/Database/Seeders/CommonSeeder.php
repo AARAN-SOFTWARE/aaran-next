@@ -2,9 +2,6 @@
 
 namespace Aaran\BMS\Billing\Common\Database\Seeders;
 
-use Aaran\BMS\Billing\Common\Database\Seeders\CountrySeeder;
-use Aaran\BMS\Billing\Common\Database\Seeders\GstPercentSeeder;
-use Aaran\BMS\Billing\Common\Database\Seeders\StateSeeder;
 use Illuminate\Database\Seeder;
 
 class CommonSeeder extends Seeder
