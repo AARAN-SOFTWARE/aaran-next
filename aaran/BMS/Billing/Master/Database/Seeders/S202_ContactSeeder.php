@@ -3,7 +3,7 @@
 namespace Aaran\Master\Database\Seeders;
 
 use Aaran\BMS\Billing\Master\Models\Contact;
-use Aaran\BMS\Billing\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Database\Seeder;
 
 class S202_ContactSeeder extends Seeder
@@ -25,7 +25,7 @@ class S202_ContactSeeder extends Seeder
             'effective_from'=>'2024-08-22',
             'opening_balance'=>0,
         ]);
-        ContactDetail::create([
+        ContactAddress::create([
             'contact_id'=>'1',
             'address_1'=>'7th block',
             'address_2'=>'kuvempu layout',

@@ -11,7 +11,7 @@ use Aaran\BMS\Billing\Common\Models\Country;
 use Aaran\BMS\Billing\Common\Models\Pincode;
 use Aaran\BMS\Billing\Common\Models\State;
 use Aaran\BMS\Billing\Master\Models\Contact;
-use Aaran\BMS\Billing\Master\Models\ContactDetail;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -774,13 +774,13 @@ class ContactUpsert extends Component
     public function saveItem($contactId): void
     {
         // Delete all previous addresses for this contact
-        ContactDetail::on($this->getTenantConnection())
+        ContactAddress::on($this->getTenantConnection())
             ->where('contact_id', $contactId)
             ->delete();
 
         // If itemList is empty, add the default address as Primary
         if (empty($this->itemList) || !isset($this->itemList[0])) {
-            ContactDetail::on($this->getTenantConnection())
+            ContactAddress::on($this->getTenantConnection())
                 ->create($this->buildAddressPayload($contactId, (object)$this->defaultAddress()));
             return;
         }
@@ -796,7 +796,7 @@ class ContactUpsert extends Component
                 continue;
             }
 
-            ContactDetail::on($this->getTenantConnection())
+            ContactAddress::on($this->getTenantConnection())
                 ->create($this->buildAddressPayload($contactId, $address));
         }
     }
@@ -817,7 +817,7 @@ class ContactUpsert extends Component
 
     protected function updateExistingAddress(object $data): void
     {
-        $detail = ContactDetail::on($this->getTenantConnection())->find($data->contact_detail_id);
+        $detail = ContactAddress::on($this->getTenantConnection())->find($data->contact_detail_id);
         if (!$detail) return;
 
         $connection = $this->getTenantConnection();
@@ -876,7 +876,7 @@ class ContactUpsert extends Component
         unset($this->itemList[$index]);
 
         if ($item && $item['contact_detail_id'] != 0) {
-            ContactDetail::on($this->getTenantConnection())->find($item['contact_detail_id'])?->delete();
+            ContactAddress::on($this->getTenantConnection())->find($item['contact_detail_id'])?->delete();
         }
     }
 

@@ -2,11 +2,10 @@
 
 namespace Aaran\Website\Livewire\Class;
 
-//use Aaran\Assets\Traits\CommonTraitNew;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class Contact extends Component
+class ContactPage extends Component
 {
 //    use CommonTraitNew;
 
