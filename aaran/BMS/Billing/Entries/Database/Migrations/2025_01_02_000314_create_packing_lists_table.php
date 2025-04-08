@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasEntries()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('packing_lists', function (Blueprint $table) {
                 $table->id();

@@ -9,7 +9,7 @@ return new class extends Migration
 
     public function up(): void
     {
-        if (Aaran\Assets\Features\Customise::hasEntries()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('export_sale_contacts', function (Blueprint $table) {
                 $table->id();

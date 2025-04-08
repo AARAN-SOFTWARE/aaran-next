@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        if (Aaran\Assets\Features\Customise::hasEntries()) {
+        if (Aaran\Assets\Features\Customise::hasCommon()) {
 
             Schema::create('debit_noteitems', function (Blueprint $table) {
                 $table->id();

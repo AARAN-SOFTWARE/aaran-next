@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Entries\Database\Seeders;
+namespace Aaran\BMS\Billing\Entries\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 

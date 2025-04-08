@@ -1,10 +1,9 @@
 <?php
 
-namespace Aaran\Entries\Database\Seeders;
+namespace Aaran\BMS\Billing\Entries\Database\Seeders;
 
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Entries\Models\Saleitem;
-use Aaran\Erp\Models\Production\CuttingItem;
 use Illuminate\Database\Seeder;
 
 class SaleSeeder extends Seeder
