@@ -5,6 +5,7 @@ namespace Aaran;
 use Aaran\Assets\Providers\AssetsServiceProvider;
 use Aaran\BMS\Billing\Books\Providers\BooksServiceProvider;
 use Aaran\BMS\Billing\Common\Providers\CommonServiceProvider;
+use Aaran\BMS\Billing\Entries\Providers\EntriesServiceProvider;
 use Aaran\BMS\Billing\Master\Providers\MasterServiceProvider;
 use Aaran\Core\Setup\Providers\SetupServiceProvider;
 use Aaran\Core\Tenant\Providers\TenantServiceProvider;
@@ -38,6 +39,8 @@ class AaranServiceProvider extends ServiceProvider
         $this->app->register(BooksServiceProvider::class);
 
         $this->app->register(MasterServiceProvider::class);
+
+        $this->app->register(EntriesServiceProvider::class);
     }
 
     public function boot()

@@ -16,9 +16,8 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 //
 //    Route::get('/companies/{id}/upsert', Aaran\Master\Livewire\Company\Upsert::class)->name('companies.upsert');
 
-//
-//    Route::get('/orders', Aaran\Master\Livewire\Orders\Index::class)->name('orders');
-//
-//    Route::get('/styles', Aaran\Master\Livewire\Style\Index::class)->name('styles');
+    Route::get('/orders', Class\OrderList::class)->name('orders');
+
+    Route::get('/styles', Class\StyleList::class)->name('styles');
 
 });
