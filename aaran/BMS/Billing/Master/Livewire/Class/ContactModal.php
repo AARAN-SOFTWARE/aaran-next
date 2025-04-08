@@ -615,9 +615,9 @@ class ContactModal extends Component
             ]
         );
 
-
+        $this->dispatch('refresh-contact',$contact);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->clearFields();
+        $this->closeModal();
     }
 
     #endregion
@@ -735,6 +735,14 @@ class ContactModal extends Component
     }
 
     #endregion
+
+    public function mount($v = null): void
+    {
+        if ($v !== null) {
+            $this->vname = $v;
+        }
+
+    }
 
     #region[render]
     public function render()

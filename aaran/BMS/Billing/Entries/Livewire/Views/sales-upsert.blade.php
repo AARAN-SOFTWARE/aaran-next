@@ -64,7 +64,7 @@
 
                                                 <x-Ui::dropdown.wrapper label="Order NO" type="orderTyped">
                                                     <div class="relative ">
-                                                        <x-Ui::dropdown.input label="Order NO" id="order_name"
+                                                        <x-Ui::dropdown.input label="Order NO" id="order_name" x-ref="order_name"
                                                                               wire:model.live="order_name"
                                                                               wire:keydown.arrow-up="decrementOrder"
                                                                               wire:keydown.arrow-down="incrementOrder"
@@ -680,3 +680,13 @@
     </div>
     {{--    </x-Ui::forms.m-panel>--}}
 </div>
+<script>
+    Livewire.on('triggerFocusNextTab', () => {
+        document.querySelector('[x-ref="nextInput"]')?.focus();
+    });
+
+    Livewire.on('triggerFocusOrder', () => {
+        document.querySelector('[x-ref="order_name"]')?.focus();
+    });
+
+</script>
