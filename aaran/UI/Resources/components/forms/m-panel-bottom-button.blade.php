@@ -6,7 +6,7 @@
     'routes' => '/',
 
 ])
-<div class="sm:px-8 px-2 border border-gray-100 border-t-0 bg-zinc-50 rounded-b-md shadow-lg w-full">
+<div class="sm:px-8 px-2 border border-neutral-200 border-t-0 bg-zinc-50 rounded-b-md shadow-lg w-full">
     <div class="flex flex-row justify-between py-4 gap-3" >
         <div class="flex flex-wrap  gap-3">
             @if($active)
@@ -15,7 +15,7 @@
             <div>
                 @if($print)
 {{--                    <x-button.print/>--}}
-                    <x-Ui::button.print-x href="{{$routes}}"  />
+{{--                    <x-Ui::button.print-x href="{{$routes}}"  />--}}
                 @endif
             </div>
         </div>

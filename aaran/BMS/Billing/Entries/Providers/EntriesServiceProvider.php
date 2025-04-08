@@ -2,7 +2,7 @@
 
 namespace Aaran\BMS\Billing\Entries\Providers;
 
-use Aaran\Entries\Providers\EntriesRouteProvider;
+use Aaran\BMS\Billing\Entries\Providers\EntriesRouteProvider;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -51,7 +51,7 @@ class EntriesServiceProvider extends ServiceProvider
 
     protected function loadViews(): void
     {
-        $this->loadViewsFrom(__DIR__ . '/../Livewire/Class', $this->moduleNameLower);
+        $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', $this->moduleNameLower);
     }
 
 }

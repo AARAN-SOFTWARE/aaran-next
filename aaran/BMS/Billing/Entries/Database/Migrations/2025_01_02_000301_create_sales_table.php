@@ -19,8 +19,8 @@ return new class extends Migration {
                 $table->date('invoice_date');
                 $table->string('sales_type')->nullable();
                 $table->foreignId('order_id')->references('id')->on('orders');
-                $table->foreignId('billing_id')->references('id')->on('contact_details');
-                $table->foreignId('shipping_id')->references('id')->on('contact_details');
+                $table->foreignId('billing_id')->references('id')->on('contact_addresses');
+                $table->foreignId('shipping_id')->references('id')->on('contact_addresses');
                 $table->foreignId('style_id')->references('id')->on('styles');
                 $table->foreignId('despatch_id')->references('id')->on('despatches');
                 $table->string('job_no')->nullable();

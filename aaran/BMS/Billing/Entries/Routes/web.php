@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Aaran\BMS\Billing\Entries\Livewire\Class;
 
 //Entries
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware(['auth', 'tenant'])->group(function () {
 
     // Sales
     Route::get('/sales', Class\SalesList::class)->name('sales');

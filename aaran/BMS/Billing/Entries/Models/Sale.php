@@ -34,19 +34,14 @@ class Sale extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-
-    public static function nextNo()
+    public static function nextNo($connection = null)
     {
-        return
-//            Customise::hasContinueSalesNo() ?
-            static::where('company_id', '=', session()->get('company_id'))
-                ->max('invoice_no') + 1
-//            : static::where('company_id', '=', session()->get('company_id'))
-//                ->where('acyear', '=', session()->get('acyear'))
-//                ->max('invoice_no') + 1
-    ;
-    }
+        $model = new static;
+        $model->setConnection($connection);
 
+        return $model->newQuery()
+                ->max('invoice_no') + 1;
+    }
 
     public function saleItems():HasMany
     {

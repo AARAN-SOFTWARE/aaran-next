@@ -1,14 +1,14 @@
 <div>
     <x-slot name="header">Sales</x-slot>
 
-    <x-aaran-ui::forms.m-panel>
-        <x-aaran-ui::alerts.notification/>
+    <x-Ui::forms.m-panel>
+        <x-Ui::alerts.notification/>
 
-        <x-aaran-ui::forms.top-controls :show-filters="$showFilters"/>
+        <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
-        <x-aaran-ui::table.caption :caption="'Sales'">
+        <x-Ui::table.caption :caption="'Sales'">
             {{$list->count()}}
-        </x-aaran-ui::table.caption>
+        </x-Ui::table.caption>
 
         <?php
         $qty = 0;
@@ -17,36 +17,36 @@
         $grand_total = 0;
         ?>
 
-        <x-aaran-ui::table.form>
+        <x-Ui::table.form>
 
             <x-slot:table_header name="table_header" class="bg-green-600">
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$getListForm->sortAsc}}">
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$sortAsc}}">
                     Invoice No
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$getListForm->sortAsc}}">
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$sortAsc}}">
                     Invoice Date
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none"> Party Name
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Qty
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Taxable
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Gst
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Grand Total
-                </x-aaran-ui::table.header-text>
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none"> Party Name
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Qty
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Taxable
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Gst
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Grand Total
+                </x-Ui::table.header-text>
                 {{--                @if(\Aaran\Aadmin\Src\SaleEntry::hasEinvoice())--}}
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">E-Invoice
-                </x-aaran-ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">E-Invoice
+                </x-Ui::table.header-text>
                 {{--                @endif--}}
                 {{--                @if(\Aaran\Aadmin\Src\SaleEntry::hasEway()||\Aaran\Aadmin\Src\SaleEntry::hasEinvoice())--}}
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none" class="w-28">E-Generate
-                </x-aaran-ui::table.header-text>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none" class="w-28">E-Generate
+                </x-Ui::table.header-text>
                 {{--                @endif--}}
-                <x-aaran-ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Print
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-action/>
+                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Print
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-action/>
             </x-slot:table_header>
 
             <x-slot:table_body name="table_body">
@@ -57,37 +57,37 @@
                         $gst += $row->total_gst;
                         $grand_total += $row->grand_total;
                         ?>
-                    <x-aaran-ui::table.row>
+                    <x-Ui::table.row>
 
-                        <x-aaran-ui::table.cell-text>
+                        <x-Ui::table.cell-text>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->invoice_no}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text>
+                        <x-Ui::table.cell-text>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{ date('d-m-Y', strtotime( $row->invoice_date))}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text left>
+                        <x-Ui::table.cell-text left>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->contact->vname}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text>
+                        <x-Ui::table.cell-text>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_qty+0}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text right>
+                        <x-Ui::table.cell-text right>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_taxable}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text right>
+                        <x-Ui::table.cell-text right>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_gst}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
 
-                        <x-aaran-ui::table.cell-text right>
+                        <x-Ui::table.cell-text right>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->grand_total}}</a>
-                        </x-aaran-ui::table.cell-text>
+                        </x-Ui::table.cell-text>
                         @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
-                            <x-aaran-ui::table.cell-text>
+                            <x-Ui::table.cell-text>
                                 <a href="{{route('sales.upsert',[$row->id])}}">
                                         <?php
                                         $obj = \Aaran\BMS\Billing\Entries\Models\Sale::Irn($row->id);
@@ -119,33 +119,33 @@
                                         </div>
                                     @endif
                                 </a>
-                            </x-aaran-ui::table.cell-text>
+                            </x-Ui::table.cell-text>
                         @endif
 
                         @if(\Aaran\Assets\Features\SaleEntry::hasEway()||\Aaran\Assets\Features\SaleEntry::hasEinvoice())
-                            <x-aaran-ui::table.cell-text>
+                            <x-Ui::table.cell-text>
                                 <div class="inline-flex items-center gap-x-4">
                                     @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
-                                        <x-aaran-ui::button.e-inv routes="{{route('sales.einvoice',[$row->id]) }}"/>
-                                        <x-aaran-ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>
+{{--                                        <x-Ui::button.e-inv routes="{{route('sales.einvoice',[$row->id]) }}"/>--}}
+{{--                                        <x-Ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>--}}
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasEway())
-                                        <x-aaran-ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>
+{{--                                        <x-Ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>--}}
                                     @endif
                                 </div>
-                            </x-aaran-ui::table.cell-text>
+                            </x-Ui::table.cell-text>
                         @endif
 
-                        <x-aaran-ui::table.cell-text>
-                            <x-aaran-ui::button.print-pdf routes="{{route('sales.print', [$row->id])}}"/>
-                        </x-aaran-ui::table.cell-text>
+                        <x-Ui::table.cell-text>
+{{--                            <x-Ui::button.print-pdf routes="{{route('sales.print', [$row->id])}}"/>--}}
+                        </x-Ui::table.cell-text>
 
                         <td class="max-w-max print:hidden">
                             <div class="flex justify-center items-center">
                                 <a href="{{route('sales.upsert',[$row->id])}}" class="pt-1 px-1.5">
-                                    <x-aaran-ui::button.edit/>
+                                    <x-Ui::button.edit/>
                                 </a>
-                                <x-aaran-ui::button.delete wire:click="getDelete({{$row->id}})"/>
+                                <x-Ui::button.delete wire:click="getDelete({{$row->id}})"/>
 
                             </div>
                         </td>
@@ -208,75 +208,42 @@
                         {{--                                </div>--}}
                         {{--                            </div>--}}
                         {{--                        </x-table.cell-text>--}}
-                    </x-aaran-ui::table.row>
+                    </x-Ui::table.row>
                 @endforeach
-                <x-aaran-ui::table.row>
-                    <x-aaran-ui::table.cell-text right colspan="3">
+                <x-Ui::table.row>
+                    <x-Ui::table.cell-text right colspan="3">
                         <span class="font-bold">Total</span>
-                    </x-aaran-ui::table.cell-text>
-                    <x-aaran-ui::table.cell-text>
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text>
                         <span class="font-bold">{{$qty}}</span>
-                    </x-aaran-ui::table.cell-text>
-                    <x-aaran-ui::table.cell-text right>
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text right>
                             <span class="font-bold">
                                 {{\Aaran\Assets\Helper\ConvertTo::decimal2($taxable)}}
                             </span>
-                    </x-aaran-ui::table.cell-text>
-                    <x-aaran-ui::table.cell-text right>
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text right>
                             <span class="font-bold">
                                 {{\Aaran\Assets\Helper\ConvertTo::decimal2($gst)}}
                             </span>
-                    </x-aaran-ui::table.cell-text>
-                    <x-aaran-ui::table.cell-text right>
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text right>
                             <span class="text-lg font-bold text-green-500">
                                 {{\Aaran\Assets\Helper\ConvertTo::decimal2($grand_total)}}
                             </span>
-                    </x-aaran-ui::table.cell-text>
-                </x-aaran-ui::table.row>
+                    </x-Ui::table.cell-text>
+                </x-Ui::table.row>
 
             </x-slot:table_body>
 
-        </x-aaran-ui::table.form>
+        </x-Ui::table.form>
 
-        <x-aaran-ui::modal.delete/>
+        <x-Ui::modal.delete/>
 
         <!-- Actions ------------------------------------------------------------------------------------------->
 
-        {{--        @if(!$log->isEmpty())--}}
-        {{--            <div class="w-10/12 mx-auto font-merri">Log--}}
-        {{--            </div>--}}
-        {{--        @endif--}}
-        {{--        <x-extra.timeline :list="$log"/>--}}
-
         <div class="">{{ $list->links() }}</div>
 
-    </x-aaran-ui::forms.m-panel>
-
-    {{--    <div class="max-w-6xl px-10 mx-auto py-16 space-y-4">--}}
-    {{--        @if(!$salesAllLogs->isEmpty())--}}
-    {{--            <div class="text-xs text-orange-600  font-merri underline underline-offset-4">Activity</div>--}}
-    {{--        @endif--}}
-    {{--        @foreach($salesAllLogs as $row)--}}
-    {{--            <div class="px-6">--}}
-    {{--                <div class="relative ">--}}
-    {{--                    <div class=" border-l-[3px] border-dotted px-8 text-[10px]  tracking-wider py-3">--}}
-    {{--                        <div class="flex gap-x-5 ">--}}
-    {{--                            <div class="inline-flex text-gray-500 items-center font-sans font-semibold">--}}
-    {{--                                <span>Invoice No:</span> <span>{{$row->vname}}</span></div>--}}
-    {{--                            <div class="inline-flex  items-center space-x-1 font-merri"><span--}}
-    {{--                                    class="text-blue-600">@</span><span--}}
-    {{--                                    class="text-gray-500">{{$row->user->name}}</span>--}}
-    {{--                            </div>--}}
-    {{--                        </div>--}}
-    {{--                        <div--}}
-    {{--                            class="text-gray-400 text-[8px] font-semibold">{{date('M d, Y', strtotime($row->created_at))}}</div>--}}
-    {{--                        <div class="pb-2 font-lex leading-5 py-2 text-justify">{!! $row->description !!}</div>--}}
-    {{--                    </div>--}}
-    {{--                    <div class="absolute top-0 -left-1 h-2.5 w-2.5  rounded-full bg-teal-600 "></div>--}}
-    {{--                </div>--}}
-    {{--            </div>--}}
-    {{--        @endforeach--}}
-    {{--    </div>--}}
-
+    </x-Ui::forms.m-panel>
 
 </div>

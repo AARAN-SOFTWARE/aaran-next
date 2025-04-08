@@ -68,7 +68,7 @@ class SalesList extends Component
     #region[render]
     public function render()
     {
-        return view('entries::Sales.index')->with([
+        return view('entries::sales-index')->with([
             'list' => $this->getList()
         ]);
     }

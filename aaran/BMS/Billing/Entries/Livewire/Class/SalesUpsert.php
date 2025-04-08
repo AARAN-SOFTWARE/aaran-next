@@ -2,20 +2,11 @@
 
 namespace Aaran\BMS\Billing\Entries\Livewire\Class;
 
-use Aaran\Assets\LivewireForms\MasterGstApi;
-use Aaran\Assets\Trait\CommonTraitNew;
-use Aaran\Books\Models\Ledger;
-use Aaran\Common\Models\Colour;
-use Aaran\Common\Models\Despatch;
-use Aaran\Common\Models\Size;
-use Aaran\Common\Models\Transport;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Entries\Models\Saleitem;
-use Aaran\Master\Models\Contact;
-use Aaran\Master\Models\ContactDetail;
-use Aaran\Master\Models\Order;
-use Aaran\Master\Models\Product;
-use Aaran\Master\Models\Style;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,10 +18,11 @@ use Livewire\Component;
 
 class SalesUpsert extends Component
 {
-    use CommonTraitNew;
+
+    use ComponentStateTrait, TenantAwareTrait;
 
     #region[E-invoice properties]
-    public MasterGstApi $masterGstApi;
+//    public MasterGstApi $masterGstApi;
     public $e_invoiceDetails;
     public $e_wayDetails;
     public $token;
@@ -86,6 +78,7 @@ class SalesUpsert extends Component
     public string $product;
     public string $colour;
     public string $size;
+    public bool $active_id;
     public mixed $job_no = '';
     public $po_no;
     public $grandtotalBeforeRound;
@@ -138,7 +131,7 @@ class SalesUpsert extends Component
     #[validate]
     public $contact_name = '';
     public $contact_id = '';
-    public Collection $contactCollection;
+    public $contactCollection;
     public $highlightContact = 0;
     public $contactTyped = false;
 
@@ -190,11 +183,14 @@ class SalesUpsert extends Component
 
     public function getContactList(): void
     {
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
 
-        $this->contactCollection = $this->contact_name ? Contact::search(trim($this->contact_name))
-            ->where('company_id', '=', session()->get('company_id'))
-            ->get() : Contact::where('company_id', '=', session()->get('company_id'))->get();
-
+        $this->contactCollection = DB::connection($this->getTenantConnection())
+            ->table('contacts')
+            ->when($this->contact_name, fn($query) => $query->where('vname', 'like', "%{$this->contact_name}%"))
+            ->get();
     }
 
     #endregion
@@ -203,7 +199,7 @@ class SalesUpsert extends Component
     public mixed $billing_id = '';
 
     public $billing_address = '';
-    public Collection $billing_addressCollection;
+    public $billing_addressCollection;
     public $highlightBilling_address = 0;
     public $billing_addressTyped = false;
 
@@ -255,11 +251,14 @@ class SalesUpsert extends Component
 
     public function getBilling_address(): void
     {
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
 
-        $this->billing_addressCollection = $this->billing_address ? contactDetail::search(trim($this->billing_address))
+        $this->billing_addressCollection = DB::connection($this->getTenantConnection())
+            ->table('contact_addresses')
             ->where('contact_id', '=', $this->contact_id)
-            ->get() : contactDetail::all()->where('contact_id', '=', $this->contact_id);
-
+            ->get();
     }
 
     #endregion
@@ -269,7 +268,7 @@ class SalesUpsert extends Component
     public mixed $shipping_id = '';
 
     public $shipping_address = '';
-    public Collection $shipping_addressCollection;
+    public $shipping_addressCollection;
     public $highlightShipping_address = 0;
     public $shipping_addressTyped = false;
 
@@ -321,10 +320,14 @@ class SalesUpsert extends Component
 
     public function getShipping_address(): void
     {
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
 
-        $this->shipping_addressCollection = $this->shipping_address ? contactDetail::search(trim($this->shipping_address))
+        $this->shipping_addressCollection = DB::connection($this->getTenantConnection())
+            ->table('contact_addresses')
             ->where('contact_id', '=', $this->contact_id)
-            ->get() : contactDetail::all()->where('contact_id', '=', $this->contact_id);
+            ->get();
 
     }
 
@@ -335,7 +338,7 @@ class SalesUpsert extends Component
     #[Rule('required')]
     public $order_id = '';
     public $order_name = '';
-    public Collection $orderCollection;
+    public $orderCollection;
     public $highlightOrder = 0;
     public $orderTyped = false;
 
@@ -387,9 +390,14 @@ class SalesUpsert extends Component
 
     public function getOrderList(): void
     {
-        $this->orderCollection = $this->order_name ? Order::search(trim($this->order_name))
-            ->where('company_id', '=', session()->get('company_id'))
-            ->get() : Order::where('company_id', '=', session()->get('company_id'))->get();;
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->orderCollection = DB::connection($this->getTenantConnection())
+            ->table('orders')
+            ->when($this->order_name, fn($query) => $query->where('vname', 'like', "%{$this->order_name}%"))
+            ->get();
     }
 
     #endregion
@@ -398,7 +406,7 @@ class SalesUpsert extends Component
 
     public $style_id = '';
     public $style_name = '';
-    public \Illuminate\Support\Collection $styleCollection;
+    public $styleCollection;
     public $highlightStyle = 0;
     public $styleTyped = false;
 
@@ -450,8 +458,14 @@ class SalesUpsert extends Component
 
     public function getStyleList(): void
     {
-        $this->styleCollection = $this->style_name ? Style::search(trim($this->style_name))
-            ->get() : Style::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->styleCollection = DB::connection($this->getTenantConnection())
+            ->table('styles')
+            ->when($this->style_name, fn($query) => $query->where('vname', 'like', "%{$this->style_name}%"))
+            ->get();
     }
 
     #endregion
@@ -460,7 +474,7 @@ class SalesUpsert extends Component
     #[validate]
     public $transport_name = '';
     public $transport_id = '';
-    public Collection $transportCollection;
+    public $transportCollection;
     public $highlightTransport = 0;
     public $transportTyped = false;
 
@@ -524,9 +538,14 @@ class SalesUpsert extends Component
 
     public function getTransportList(): void
     {
-        $this->transportCollection = $this->transport_name ?
-            Transport::search(trim($this->transport_name))->get() :
-            Transport::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->transportCollection = DB::connection($this->getTenantConnection())
+            ->table('styles')
+            ->when($this->transport_name, fn($query) => $query->where('vname', 'like', "%{$this->transport_name}%"))
+            ->get();
     }
 
     #endregion
@@ -535,7 +554,7 @@ class SalesUpsert extends Component
 
     public $despatch_id = '';
     public $despatch_name = '';
-    public Collection $despatchCollection;
+    public $despatchCollection;
     public $highlightDespatch = 0;
     public $despatchTyped = false;
 
@@ -599,9 +618,14 @@ class SalesUpsert extends Component
 
     public function getDespatchList(): void
     {
-        $this->despatchCollection = $this->despatch_name ?
-            Despatch::search(trim($this->despatch_name))->get() :
-            Despatch::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->despatchCollection = DB::connection($this->getTenantConnection())
+            ->table('despatches')
+            ->when($this->despatch_name, fn($query) => $query->where('vname', 'like', "%{$this->despatch_name}%"))
+            ->get();
     }
 
     #endregion
@@ -610,7 +634,7 @@ class SalesUpsert extends Component
 
     public $ledger_id = '';
     public $ledger_name = '';
-    public Collection $ledgerCollection;
+    public $ledgerCollection;
     public $highlightLedger = 0;
     public $ledgerTyped = false;
 
@@ -674,9 +698,14 @@ class SalesUpsert extends Component
 
     public function getLedgerList(): void
     {
-        $this->ledgerCollection = $this->ledger_name ?
-            Ledger::search(trim($this->ledger_name))->get() :
-            Ledger::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->ledgerCollection = DB::connection($this->getTenantConnection())
+            ->table('despatches')
+            ->when($this->ledger_name, fn($query) => $query->where('vname', 'like', "%{$this->ledger_name}%"))
+            ->get();
     }
 
     #endregion
@@ -686,7 +715,7 @@ class SalesUpsert extends Component
     public $product_name = '';
     public $product_id = '';
     public mixed $gst_percent1 = '';
-    public Collection $productCollection;
+    public $productCollection;
     public $highlightProduct = 0;
     public $productTyped = false;
 
@@ -740,14 +769,14 @@ class SalesUpsert extends Component
 
     public function getProductList(): void
     {
-        $this->productCollection = $this->product_name
-            ? Product::search(trim($this->product_name))
-                ->where('company_id', '=', session()->get('company_id'))
-                ->orderBy('created_at', 'desc')
-                ->get()
-            : Product::where('company_id', '=', session()->get('company_id'))
-                ->orderBy('created_at', 'desc')
-                ->get();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->productCollection = DB::connection($this->getTenantConnection())
+            ->table('products')
+            ->when($this->product_name, fn($query) => $query->where('vname', 'like', "%{$this->product_name}%"))
+            ->get();
     }
 
 
@@ -756,7 +785,7 @@ class SalesUpsert extends Component
     #region[Colour]
     public $colour_name = '';
     public $colour_id = '';
-    public Collection $colourCollection;
+    public $colourCollection;
     public $highlightColour = 0;
     public $colourTyped = false;
 
@@ -817,9 +846,15 @@ class SalesUpsert extends Component
 
     public function getColourList(): void
     {
-        $this->colourCollection = $this->colour_name ?
-            Colour::search(trim($this->colour_name))->get() :
-            Colour::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->colourCollection = DB::connection($this->getTenantConnection())
+            ->table('colours')
+            ->when($this->colour_name, fn($query) => $query->where('vname', 'like', "%{$this->colour_name}%"))
+            ->get();
+
     }
 
     #endregion
@@ -827,7 +862,7 @@ class SalesUpsert extends Component
     #region[size]
     public $size_name = '';
     public $size_id = '';
-    public Collection $sizeCollection;
+    public $sizeCollection;
     public $highlightSize = 0;
     public $sizeTyped = false;
 
@@ -889,9 +924,14 @@ class SalesUpsert extends Component
 
     public function getSizeList(): void
     {
-        $this->sizeCollection = $this->size_name ?
-            Size::search(trim($this->size_name))->get() :
-            Size::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->sizeCollection = DB::connection($this->getTenantConnection())
+            ->table('sizes')
+            ->when($this->size_name, fn($query) => $query->where('vname', 'like', "%{$this->size_name}%"))
+            ->get();
     }
 
     #endregion
@@ -936,7 +976,7 @@ class SalesUpsert extends Component
         ];
 
         if ($this->uniqueno != '') {
-            if ($this->common->vid == "") {
+            if ($this->vid == "") {
                 $this->validate($this->rules());
                 $obj = Sale::create([
                     'uniqueno' => session()->get('company_id') . '~' . session()->get('acyear') . '~' . Sale::nextNo(),
@@ -946,8 +986,8 @@ class SalesUpsert extends Component
                     'invoice_no' => Sale::nextNo(),
                     'invoice_date' => $this->invoice_date,
                     'order_id' => $this->order_id ?: 1,
-                    'billing_id' => $this->billing_id ?: ContactDetail::getId($this->contact_id),
-                    'shipping_id' => $this->shipping_id ?: ContactDetail::getId($this->contact_id),
+                    'billing_id' => $this->billing_id ?: ContactAddress::getId($this->contact_id),
+                    'shipping_id' => $this->shipping_id ?: ContactAddress::getId($this->contact_id),
                     'style_id' => $this->style_id ?: 1,
                     'despatch_id' => $this->despatch_id ?: 31,
                     'job_no' => $this->job_no,
@@ -986,8 +1026,7 @@ class SalesUpsert extends Component
 //                $this->common->logEntry($this->invoice_no, 'Sales', 'create', "The Sales entry has been created for  . $this->contact_name. Items: {$itemDetailsStr}");
                 $this->contactUpdate();
                 $message = "Saved";
-            }
-        else {
+            } else {
                 $obj = Sale::find($this->common->vid);
                 $previousData = $obj->getOriginal();
 //                $mapping = [
@@ -1032,7 +1071,7 @@ class SalesUpsert extends Component
                     $obj->billing_id = $this->billing_id;
                     $obj->shipping_id = $this->shipping_id;
                 } else {
-                    $obj->billing_id = ContactDetail::getId($this->contact_id);
+                    $obj->billing_id = ContactAddress::getId($this->contact_id);
                     $obj->shipping_id = $this->shipping_id;
                 }
                 $obj->contact_id = $this->contact_id;
@@ -1269,9 +1308,9 @@ class SalesUpsert extends Component
 
         } else {
 
-            $this->invoice_no = Sale::nextNo();
-            $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
-            $this->common->active_id = true;
+            $this->invoice_no = Sale::nextNo($this->getTenantConnection());
+            $this->uniqueno = session()->get('tenant_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
+            $this->active_id = true;
             $this->sales_type = '1';
             $this->gst_percent = 5;
             $this->additional = 0;
@@ -1297,9 +1336,9 @@ class SalesUpsert extends Component
     public function addItems(): void
     {
         // Ensure correct data types before performing calculations
-        $qty = (int) $this->qty;
-        $price = (float) $this->price;
-        $gstPercent = (float) $this->gst_percent1;
+        $qty = (int)$this->qty;
+        $price = (float)$this->price;
+        $gstPercent = (float)$this->gst_percent1;
 
         if ($this->itemIndex == "") {
             if (!(empty($this->product_name)) &&
@@ -1483,9 +1522,8 @@ class SalesUpsert extends Component
         $this->getShipping_address();
         $this->getStyleList();
         $this->getDespatchList();
-        return view('entries::Sales.upsert', [
-//            'list' => Sale::all();
-        ]);
+
+        return view('entries::sales-upsert');
     }
     #endregion
 }
