@@ -30,7 +30,7 @@
         @keydown.end.prevent.stop="$focus.last()"
         @keydown.page-down.prevent.stop="$focus.last()"
         role="tablist"
-        class="-mb-px flex items-stretch  overflow-x-auto border rounded-t-lg"
+        class="-mb-px flex items-stretch bg-white overflow-x-auto border rounded-t-lg"
     >
         <!-- Tab -->
 
@@ -39,7 +39,7 @@
         @endif
 
     </ul>
-    <div class=" border-b   border-gray-200 shadow-md"></div>
+    <div class=" border-b border-gray-200 shadow-md"></div>
 
     <!-- Panels -->
     <div role="tabpanel" x-cloak class=" border-l border-r border-b border-gray-200 bg-white text-xs font-lex">
