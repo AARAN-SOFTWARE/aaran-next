@@ -382,7 +382,7 @@ class SalesUpsert extends Component
     public function refreshOrder($v): void
     {
         $this->order_id = $v['id'];
-        $this->order_name = $v['name'];
+        $this->order_name = $v['vname'];
         $this->orderTyped = false;
 
     }
@@ -450,7 +450,7 @@ class SalesUpsert extends Component
     public function refreshStyle($v): void
     {
         $this->style_id = $v['id'];
-        $this->style_name = $v['name'];
+        $this->style_name = $v['vname'];
         $this->styleTyped = false;
 
     }

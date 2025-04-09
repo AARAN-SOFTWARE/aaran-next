@@ -46,8 +46,6 @@
                                                                 </x-Ui::dropdown.option>
                                                             @empty
                                                                 @livewire('master::contact-modal',[$contact_name])
-
-{{--                                                                @livewire('aaran.master.contact.lookup.contact-model', [$contact_name])--}}
                                                             @endforelse
                                                         @endif
                                                     </x-Ui::dropdown.select>
@@ -64,15 +62,15 @@
 
                                                 <x-Ui::dropdown.wrapper label="Order NO" type="orderTyped">
                                                     <div class="relative ">
-                                                        <x-Ui::dropdown.input label="Order NO" id="order_name" x-ref="order_name"
+                                                        <x-Ui::dropdown.input label="Order NO" id="order_name"
+                                                                              x-ref="order_name"
                                                                               wire:model.live="order_name"
                                                                               wire:keydown.arrow-up="decrementOrder"
                                                                               wire:keydown.arrow-down="incrementOrder"
                                                                               wire:keydown.enter="enterOrder"/>
-                                                        @error('order_id')
-                                                        <span
-                                                            class="text-red-500">{{'The Order is Required.'}}</span>
-                                                        @enderror
+
+                                                        <x-Ui::input.error-text wire:model="order_name"/>
+
                                                         <x-Ui::dropdown.select>
                                                             @if($orderCollection)
                                                                 @forelse ($orderCollection as $i => $order)
@@ -82,7 +80,7 @@
                                                                         {{ $order->vname }}
                                                                     </x-Ui::dropdown.option>
                                                                 @empty
-                                                                    {{--                                                                    @livewire('aaran.master.order.lookup.order-model',[$order_name])--}}
+                                                                    @livewire('master::order-modal',[$order_name])
                                                                 @endforelse
                                                             @endif
                                                         </x-Ui::dropdown.select>
@@ -105,10 +103,8 @@
                                                                               wire:keydown.arrow-down="incrementStyle"
                                                                               wire:keydown.enter="enterStyle"/>
 
-                                                        @error('style_id')
-                                                        <span
-                                                            class="text-red-500">{{'The Style is Required.'}}</span>
-                                                        @enderror
+                                                        <x-Ui::input.error-text wire:model="style_name"/>
+
                                                         <x-Ui::dropdown.select>
 
                                                             @if($styleCollection)
@@ -119,7 +115,7 @@
                                                                         {{ $style->vname }}
                                                                     </x-Ui::dropdown.option>
                                                                 @empty
-                                                                    {{--                                                                    @livewire('aaran.master.style.lookup.style-model',[$style_name])--}}
+                                                                    @livewire('master::style-modal',[$style_name])
                                                                 @endforelse
                                                             @endif
                                                         </x-Ui::dropdown.select>

@@ -26,7 +26,7 @@ class ContactModal extends Component
     use ComponentStateTrait, TenantAwareTrait;
 
     #region[properties]
-    public bool $showModel = false;
+    public bool $showModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -625,7 +625,7 @@ class ContactModal extends Component
     #region[clear fields]
 
     public function closeModal(): void{
-        $this->showModel = false;
+        $this->showModal = false;
         $this->clearFields();
     }
 
@@ -665,9 +665,6 @@ class ContactModal extends Component
         $this->ifsc_code = '';
         $this->bank = '';
         $this->branch = '';
-
-        $this->showModal = false;
-
     }
     #endregion
 

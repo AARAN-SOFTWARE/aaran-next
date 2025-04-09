@@ -1,11 +1,8 @@
 <div>
     <div x-data @keydown.tab.stop>
-        <x-Ui::lookup.model :show-model="$showModel" :height="'h-[40rem]'" :width="'w-3/5'"
+        <x-Ui::lookup.modal :show-modal="$showModal" :height="'h-[40rem]'" :width="'w-3/5'"
                                            label="Contact">
 
-{{--            <x-Ui::forms.create :id="$vid" :max-width="'6xl'">--}}
-{{--                <div class="h-full">--}}
-                    <!-- Tab Header --------------------------------------------------------------------------------------->
                     <x-Ui::tabs.tab-panel>
 
                         <x-slot name="tabs">
@@ -252,9 +249,7 @@
                         </x-slot>
 
                     </x-Ui::tabs.tab-panel>
-{{--                </div>--}}
-{{--            </x-Ui::forms.create>--}}
 
-        </x-Ui::lookup.model>
+        </x-Ui::lookup.modal>
     </div>
 </div>
