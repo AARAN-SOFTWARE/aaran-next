@@ -231,7 +231,7 @@
                                                                 %
                                                             </x-Ui::dropdown.option>
                                                         @empty
-                                                            {{--                                                            @livewire('aaran.master.product.lookup.product-model',[$product_name])--}}
+                                                            @livewire('aaran.master.product.lookup.product-model',[$product_name])
                                                         @endforelse
                                                     @endif
                                                 </x-Ui::dropdown.select>
