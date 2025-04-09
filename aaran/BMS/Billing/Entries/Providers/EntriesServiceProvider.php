@@ -38,7 +38,6 @@ class EntriesServiceProvider extends ServiceProvider
 
 //        Livewire::component('payment.index', Payment\Index::class);
 //
-//        Livewire::component('export-sales.index', ExportSales\Index::class);
 //        Livewire::component('export-sales.upsert', ExportSales\Upsert::class);
 //        Livewire::component('export-sales.packing-list', ExportSales\PackingList::class);
 //

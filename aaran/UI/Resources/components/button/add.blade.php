@@ -1,5 +1,5 @@
 <button
-    class="w-16 py-2 relative rounded group overflow-hidden font-medium
+    class="w-16 py-2 relative rounded group overflow-hidden font-medium  cursor-pointer
     bg-emerald-500 inline-block text-center" {{$attributes}}>
                 <span
                     class="absolute top-0 left-0 flex h-full w-0 mr-0 transition-all

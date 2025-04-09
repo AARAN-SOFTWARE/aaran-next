@@ -176,9 +176,8 @@ class SalesUpsert extends Component
     public function refreshContact($v): void
     {
         $this->contact_id = $v['id'];
-        $this->contact_name = \Livewire\str($v['name'])->upper();
+        $this->contact_name = $v['vname'];
         $this->contactTyped = false;
-
     }
 
     public function getContactList(): void
