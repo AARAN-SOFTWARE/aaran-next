@@ -16,18 +16,20 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class ProductList extends Component
+class ProductModal extends Component
 {
     use WithFileUploads;
 
     use ComponentStateTrait, TenantAwareTrait;
+
+    public bool $showModal = false;
 
     #region[Properties]
     public string $vname = '';
     public $quantity;
     public $price;
     public $active_id = true;
-
+    public $log;
     #endregion
 
     public function rules(): array
@@ -36,7 +38,7 @@ class ProductList extends Component
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.products,vname"),
             'hsncode_name' => 'required',
             'unit_name' => 'required',
-            'gst_percent_name' => 'required',
+            'gstpercent_name' => 'required',
         ];
     }
 
@@ -47,7 +49,7 @@ class ProductList extends Component
             'vname.unique' => ' :attribute is already created.',
             'hsncode_name.required' => ' :attribute is required.',
             'unit_name.required' => ' :attribute is required.',
-            'gst_percent_name.required' => ' :attribute is required.',
+            'gstpercent_name.required' => ' :attribute is required.',
         ];
     }
 
@@ -57,7 +59,7 @@ class ProductList extends Component
             'vname' => 'Name',
             'hsncode_name' => 'Hsncode',
             'unit_name' => 'Unit',
-            'gst_percent_name' => 'Gst percent',
+            'gstpercent_name' => 'Gst percent',
         ];
     }
 
@@ -73,14 +75,14 @@ class ProductList extends Component
         Product::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
-                'vname' => $this->vname,
-                'product_type_id' => $this->product_type_id ?: ProductType::GOODS,
-                'hsncode_id' => $this->hsncode_id ?: Hsncode::value('id'),
-                'unit_id' => $this->unit_id ?: Unit::value('id'),
-                'gst_percent_id' => $this->gst_percent_id ?: GstPercent::value('id'),
-                'initial_quantity' => $this->quantity ?: '0',
-                'initial_price' => $this->price ?: '0',
-                'active_id' => $this->active_id,
+            'vname' => $this->vname,
+            'producttype_id'  => $this->producttype_id ?: ProductType::GOODS,
+            'hsncode_id'      => $this->hsncode_id ?: Hsncode::value('id'),
+            'unit_id'         => $this->unit_id ?: Unit::value('id'),
+            'gstpercent_id'   => $this->gstpercent_id ?: GstPercent::value('id'),
+            'initial_quantity'=> $this->quantity ?: '0',
+            'initial_price'   => $this->price ?: '0',
+            'active_id' => $this->active_id,
             ],
         );
 
@@ -163,17 +165,17 @@ class ProductList extends Component
     }
 #endregion
 
-    #region[product Type]
-    public $product_type_id = '';
-    public $product_type_name = '';
-    public $productTypeCollection;
+    #region[producttype]
+    public $producttype_id = '';
+    public $producttype_name = '';
+    public $producttypeCollection;
     public $highlightProductType = 0;
-    public $productTypeTyped = false;
+    public $producttypeTyped = false;
 
     public function decrementProductType(): void
     {
         if ($this->highlightProductType === 0) {
-            $this->highlightProductType = count($this->productTypeCollection) - 1;
+            $this->highlightProductType = count($this->producttypeCollection) - 1;
             return;
         }
         $this->highlightProductType--;
@@ -181,7 +183,7 @@ class ProductList extends Component
 
     public function incrementProductType(): void
     {
-        if ($this->highlightProductType === count($this->productTypeCollection) - 1) {
+        if ($this->highlightProductType === count($this->producttypeCollection) - 1) {
             $this->highlightProductType = 0;
             return;
         }
@@ -190,33 +192,33 @@ class ProductList extends Component
 
     public function setProductType($name, $id): void
     {
-        $this->product_type_name = $name;
-        $this->product_type_id = $id;
+        $this->producttype_name = $name;
+        $this->producttype_id = $id;
         $this->getProductTypeList();
     }
 
     public function enterProductType(): void
     {
-        $obj = $this->productTypeCollection[$this->highlightProductType] ?? null;
+        $obj = $this->producttypeCollection[$this->highlightProductType] ?? null;
 
-        $this->product_type_name = '';
-        $this->productTypeCollection = Collection::empty();
+        $this->producttype_name = '';
+        $this->producttypeCollection = Collection::empty();
         $this->highlightProductType = 0;
 
-        $this->product_type_name = $obj['name'] ?? '';
-        $this->product_type_id = $obj['id'] ?? '';
+        $this->producttype_name = $obj['name'] ?? '';
+        $this->producttype_id = $obj['id'] ?? '';
     }
 
     public function refreshProductType($v): void
     {
-        $this->product_type_id = $v['id'];
-        $this->product_type_name = $v['name'];
-        $this->productTypeTyped = false;
+        $this->producttype_id = $v['id'];
+        $this->producttype_name = $v['name'];
+        $this->producttypeTyped = false;
     }
 
     public function getProductTypeList(): void
     {
-        $this->productTypeCollection = collect(ProductType::getList());
+        $this->producttypeCollection = collect(ProductType::getList());
     }
 #endregion
 #endregion
@@ -264,7 +266,6 @@ class ProductList extends Component
         $this->unit_name = $obj->vname ?? '';
         $this->unit_id = $obj->id ?? '';
     }
-
     #[On('refresh-unit')]
     public function refreshUnit($v): void
     {
@@ -296,18 +297,18 @@ class ProductList extends Component
     }
     #endregion
 
-    #region[gst percent]
+    #region[gstpercent]
     #[validate]
-    public $gst_percent_name = '';
-    public $gst_percent_id = '';
-    public $gstPercentCollection;
+    public $gstpercent_name = '';
+    public $gstpercent_id = '';
+    public $gstpercentCollection;
     public $highlightGstPercent = 0;
-    public $gstPercentTyped = false;
+    public $gstpercentTyped = false;
 
     public function decrementGstPercent(): void
     {
         if ($this->highlightGstPercent === 0) {
-            $this->highlightGstPercent = count($this->gstPercentCollection) - 1;
+            $this->highlightGstPercent = count($this->gstpercentCollection) - 1;
             return;
         }
         $this->highlightGstPercent--;
@@ -315,7 +316,7 @@ class ProductList extends Component
 
     public function incrementGstPercent(): void
     {
-        if ($this->highlightGstPercent === count($this->gstPercentCollection) - 1) {
+        if ($this->highlightGstPercent === count($this->gstpercentCollection) - 1) {
             $this->highlightGstPercent = 0;
             return;
         }
@@ -324,29 +325,29 @@ class ProductList extends Component
 
     public function setGstPercent($name, $id): void
     {
-        $this->gst_percent_name = $name;
-        $this->gst_percent_id = $id;
+        $this->gstpercent_name = $name;
+        $this->gstpercent_id = $id;
         $this->getGstPercentList();
     }
 
     public function enterGstPercent(): void
     {
-        $obj = $this->gstPercentCollection[$this->highlightGstPercent] ?? null;
+        $obj = $this->gstpercentCollection[$this->highlightGstPercent] ?? null;
 
-        $this->gst_percent_name = '';
-        $this->gstPercentCollection = Collection::empty();
+        $this->gstpercent_name = '';
+        $this->gstpercentCollection = Collection::empty();
         $this->highlightGstPercent = 0;
 
-        $this->gst_percent_name = $obj->vname ?? '';
-        $this->gst_percent_id = $obj->id ?? '';
+        $this->gstpercent_name = $obj->vname ?? '';
+        $this->gstpercent_id = $obj->id ?? '';
     }
 
     #[On('refresh-gst-percent')]
     public function refreshGstPercent($v): void
     {
-        $this->gst_percent_id = $v['id'];
-        $this->gst_percent_name = $v['name'];
-        $this->gstPercentTyped = false;
+        $this->gstpercent_id = $v['id'];
+        $this->gstpercent_name = $v['name'];
+        $this->gstpercentTyped = false;
     }
 
     public function gstPercentSave($name)
@@ -360,15 +361,15 @@ class ProductList extends Component
         $this->refreshGstPercent($v);
     }
 
-    public function getGstPercentList(): void
+    public function getGstpercentList(): void
     {
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
 
-        $this->gstPercentCollection = DB::connection($this->getTenantConnection())
+        $this->gstpercentCollection = DB::connection($this->getTenantConnection())
             ->table('gst_percents')
-            ->when($this->gst_percent_name, fn($query) => $query->where('vname', 'like', "%{$this->gst_percent_name}%"))
+            ->when($this->gstpercent_name, fn($query) => $query->where('vname', 'like', "%{$this->gstpercent_name}%"))
             ->get();
     }
 #endregion
@@ -383,12 +384,12 @@ class ProductList extends Component
             $this->active_id = $obj->active_id;
             $this->hsncode_id = $obj->hsncode_id;
             $this->hsncode_name = $obj->hsncode_id ? Hsncode::on($this->getTenantConnection())->find($obj->hsncode_id)->vname : '';
-            $this->product_type_id = $obj->producttype_id;
-            $this->product_type_name = $obj->producttype_id->name ?? 'Unknown';
+            $this->producttype_id = $obj->producttype_id;
+            $this->producttype_name = $obj->producttype_id->name ?? 'Unknown';
             $this->unit_id = $obj->unit_id;
             $this->unit_name = $obj->unit_id ? Unit::on($this->getTenantConnection())->find($obj->unit_id)->vname : '';
-            $this->gst_percent_id = $obj->gst_percent_id;
-            $this->gst_percent_name = $obj->gst_percent_id ? GstPercent::on($this->getTenantConnection())->find($obj->gstpercent_id)->vname : '';
+            $this->gstpercent_id = $obj->gstpercent_id;
+            $this->gstpercent_name = $obj->gstpercent_id ? GstPercent::on($this->getTenantConnection())->find($obj->gstpercent_id)->vname : '';
             $this->quantity = $obj->initial_quantity;
             $this->price = $obj->initial_price;
             return $obj;
@@ -405,12 +406,12 @@ class ProductList extends Component
         $this->active_id = true;
         $this->hsncode_id = '';
         $this->hsncode_name = '';
-        $this->gst_percent_name = '';
-        $this->gst_percent_id = '';
+        $this->gstpercent_name = '';
+        $this->gstpercent_id = '';
         $this->unit_name = '';
         $this->unit_id = '';
-        $this->product_type_id = '';
-        $this->product_type_name = '';
+        $this->producttype_id = '';
+        $this->producttype_name = '';
         $this->quantity = '';
         $this->price = '';
     }
@@ -443,7 +444,6 @@ class ProductList extends Component
             }
         }
     }
-
     #endregion
 
     public function render()
@@ -452,7 +452,7 @@ class ProductList extends Component
         $this->getProductTypeList();
         $this->getUnitList();
         $this->getGstPercentList();
-
+//        $this->log = Logbook::where('model_name','Product')->take(5)->get();
         return view('master::product-list')->with([
             'list' => $this->getList(),
         ]);
