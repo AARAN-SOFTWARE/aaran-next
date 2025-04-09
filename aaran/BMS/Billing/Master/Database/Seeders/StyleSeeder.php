@@ -1,19 +1,18 @@
 <?php
 
-namespace Aaran\Master\Database\Seeders;
+namespace Aaran\BMS\Billing\Master\Database\Seeders;
 
 use Aaran\BMS\Billing\Master\Models\Style;
 use Illuminate\Database\Seeder;
 
-class S205_StyleSeeder extends Seeder
+class StyleSeeder extends Seeder
 {
     public static function run(): void
     {
         Style::create([
-            'vname' => '-',
+            'vname' => 'Demo Style',
             'description' => '-',
-            'company_id'=>'1',
-            'active_id' => '1',
+            'active_id' => true,
         ]);
 
     }

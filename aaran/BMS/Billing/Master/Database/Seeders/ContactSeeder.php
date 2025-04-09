@@ -1,21 +1,19 @@
 <?php
 
-namespace Aaran\Master\Database\Seeders;
+namespace Aaran\BMS\Billing\Master\Database\Seeders;
 
 use Aaran\BMS\Billing\Master\Models\Contact;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Database\Seeder;
 
-class S202_ContactSeeder extends Seeder
+class ContactSeeder extends Seeder
 {
     public static function run(): void
     {
         Contact::create([
             'vname'=>'XYZ company pvt ltd',
             'gstin'=>'29AWGPV7107B1Z1',
-            'company_id'=>'1',
-            'user_id'=>'1',
-            'active_id'=>'1',
+            'active_id'=> true ,
             'contact_type_id'=>'1',
             'whatsapp'=>'0123456789',
             'mobile'=>'0123456789',
