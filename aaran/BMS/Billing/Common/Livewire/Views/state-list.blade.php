@@ -22,7 +22,7 @@
                     Name
                 </x-Ui::table.header-text>
 
-                <x-Ui::table.header-text> State Code</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">State Code</x-Ui::table.header-text>
 
                 <x-Ui::table.header-status/>
                 <x-Ui::table.header-action/>

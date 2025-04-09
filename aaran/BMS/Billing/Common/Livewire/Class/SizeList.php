@@ -52,7 +52,7 @@ class SizeList extends Component
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'desc' => $this->description,
+                'description' => $this->description,
                 'active_id' => $this->active_id
             ],
         );

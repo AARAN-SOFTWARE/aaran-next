@@ -225,13 +225,13 @@
                                                         @forelse ($productCollection as $i => $product)
                                                             <x-Ui::dropdown.option
                                                                 highlight="{{ $highlightProduct === $i }}"
-                                                                wire:click.prevent="setProduct('{{ $product->vname }}', '{{ $product->id }}', '{{ $product->gstpercent_id }}')">
+                                                                wire:click.prevent="setProduct('{{ $product->vname }}', '{{ $product->id }}', '{{ $product->gst_percent_id }}')">
                                                                 {{ $product->vname }} &nbsp;-&nbsp;
-                                                                GST&nbsp;: {{ $product->gstpercent->vname ?? 'N/A' }}
+                                                                GST&nbsp;: {{ $product->gst_percent->vname ?? 'N/A' }}
                                                                 %
                                                             </x-Ui::dropdown.option>
                                                         @empty
-                                                            @livewire('aaran.master.product.lookup.product-model',[$product_name])
+                                                            @livewire('master::product-modal',[$product_name])
                                                         @endforelse
                                                     @endif
                                                 </x-Ui::dropdown.select>

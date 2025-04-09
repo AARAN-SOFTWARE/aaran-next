@@ -14,12 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 class ProductModal extends Component
 {
-    use WithFileUploads;
-
     use ComponentStateTrait, TenantAwareTrait;
 
     public bool $showModal = false;
@@ -29,7 +26,7 @@ class ProductModal extends Component
     public $quantity;
     public $price;
     public $active_id = true;
-    public $log;
+
     #endregion
 
     public function rules(): array
@@ -38,7 +35,7 @@ class ProductModal extends Component
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.products,vname"),
             'hsncode_name' => 'required',
             'unit_name' => 'required',
-            'gstpercent_name' => 'required',
+            'gst_percent_name' => 'required',
         ];
     }
 
@@ -49,7 +46,7 @@ class ProductModal extends Component
             'vname.unique' => ' :attribute is already created.',
             'hsncode_name.required' => ' :attribute is required.',
             'unit_name.required' => ' :attribute is required.',
-            'gstpercent_name.required' => ' :attribute is required.',
+            'gst_percent_name.required' => ' :attribute is required.',
         ];
     }
 
@@ -59,7 +56,7 @@ class ProductModal extends Component
             'vname' => 'Name',
             'hsncode_name' => 'Hsncode',
             'unit_name' => 'Unit',
-            'gstpercent_name' => 'Gst percent',
+            'gst_percent_name' => 'Gst percent',
         ];
     }
 
@@ -72,22 +69,22 @@ class ProductModal extends Component
 
         $connection = $this->getTenantConnection();
 
-        Product::on($connection)->updateOrCreate(
+        $product = Product::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
-            'vname' => $this->vname,
-            'producttype_id'  => $this->producttype_id ?: ProductType::GOODS,
-            'hsncode_id'      => $this->hsncode_id ?: Hsncode::value('id'),
-            'unit_id'         => $this->unit_id ?: Unit::value('id'),
-            'gstpercent_id'   => $this->gstpercent_id ?: GstPercent::value('id'),
-            'initial_quantity'=> $this->quantity ?: '0',
-            'initial_price'   => $this->price ?: '0',
-            'active_id' => $this->active_id,
+                'vname' => $this->vname,
+                'product_type_id' => $this->product_type_id ?: ProductType::GOODS,
+                'hsncode_id' => $this->hsncode_id ?: Hsncode::value('id'),
+                'unit_id' => $this->unit_id ?: Unit::value('id'),
+                'gst_percent_id' => $this->gst_percent_id ?: GstPercent::value('id'),
+                'initial_quantity' => $this->quantity ?: '0',
+                'initial_price' => $this->price ?: '0',
+                'active_id' => $this->active_id,
             ],
         );
-
+        $this->dispatch('refresh-product',$product);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->clearFields();
+        $this->closeModal();
     }
     #endregion
 
@@ -165,17 +162,17 @@ class ProductModal extends Component
     }
 #endregion
 
-    #region[producttype]
-    public $producttype_id = '';
-    public $producttype_name = '';
-    public $producttypeCollection;
+    #region[product Type]
+    public $product_type_id = '';
+    public $product_type_name = '';
+    public $productTypeCollection;
     public $highlightProductType = 0;
-    public $producttypeTyped = false;
+    public $productTypeTyped = false;
 
     public function decrementProductType(): void
     {
         if ($this->highlightProductType === 0) {
-            $this->highlightProductType = count($this->producttypeCollection) - 1;
+            $this->highlightProductType = count($this->productTypeCollection) - 1;
             return;
         }
         $this->highlightProductType--;
@@ -183,7 +180,7 @@ class ProductModal extends Component
 
     public function incrementProductType(): void
     {
-        if ($this->highlightProductType === count($this->producttypeCollection) - 1) {
+        if ($this->highlightProductType === count($this->productTypeCollection) - 1) {
             $this->highlightProductType = 0;
             return;
         }
@@ -192,33 +189,33 @@ class ProductModal extends Component
 
     public function setProductType($name, $id): void
     {
-        $this->producttype_name = $name;
-        $this->producttype_id = $id;
+        $this->product_type_name = $name;
+        $this->product_type_id = $id;
         $this->getProductTypeList();
     }
 
     public function enterProductType(): void
     {
-        $obj = $this->producttypeCollection[$this->highlightProductType] ?? null;
+        $obj = $this->productTypeCollection[$this->highlightProductType] ?? null;
 
-        $this->producttype_name = '';
-        $this->producttypeCollection = Collection::empty();
+        $this->product_type_name = '';
+        $this->productTypeCollection = Collection::empty();
         $this->highlightProductType = 0;
 
-        $this->producttype_name = $obj['name'] ?? '';
-        $this->producttype_id = $obj['id'] ?? '';
+        $this->product_type_name = $obj['name'] ?? '';
+        $this->product_type_id = $obj['id'] ?? '';
     }
 
     public function refreshProductType($v): void
     {
-        $this->producttype_id = $v['id'];
-        $this->producttype_name = $v['name'];
-        $this->producttypeTyped = false;
+        $this->product_type_id = $v['id'];
+        $this->product_type_name = $v['name'];
+        $this->productTypeTyped = false;
     }
 
     public function getProductTypeList(): void
     {
-        $this->producttypeCollection = collect(ProductType::getList());
+        $this->productTypeCollection = collect(ProductType::getList());
     }
 #endregion
 #endregion
@@ -266,6 +263,7 @@ class ProductModal extends Component
         $this->unit_name = $obj->vname ?? '';
         $this->unit_id = $obj->id ?? '';
     }
+
     #[On('refresh-unit')]
     public function refreshUnit($v): void
     {
@@ -297,18 +295,18 @@ class ProductModal extends Component
     }
     #endregion
 
-    #region[gstpercent]
+    #region[gst percent]
     #[validate]
-    public $gstpercent_name = '';
-    public $gstpercent_id = '';
-    public $gstpercentCollection;
+    public $gst_percent_name = '';
+    public $gst_percent_id = '';
+    public $gstPercentCollection;
     public $highlightGstPercent = 0;
-    public $gstpercentTyped = false;
+    public $gstPercentTyped = false;
 
     public function decrementGstPercent(): void
     {
         if ($this->highlightGstPercent === 0) {
-            $this->highlightGstPercent = count($this->gstpercentCollection) - 1;
+            $this->highlightGstPercent = count($this->gstPercentCollection) - 1;
             return;
         }
         $this->highlightGstPercent--;
@@ -316,7 +314,7 @@ class ProductModal extends Component
 
     public function incrementGstPercent(): void
     {
-        if ($this->highlightGstPercent === count($this->gstpercentCollection) - 1) {
+        if ($this->highlightGstPercent === count($this->gstPercentCollection) - 1) {
             $this->highlightGstPercent = 0;
             return;
         }
@@ -325,51 +323,51 @@ class ProductModal extends Component
 
     public function setGstPercent($name, $id): void
     {
-        $this->gstpercent_name = $name;
-        $this->gstpercent_id = $id;
+        $this->gst_percent_name = $name;
+        $this->gst_percent_id = $id;
         $this->getGstPercentList();
     }
 
     public function enterGstPercent(): void
     {
-        $obj = $this->gstpercentCollection[$this->highlightGstPercent] ?? null;
+        $obj = $this->gstPercentCollection[$this->highlightGstPercent] ?? null;
 
-        $this->gstpercent_name = '';
-        $this->gstpercentCollection = Collection::empty();
+        $this->gst_percent_name = '';
+        $this->gstPercentCollection = Collection::empty();
         $this->highlightGstPercent = 0;
 
-        $this->gstpercent_name = $obj->vname ?? '';
-        $this->gstpercent_id = $obj->id ?? '';
+        $this->gst_percent_name = $obj->vname ?? '';
+        $this->gst_percent_id = $obj->id ?? '';
     }
 
     #[On('refresh-gst-percent')]
     public function refreshGstPercent($v): void
     {
-        $this->gstpercent_id = $v['id'];
-        $this->gstpercent_name = $v['name'];
-        $this->gstpercentTyped = false;
+        $this->gst_percent_id = $v['id'];
+        $this->gst_percent_name = $v['name'];
+        $this->gstPercentTyped = false;
     }
 
-    public function gstPercentSave($name)
+    public function gstPercentSave($name): void
     {
         $obj = GstPercent::on($this->getTenantConnection())->create([
             'vname' => $name,
-            'desc' => null,
+            'description' => '',
             'active_id' => '1'
         ]);
         $v = ['name' => $name, 'id' => $obj->id];
         $this->refreshGstPercent($v);
     }
 
-    public function getGstpercentList(): void
+    public function getGstPercentList(): void
     {
         if (!$this->getTenantConnection()) {
             return; // Prevent execution if tenant is not set
         }
 
-        $this->gstpercentCollection = DB::connection($this->getTenantConnection())
+        $this->gstPercentCollection = DB::connection($this->getTenantConnection())
             ->table('gst_percents')
-            ->when($this->gstpercent_name, fn($query) => $query->where('vname', 'like', "%{$this->gstpercent_name}%"))
+            ->when($this->gst_percent_name, fn($query) => $query->where('vname', 'like', "%{$this->gst_percent_name}%"))
             ->get();
     }
 #endregion
@@ -381,17 +379,17 @@ class ProductModal extends Component
             $obj = Product::on($this->getTenantConnection())->find($id);
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->active_id = $obj->active_id;
             $this->hsncode_id = $obj->hsncode_id;
-            $this->hsncode_name = $obj->hsncode_id ? Hsncode::on($this->getTenantConnection())->find($obj->hsncode_id)->vname : '';
-            $this->producttype_id = $obj->producttype_id;
-            $this->producttype_name = $obj->producttype_id->name ?? 'Unknown';
+            $this->hsncode_name = $obj->hsncode->vname;
+            $this->product_type_id = $obj->product_type_id;
+            $this->product_type_name = $obj->product_type_id ? ProductType::tryFrom($obj->product_type_id)->getName() : '';
             $this->unit_id = $obj->unit_id;
-            $this->unit_name = $obj->unit_id ? Unit::on($this->getTenantConnection())->find($obj->unit_id)->vname : '';
-            $this->gstpercent_id = $obj->gstpercent_id;
-            $this->gstpercent_name = $obj->gstpercent_id ? GstPercent::on($this->getTenantConnection())->find($obj->gstpercent_id)->vname : '';
+            $this->unit_name = $obj->unit->vname;
+            $this->gst_percent_id = $obj->gst_percent_id;
+            $this->gst_percent_name = $obj->gstPercent->vname;
             $this->quantity = $obj->initial_quantity;
             $this->price = $obj->initial_price;
+            $this->active_id = $obj->active_id;
             return $obj;
         }
         return null;
@@ -399,6 +397,12 @@ class ProductModal extends Component
     #endregion
 
     #region[Clear-Fields]
+
+    public function closeModal(): void{
+        $this->showModal = false;
+        $this->clearFields();
+    }
+
     public function clearFields(): void
     {
         $this->vid = null;
@@ -406,57 +410,33 @@ class ProductModal extends Component
         $this->active_id = true;
         $this->hsncode_id = '';
         $this->hsncode_name = '';
-        $this->gstpercent_name = '';
-        $this->gstpercent_id = '';
+        $this->gst_percent_name = '';
+        $this->gst_percent_id = '';
         $this->unit_name = '';
         $this->unit_id = '';
-        $this->producttype_id = '';
-        $this->producttype_name = '';
+        $this->product_type_id = '';
+        $this->product_type_name = '';
         $this->quantity = '';
         $this->price = '';
     }
     #endregion
 
     #region[Render]
-    public function getRoute()
+    public function mount($v = null): void
     {
-        return route('products');
-    }
-
-    #region[getList]
-    public function getList()
-    {
-        return Product::on($this->getTenantConnection())
-            ->active($this->activeRecord)
-            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
-            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-            ->paginate($this->perPage);
-    }
-    #endregion
-
-    #region[Delete]
-    public function deleteFunction($id): void
-    {
-        if ($id) {
-            $obj = Product::on($this->getTenantConnection())->find($id);
-            if ($obj) {
-                $obj->delete();
-            }
+        if ($v !== null) {
+            $this->vname = $v;
         }
-    }
-    #endregion
 
+    }
     public function render()
     {
         $this->getHsncodeList();
         $this->getProductTypeList();
         $this->getUnitList();
         $this->getGstPercentList();
-//        $this->log = Logbook::where('model_name','Product')->take(5)->get();
-        return view('master::product-list')->with([
-            'list' => $this->getList(),
-        ]);
+
+        return view('master::product-modal');
     }
     #endregion
 }
-

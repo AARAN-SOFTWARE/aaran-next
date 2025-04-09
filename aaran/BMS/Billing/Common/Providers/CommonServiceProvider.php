@@ -31,6 +31,8 @@ class CommonServiceProvider extends ServiceProvider
         Livewire::component('common::bank-list', Class\BankList::class);
         Livewire::component('common::contact-type-list', Class\ContactTypeList::class);
         Livewire::component('common::account-type-list', Class\AccountTypeList::class);
+        Livewire::component('common::unit-list', Class\UnitList::class);
+        Livewire::component('common::size-list', Class\SizeList::class);
     }
 
     protected function loadViews(): void

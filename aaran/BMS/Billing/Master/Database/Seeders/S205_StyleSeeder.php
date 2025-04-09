@@ -11,7 +11,7 @@ class S205_StyleSeeder extends Seeder
     {
         Style::create([
             'vname' => '-',
-            'desc' => '-',
+            'description' => '-',
             'company_id'=>'1',
             'active_id' => '1',
         ]);
