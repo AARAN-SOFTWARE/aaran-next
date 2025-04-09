@@ -30,6 +30,7 @@ class MasterServiceProvider extends ServiceProvider
         Livewire::component('master::contact-modal', Class\ContactModal::class);
         Livewire::component('master::order-modal', Class\OrderModal::class);
         Livewire::component('master::style-modal', Class\StyleModal::class);
+        Livewire::component('master::product-modal', Class\ProductModal::class);
 
     }
 

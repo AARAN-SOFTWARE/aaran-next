@@ -349,11 +349,11 @@ class ProductList extends Component
         $this->gstPercentTyped = false;
     }
 
-    public function gstPercentSave($name)
+    public function gstPercentSave($name): void
     {
         $obj = GstPercent::on($this->getTenantConnection())->create([
             'vname' => $name,
-            'desc' => null,
+            'description' => '',
             'active_id' => '1'
         ]);
         $v = ['name' => $name, 'id' => $obj->id];
@@ -380,17 +380,17 @@ class ProductList extends Component
             $obj = Product::on($this->getTenantConnection())->find($id);
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->active_id = $obj->active_id;
             $this->hsncode_id = $obj->hsncode_id;
-            $this->hsncode_name = $obj->hsncode_id ? Hsncode::on($this->getTenantConnection())->find($obj->hsncode_id)->vname : '';
-            $this->product_type_id = $obj->producttype_id;
-            $this->product_type_name = $obj->producttype_id->name ?? 'Unknown';
+            $this->hsncode_name = $obj->hsncode->vname;
+            $this->product_type_id = $obj->product_type_id;
+            $this->product_type_name = $obj->product_type_id ? ProductType::tryFrom($obj->product_type_id)->getName() : '';
             $this->unit_id = $obj->unit_id;
-            $this->unit_name = $obj->unit_id ? Unit::on($this->getTenantConnection())->find($obj->unit_id)->vname : '';
+            $this->unit_name = $obj->unit->vname;
             $this->gst_percent_id = $obj->gst_percent_id;
-            $this->gst_percent_name = $obj->gst_percent_id ? GstPercent::on($this->getTenantConnection())->find($obj->gstpercent_id)->vname : '';
+            $this->gst_percent_name = $obj->gstPercent->vname;
             $this->quantity = $obj->initial_quantity;
             $this->price = $obj->initial_price;
+            $this->active_id = $obj->active_id;
             return $obj;
         }
         return null;

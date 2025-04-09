@@ -753,17 +753,14 @@ class SalesUpsert extends Component
 
         $this->product_name = $obj['vname'] ?? '';
         $this->product_id = $obj['id'] ?? '';
-//        $this->gst_percent1 = Sale::commons($obj['gstpercent_id']) ?? '';
     }
 
     #[On('refresh-product')]
     public function refreshProduct($v): void
     {
         $this->product_id = $v['id'];
-        $this->product_name = $v['name'];
-//        $this->gst_percent1 = Sale::commons($v['gstpercent_id']);
+        $this->product_name = $v['vname'];
         $this->productTyped = false;
-
     }
 
     public function getProductList(): void

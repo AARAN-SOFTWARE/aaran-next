@@ -1,8 +1,7 @@
 <div>
     <x-slot name="header">Size</x-slot>
     <x-Ui::forms.m-panel>
-        <x-Ui::alerts.notification />
-
+        <x-Ui::alerts.notification/>
 
 
         <!-- Top Controls --------------------------------------------------------------------------------------------->
@@ -46,8 +45,13 @@
 
         <x-Ui::forms.create :id="$vid">
             <div class="flex flex-col  gap-3">
-                <x-Ui::input.floating wire:model="vname" label="State Name"/>
-                <x-Ui::input.error-text wire:model="vname"/>
+                <div>
+                    <x-Ui::input.floating wire:model="vname" label="Size Name"/>
+                    <x-Ui::input.error-text wire:model="vname"/>
+                </div>
+
+                <x-Ui::input.floating wire:model="description" label="Description"/>
+
             </div>
         </x-Ui::forms.create>
 
