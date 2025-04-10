@@ -24,110 +24,19 @@
                                     <div class="w-full space-y-3">
 
                                         <div>
-                                            @livewire('master::contact-lookup')
-                                        </div>
-
-
-                                        <div>
-
-                                            {{--                                            <x-Ui::dropdown.wrapper label="Party Name" type="contactTyped">--}}
-                                            {{--                                                <div class="relative ">--}}
-                                            {{--                                                    <x-Ui::dropdown.input label="Party Name" id="contact_name"--}}
-                                            {{--                                                                          wire:model.live.debounce="contact_name"--}}
-                                            {{--                                                                          wire:keydown.arrow-up="decrementContact"--}}
-                                            {{--                                                                          wire:keydown.arrow-down="incrementContact"--}}
-                                            {{--                                                                          wire:keydown.enter="enterContact"/>--}}
-                                            {{--                                                    @error('contact_id')--}}
-                                            {{--                                                    <span--}}
-                                            {{--                                                        class="text-red-500">{{'The Party Name is Required.'}}</span>--}}
-                                            {{--                                                    @enderror--}}
-                                            {{--                                                    <x-Ui::dropdown.select>--}}
-                                            {{--                                                        @if($contactCollection)--}}
-                                            {{--                                                            @forelse ($contactCollection as $i => $contact)--}}
-                                            {{--                                                                <x-Ui::dropdown.option--}}
-                                            {{--                                                                    highlight="{{$highlightContact === $i  }}"--}}
-                                            {{--                                                                    wire:click.prevent="setContact('{{$contact->vname}}','{{$contact->id}}')">--}}
-                                            {{--                                                                    {{ $contact->vname }}--}}
-                                            {{--                                                                </x-Ui::dropdown.option>--}}
-                                            {{--                                                            @empty--}}
-                                            {{--                                                                @livewire('master::contact-modal',[$contact_name])--}}
-                                            {{--                                                            @endforelse--}}
-                                            {{--                                                        @endif--}}
-                                            {{--                                                    </x-Ui::dropdown.select>--}}
-                                            {{--                                                </div>--}}
-                                            {{--                                            </x-Ui::dropdown.wrapper>--}}
-
-                                            {{--                                            <x-Ui::input.error-text wire:model="contact_name"/>--}}
-
+                                            @livewire('master::contact.lookup')
                                         </div>
 
                                         <div>
-
                                             @if(\Aaran\Assets\Features\SaleEntry::hasOrder())
-
-                                                <x-Ui::dropdown.wrapper label="Order NO" type="orderTyped">
-                                                    <div class="relative ">
-                                                        <x-Ui::dropdown.input label="Order NO" id="order_name"
-                                                                              x-ref="order_name"
-                                                                              wire:model.live="order_name"
-                                                                              wire:keydown.arrow-up="decrementOrder"
-                                                                              wire:keydown.arrow-down="incrementOrder"
-                                                                              wire:keydown.enter="enterOrder"/>
-
-                                                        <x-Ui::input.error-text wire:model="order_name"/>
-
-                                                        <x-Ui::dropdown.select>
-                                                            @if($orderCollection)
-                                                                @forelse ($orderCollection as $i => $order)
-                                                                    <x-Ui::dropdown.option
-                                                                        highlight="{{$highlightOrder === $i  }}"
-                                                                        wire:click.prevent="setOrder('{{$order->vname}}','{{$order->id}}')">
-                                                                        {{ $order->vname }}
-                                                                    </x-Ui::dropdown.option>
-                                                                @empty
-                                                                    @livewire('master::order-modal',[$order_name])
-                                                                @endforelse
-                                                            @endif
-                                                        </x-Ui::dropdown.select>
-                                                    </div>
-                                                </x-Ui::dropdown.wrapper>
-
+                                                @livewire('master::order.lookup')
                                             @endif
                                         </div>
 
                                         <div>
 
                                             @if(\Aaran\Assets\Features\SaleEntry::hasStyle())
-
-                                                <x-Ui::dropdown.wrapper label="Style" type="style_name">
-                                                    <div class="relative ">
-
-                                                        <x-Ui::dropdown.input label="Style" id="style_name"
-                                                                              wire:model.live="style_name"
-                                                                              wire:keydown.arrow-up="decrementStyle"
-                                                                              wire:keydown.arrow-down="incrementStyle"
-                                                                              wire:keydown.enter="enterStyle"/>
-
-                                                        <x-Ui::input.error-text wire:model="style_name"/>
-
-                                                        <x-Ui::dropdown.select>
-
-                                                            @if($styleCollection)
-                                                                @forelse ($styleCollection as $i => $style)
-                                                                    <x-Ui::dropdown.option
-                                                                        highlight="{{$highlightStyle === $i  }}"
-                                                                        wire:click.prevent="setStyle('{{$style->vname}}','{{$style->id}}')">
-                                                                        {{ $style->vname }}
-                                                                    </x-Ui::dropdown.option>
-                                                                @empty
-                                                                    @livewire('master::style-modal',[$style_name])
-                                                                @endforelse
-                                                            @endif
-                                                        </x-Ui::dropdown.select>
-
-                                                    </div>
-                                                </x-Ui::dropdown.wrapper>
-
+                                                @livewire('master::style.lookup')
                                             @endif
                                         </div>
                                     </div>
@@ -195,6 +104,7 @@
                                             </x-Ui::input.model-select>
                                         </div>
                                     </div>
+
                                 </div>
                                 <div
                                     class="px-4 pb-4  text-lg font-merri tracking-wider text-orange-600 underline underline-offset-4 underline-orange-500">
@@ -218,30 +128,9 @@
                                         </div>
                                     @endif
                                     <div class="w-[30%]">
-                                        <x-Ui::dropdown.wrapper label="Particulars" type="productTyped">
-                                            <div class="relative ">
-                                                <x-Ui::dropdown.input label="Product Name" id="product_name"
-                                                                      wire:model.live="product_name"
-                                                                      wire:keydown.arrow-up="decrementProduct"
-                                                                      wire:keydown.arrow-down="incrementProduct"
-                                                                      wire:keydown.enter="enterProduct"/>
-                                                <x-Ui::dropdown.select>
-                                                    @if($productCollection)
-                                                        @forelse ($productCollection as $i => $product)
-                                                            <x-Ui::dropdown.option
-                                                                highlight="{{ $highlightProduct === $i }}"
-                                                                wire:click.prevent="setProduct('{{ $product->vname }}', '{{ $product->id }}', '{{ $product->gst_percent_id }}')">
-                                                                {{ $product->vname }} &nbsp;-&nbsp;
-                                                                GST&nbsp;: {{ $product->gst_percent_vname ?? 'N/A'  }}
-                                                                %
-                                                            </x-Ui::dropdown.option>
-                                                        @empty
-                                                            @livewire('master::product-modal',[$product_name])
-                                                        @endforelse
-                                                    @endif
-                                                </x-Ui::dropdown.select>
-                                            </div>
-                                        </x-Ui::dropdown.wrapper>
+
+                                        @livewire('master::product.lookup')
+
                                     </div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasProductDescription())
                                         <div class="w-[20%]">
@@ -251,67 +140,12 @@
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasColour())
                                         <div class="w-[15%]">
-
-                                            <x-Ui::dropdown.wrapper label="Colour Name" type="colourTyped">
-                                                <div class="relative ">
-                                                    <x-Ui::dropdown.input label="Colour Name" id="colour_name"
-                                                                          wire:model.live="colour_name"
-                                                                          wire:keydown.arrow-up="decrementColour"
-                                                                          wire:keydown.arrow-down="incrementColour"
-                                                                          wire:keydown.enter="enterColour"/>
-                                                    <x-Ui::dropdown.select>
-                                                        @if($colourCollection)
-                                                            @forelse ($colourCollection as $i => $colour)
-                                                                <x-Ui::dropdown.option
-                                                                    highlight="{{$highlightColour === $i  }}"
-                                                                    wire:click.prevent="setColour('{{$colour->vname}}','{{$colour->id}}')">
-                                                                    {{ $colour->vname }}
-                                                                </x-Ui::dropdown.option>
-                                                            @empty
-                                                                <x-Ui::dropdown.new
-                                                                    wire:click.prevent="colourSave('{{$colour_name}}')"
-                                                                    label="Colour"/>
-                                                            @endforelse
-                                                        @endif
-                                                        {{--                                <x-dropdown.option2  wire:click.prevent="colourSave('{{$colour_name}}')" label="Colour" />--}}
-
-                                                    </x-Ui::Ui::dropdown.select>
-                                                </div>
-                                            </x-Ui::dropdown.wrapper>
+                                            @livewire('common::lookup.colour')
                                         </div>
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasSize())
                                         <div class="w-[15%]">
-                                            <x-Ui::dropdown.wrapper label="Size Name" type="sizeTyped">
-                                                <div class="relative ">
-                                                    <x-Ui::dropdown.input label="Size Name" id="size_name"
-                                                                          wire:model.live="size_name"
-                                                                          wire:keydown.arrow-up="decrementSize"
-                                                                          wire:keydown.arrow-down="incrementSize"
-                                                                          wire:keydown.enter="enterSize"/>
-                                                    @error('size_id')
-                                                    <span
-                                                        class="text-red-500">{{'The Size name is Required.'}}</span>
-                                                    @enderror
-                                                    <x-Ui::dropdown.select>
-                                                        @if($sizeCollection)
-                                                            @forelse ($sizeCollection as $i => $size)
-                                                                <x-Ui::dropdown.option
-                                                                    highlight="{{$highlightSize === $i  }}"
-                                                                    wire:click.prevent="setSize('{{$size->vname}}','{{$size->id}}')">
-                                                                    {{ $size->vname }}
-                                                                </x-Ui::dropdown.option>
-                                                            @empty
-                                                                <x-Ui::dropdown.new
-                                                                    wire:click.prevent="sizeSave('{{$size_name}}')"
-                                                                    label="Size"/>
-                                                            @endforelse
-                                                        @endif
-                                                        {{--                                <x-dropdown.option2  wire:click.prevent="colourSave('{{$colour_name}}')" label="Size" />--}}
-
-                                                    </x-Ui::dropdown.select>
-                                                </div>
-                                            </x-Ui::dropdown.wrapper>
+                                            @livewire('common::lookup.size')
                                         </div>
                                     @endif
                                     <div class="w-[10%]">
@@ -461,7 +295,8 @@
                                         <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</div>
                                         <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_gst)}}</div>
                                         <div>{{$sale->round_off}}</div>
-                                        <div class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->grand_total)}}</div>
+                                        <div
+                                            class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->grand_total)}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -470,73 +305,14 @@
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasBillingAddress())
-                                        <x-Ui::dropdown.wrapper label="Billing Address" type="orderTyped">
-                                            <div class="relative ">
-                                                <x-Ui::dropdown.input label="Billing Address" id="billing_address"
-                                                                      wire:model.live="billing_address"
-                                                                      wire:keydown.arrow-up="decrementBilling_address"
-                                                                      wire:keydown.arrow-down="incrementBilling_address"
-                                                                      wire:keydown.enter="enterBilling_address"/>
-                                                <x-Ui::dropdown.select>
-                                                    @if($billing_addressCollection)
-                                                        @forelse ($billing_addressCollection as $i => $billing_address)
-                                                            <x-Ui::dropdown.option
-                                                                highlight="{{$highlightBilling_address === $i  }}"
-                                                                wire:click.prevent="setBilling_address('{{$billing_address->address_type.'-'.$billing_address->address_1}}','{{$billing_address->id}}')">
-                                                                {{ $billing_address->address_type }}&nbsp;-&nbsp;
-                                                                {{ $billing_address->address_1 }}&nbsp;-&nbsp;
-                                                                {{ $billing_address->address_2 }}&nbsp;-&nbsp;
-                                                            </x-Ui::dropdown.option>
-                                                        @empty
-                                                            <x-Ui::dropdown.new
-                                                                href="{{route('contacts.upsert',[0])}}"
-                                                                label="Billing Address"/>
-                                                        @endforelse
-                                                    @endif
-                                                </x-Ui::dropdown.select>
-                                                @error('billing_id')
-                                                <span class="text-red-500">{{'Billing Address is Required.'}}</span>
-                                                @enderror
-                                            </div>
-                                        </x-Ui::dropdown.wrapper>
+
                                     @endif
                                 </div>
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasShippingAddress())
-                                        <x-Ui::dropdown.wrapper label="Shipping Address"
-                                                                type="shipping_addressTyped">
-                                            <div class="relative ">
-                                                <x-Ui::dropdown.input label="Shipping Address" id="shipping_address"
-                                                                      wire:model.live="shipping_address"
-                                                                      wire:keydown.arrow-up="decrementShipping_address"
-                                                                      wire:keydown.arrow-down="incrementShipping_address"
-                                                                      wire:keydown.enter="enterShipping_address"/>
-                                                <x-Ui::dropdown.select>
-                                                    @if($shipping_addressCollection)
-                                                        @forelse ($shipping_addressCollection as $i => $shipping_address)
-                                                            <x-Ui::dropdown.option
-                                                                highlight="{{$highlightShipping_address === $i  }}"
-                                                                wire:click.prevent="setShipping_address('{{ $shipping_address->address_type.'-'. $shipping_address->address_1}}','{{$shipping_address->id}}')">
-                                                                {{ $shipping_address->address_type }}&nbsp;-&nbsp;
-                                                                {{ $shipping_address->address_1 }}&nbsp;-&nbsp;
-                                                                {{ $shipping_address->address_2 }}&nbsp;-&nbsp;
-                                                            </x-Ui::dropdown.option>
-                                                        @empty
-                                                            <x-Ui::dropdown.new
-                                                                href="{{route('contacts.upsert',[0])}}"
-                                                                label="Shipping Address"/>
-                                                        @endforelse
-                                                    @endif
-                                                </x-Ui::dropdown.select>
-                                                @error('shipping_id')
-                                                <span
-                                                    class="text-red-500">{{'Shipping Address is Required.'}}</span>
-                                                @enderror
-                                            </div>
-                                        </x-Ui::dropdown.wrapper>
+
                                     @endif
                                 </div>
-                                {{--                          <div>{{$billing_address->address_1, $billing_address->address_2}}</div>--}}
 
                             </div>
                         </x-Ui::tabs.content>
@@ -546,38 +322,7 @@
                                 <div class="w-full space-y-8 ">
 
                                     @if(\Aaran\Assets\Features\SaleEntry::hasTransport())
-                                        <x-Ui::dropdown.wrapper label="Transport" type="transportTyped">
-                                            <div class="relative ">
-                                                <x-Ui::dropdown.input label="Transport" id="transport_name"
-                                                                      wire:model="transport_id"
-                                                                      wire:model.live="transport_name"
-                                                                      wire:keydown.arrow-up="decrementTransport"
-                                                                      wire:keydown.arrow-down="incrementTransport"
-                                                                      wire:keydown.enter="enterTransport"/>
 
-                                                <x-Ui::dropdown.select>
-                                                    @if($transportCollection)
-                                                        @forelse ($transportCollection as $i => $transport)
-                                                            <x-Ui::dropdown.option
-                                                                highlight="{{$highlightTransport === $i  }}"
-                                                                wire:click.prevent="setTransport('{{$transport->vname}}','{{$transport->id}}')">
-                                                                {{ $transport->vname }}
-                                                            </x-Ui::dropdown.option>
-                                                        @empty
-                                                            <x-Ui::dropdown.new
-                                                                wire:click.prevent="transportSave('{{$transport_name}}')"
-                                                                label="Transport"/>
-                                                        @endforelse
-                                                    @endif
-                                                </x-Ui::dropdown.select>
-                                                @error('transport_id')
-                                                <span class="text-red-400">Transport is Required</span>
-                                                @enderror
-                                                @error('transport_name')
-                                                <span class="text-red-400">Transport Name is Required</span>
-                                                @enderror
-                                            </div>
-                                        </x-Ui::dropdown.wrapper>
                                     @endif
 
                                     <x-Ui::input.model-date wire:model="TransdocDt" label="Transport Date"/>
@@ -625,32 +370,6 @@
                         <x-Ui::tabs.content>
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <!-- Ledger ----------------------------------------------------------------------------------->
-                                <x-Ui::dropdown.wrapper label="Ledger" type="ledgerTyped">
-                                    <div class="relative ">
-                                        <x-Ui::dropdown.input label="Ledger" id="ledger_name"
-                                                              wire:model.live="ledger_name"
-                                                              wire:keydown.arrow-up="decrementLedger"
-                                                              wire:keydown.arrow-down="incrementLedger"
-                                                              wire:keydown.enter="enterLedger"/>
-                                        @error('ledger_id')
-                                        <span class="text-red-500">{{'The Ledger is Required.'}}</span>
-                                        @enderror
-                                        <x-Ui::dropdown.select>
-                                            @if($ledgerCollection)
-                                                @forelse ($ledgerCollection as $i => $ledger)
-                                                    <x-Ui::dropdown.option highlight="{{$highlightLedger === $i  }}"
-                                                                           wire:click.prevent="setLedger('{{$ledger->vname}}','{{$ledger->id}}')">
-                                                        {{ $ledger->vname }}
-                                                    </x-Ui::dropdown.option>
-                                                @empty
-                                                    <x-Ui::dropdown.new
-                                                        wire:click.prevent="ledgerSave('{{$ledger_name}}')"
-                                                        label="Ledger"/>
-                                                @endforelse
-                                            @endif
-                                        </x-Ui::dropdown.select>
-                                    </div>
-                                </x-Ui::dropdown.wrapper>
 
                                 <x-Ui::input.floating wire:model="additional" wire:change.debounce="calculateTotal"
                                                       label="Addition"

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Company;
 
 use Aaran\Assets\Enums\MsmeType;
 use Aaran\Assets\Traits\ComponentStateTrait;
@@ -18,7 +18,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class CompanyList extends Component
+class Index extends Component
 {
     use WithFileUploads;
 
@@ -663,7 +663,7 @@ class CompanyList extends Component
         $this->getCountryList();
 //        $this->log = Logbook::where('vname', 'Company')->take(5)->get();
 
-        return view('master::company-list')->with([
+        return view('master::company.index')->with([
             'list' => $this->getList(),
         ]);
     }

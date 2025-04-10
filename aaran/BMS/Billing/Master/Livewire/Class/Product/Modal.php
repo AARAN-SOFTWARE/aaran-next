@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Product;
 
 use Aaran\Assets\Enums\ProductType;
 use Aaran\Assets\Traits\ComponentStateTrait;
@@ -15,7 +15,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ProductModal extends Component
+class Modal extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
@@ -436,7 +436,7 @@ class ProductModal extends Component
         $this->getUnitList();
         $this->getGstPercentList();
 
-        return view('master::product-modal');
+        return view('master::product.modal');
     }
     #endregion
 }

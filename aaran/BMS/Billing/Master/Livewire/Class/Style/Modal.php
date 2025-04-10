@@ -1,28 +1,31 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Style;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Master\Models\Order;
+use Aaran\BMS\Billing\Master\Models\Style;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class OrderList extends Component
+class Modal extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
+    public bool $showModal = false;
+
     #[Validate]
     public string $vname = '';
-    public string $order_name = '';
+    public string $description = '';
+    public string $image = '';
     public bool $active_id = true;
 
     #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.orders,vname"),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.styles,vname"),
         ];
     }
 
@@ -37,7 +40,7 @@ class OrderList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'Order name',
+            'vname' => 'Styles name',
         ];
     }
     #endregion
@@ -48,27 +51,34 @@ class OrderList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        Order::on($connection)->updateOrCreate(
+        $style = Style::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'order_name' => $this->order_name,
+                'description' => $this->description,
+                'image' => $this->image,
                 'active_id' => $this->active_id
             ],
         );
-
+        $this->dispatch('refresh-style', $style);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->clearFields();
     }
 
     #endregion
 
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->clearFields();
+    }
 
     public function clearFields(): void
     {
         $this->vid = null;
         $this->vname = '';
-        $this->order_name = '';
+        $this->description = '';
+        $this->image = '';
         $this->active_id = true;
         $this->searches = '';
     }
@@ -76,42 +86,28 @@ class OrderList extends Component
     #region[Fetch Data]
     public function getObj(int $id): void
     {
-        if ($obj = Order::on($this->getTenantConnection())->find($id)) {
+        if ($obj = Style::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->order_name = $obj->order_name;
+            $this->description = $obj->description;
+            $this->image = $obj->image;
             $this->active_id = $obj->active_id;
         }
     }
 
-    public function getList()
-    {
-        return Order::on($this->getTenantConnection())
-            ->active($this->activeRecord)
-            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
-            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-            ->paginate($this->perPage);
-    }
     #endregion
 
-    #region[Delete]
-    public function deleteFunction(): void
+    public function mount($v = null): void
     {
-        if (!$this->deleteId) return;
-
-        $obj = Order::on($this->getTenantConnection())->find($this->deleteId);
-        if ($obj) {
-            $obj->delete();
+        if ($v !== null) {
+            $this->vname = $v;
         }
     }
-    #endregion
 
     #region[Render]
     public function render()
     {
-        return view('master::order-list', [
-            'list' => $this->getList()
-        ]);
+        return view('master::style.modal');
     }
     #endregion
 }

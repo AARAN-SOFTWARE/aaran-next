@@ -1,7 +1,7 @@
 <div>
     <div x-data @keydown.tab.stop>
         <x-Ui::lookup.modal :show-modal="$showModal" :height="'h-fit'" :width="'w-2/5'"
-                            label="Order">
+                            label="Order No">
             <div>
                 <x-Ui::input.floating wire:model="vname" label="Order No"/>
                 <x-Ui::input.error-text wire:model="vname"/>

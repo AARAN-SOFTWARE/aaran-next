@@ -1,30 +1,30 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Order;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
-use Aaran\BMS\Billing\Master\Models\Style;
+use Aaran\BMS\Billing\Master\Models\Order;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class StyleList extends Component
+class Modal extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
+    public bool $showModal = false;
+
     #[Validate]
     public string $vname = '';
-    public string $description = '';
-    public string $image = '';
+    public string $order_name = '';
     public bool $active_id = true;
 
     #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.styles,vname"),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.orders,vname"),
         ];
     }
 
@@ -39,7 +39,7 @@ class StyleList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'Styles name',
+            'vname' => 'Order name',
         ];
     }
     #endregion
@@ -50,29 +50,31 @@ class StyleList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        Style::on($connection)->updateOrCreate(
+        $order = Order::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'description' => $this->description,
-                'image' => $this->image,
+                'order_name' => $this->order_name,
                 'active_id' => $this->active_id
             ],
         );
-
+        $this->dispatch('refresh-order',$order);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->clearFields();
+        $this->closeModal();
     }
 
     #endregion
 
+    public function closeModal(): void{
+        $this->showModal = false;
+        $this->clearFields();
+    }
 
     public function clearFields(): void
     {
         $this->vid = null;
         $this->vname = '';
-        $this->description = '';
-        $this->image = '';
+        $this->order_name = '';
         $this->active_id = true;
         $this->searches = '';
     }
@@ -80,43 +82,28 @@ class StyleList extends Component
     #region[Fetch Data]
     public function getObj(int $id): void
     {
-        if ($obj = Style::on($this->getTenantConnection())->find($id)) {
+        if ($obj = Order::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->description = $obj->description;
-            $this->image = $obj->image;
+            $this->order_name = $obj->order_name;
             $this->active_id = $obj->active_id;
         }
     }
-
-    public function getList()
-    {
-        return Style::on($this->getTenantConnection())
-            ->active($this->activeRecord)
-            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
-            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-            ->paginate($this->perPage);
-    }
     #endregion
 
-    #region[Delete]
-    public function deleteFunction(): void
+    public function mount($v = null): void
     {
-        if (!$this->deleteId) return;
-
-        $obj = Style::on($this->getTenantConnection())->find($this->deleteId);
-        if ($obj) {
-            $obj->delete();
+        if ($v !== null) {
+            $this->vname = $v;
         }
+
     }
-    #endregion
+
 
     #region[Render]
     public function render()
     {
-        return view('master::style-list', [
-            'list' => $this->getList()
-        ]);
+        return view('master::order.modal');
     }
     #endregion
 }

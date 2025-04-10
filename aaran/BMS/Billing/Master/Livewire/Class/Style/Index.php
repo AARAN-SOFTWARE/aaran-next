@@ -1,20 +1,17 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Style;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\BMS\Billing\Master\Models\Style;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class StyleModal extends Component
+class Index extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
-
-    public bool $showModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -52,7 +49,7 @@ class StyleModal extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        $style = Style::on($connection)->updateOrCreate(
+        Style::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
@@ -61,18 +58,13 @@ class StyleModal extends Component
                 'active_id' => $this->active_id
             ],
         );
-        $this->dispatch('refresh-style', $style);
+
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->clearFields();
     }
 
     #endregion
 
-    public function closeModal(): void
-    {
-        $this->showModal = false;
-        $this->clearFields();
-    }
 
     public function clearFields(): void
     {
@@ -96,19 +88,34 @@ class StyleModal extends Component
         }
     }
 
+    public function getList()
+    {
+        return Style::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
+    }
     #endregion
 
-    public function mount($v = null): void
+    #region[Delete]
+    public function deleteFunction(): void
     {
-        if ($v !== null) {
-            $this->vname = $v;
+        if (!$this->deleteId) return;
+
+        $obj = Style::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
     }
+    #endregion
 
     #region[Render]
     public function render()
     {
-        return view('master::style-modal');
+        return view('master::style.index', [
+            'list' => $this->getList()
+        ]);
     }
     #endregion
 }
