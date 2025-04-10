@@ -4,7 +4,6 @@
         <x-Ui::alerts.notification />
 
 
-
         <!-- Top Controls --------------------------------------------------------------------------------------------->
         <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
@@ -34,7 +33,7 @@
                     <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->desc}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->description}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
@@ -51,8 +50,11 @@
 
         <x-Ui::forms.create :id="$vid">
             <div class="flex flex-col  gap-3">
-                <x-Ui::input.floating wire:model="vname" label="Unit Name"/>
-                <x-Ui::input.error-text wire:model="desc"/>
+                <div>
+                    <x-Ui::input.floating wire:model="vname" label="Unit Name"/>
+                    <x-Ui::input.error-text wire:model="vname"/>
+                </div>
+                <x-Ui::input.floating wire:model="description" label="Desc"/>
             </div>
         </x-Ui::forms.create>
 

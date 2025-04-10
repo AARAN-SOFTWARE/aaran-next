@@ -49,11 +49,11 @@
         <!-- Create/ Edit Popup --------------------------------------------------------------------------------------->
 
         <x-Ui::forms.create :id="$vid">
-            <div class="flex flex-col  gap-3">
+            <div class="mb-4">
                 <x-Ui::input.floating wire:model="vname" label="State Name"/>
                 <x-Ui::input.error-text wire:model="vname"/>
-                <x-Ui::input.floating wire:model="state_code" label="State Code"/>
             </div>
+            <x-Ui::input.floating wire:model="state_code" label="State Code"/>
         </x-Ui::forms.create>
 
 

@@ -33,7 +33,6 @@
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->desc}}</x-Ui::table.cell-text>
-
                         <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
@@ -49,11 +48,11 @@
         <!-- Create/ Edit Popup --------------------------------------------------------------------------------------->
 
         <x-Ui::forms.create :id="$vid">
-            <div class="flex flex-col  gap-3">
+            <div class="mb-4">
                 <x-Ui::input.floating wire:model="vname" label="Gst Percent"/>
                 <x-Ui::input.error-text wire:model="vname"/>
-                <x-Ui::input.floating wire:model="desc" label="Desc"/>
             </div>
+            <x-Ui::input.floating wire:model="desc" label="Desc"/>
         </x-Ui::forms.create>
 
 

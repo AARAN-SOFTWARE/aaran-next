@@ -36,7 +36,7 @@ class ContactTypeList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'city name',
+            'vname' => 'Contact Type',
         ];
     }
     #endregion
