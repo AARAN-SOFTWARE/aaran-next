@@ -1,11 +1,11 @@
 <?php
 
-namespace Aaran\Master\Database\Seeders;
+namespace Aaran\BMS\Billing\Master\Database\Seeders;
 
 use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Seeder;
 
-class S200_CompanySeeder extends Seeder
+class CompanySeeder extends Seeder
 {
     public static function run(): void
     {
@@ -32,9 +32,7 @@ class S200_CompanySeeder extends Seeder
             'iec_no'=>'-',
             'msme_no'=>'-',
             'msme_type_id' => '1',
-            'active_id' => '1',
-            'user_id' => '1',
-            'tenant_id' => '1',
+            'active_id' => true,
             'logo' => 'no_image'
         ]);
     }

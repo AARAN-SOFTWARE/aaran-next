@@ -1,19 +1,18 @@
 <?php
 
-namespace Aaran\Master\Database\Seeders;
+namespace Aaran\BMS\Billing\Master\Database\Seeders;
 
 use Aaran\BMS\Billing\Master\Models\Order;
 use Illuminate\Database\Seeder;
 
-class S204_OrderSeeder extends Seeder
+class OrderSeeder extends Seeder
 {
     public static function run(): void
     {
         Order::create([
-            'vname' => '-',
+            'vname' => 'Demo Order',
             'order_name' => '-',
-            'company_id' => '1',
-            'active_id' => '1'
+            'active_id' => true,
         ]);
 
     }
