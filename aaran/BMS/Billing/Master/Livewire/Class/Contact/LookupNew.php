@@ -4,6 +4,7 @@ namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class LookupNew extends Component
@@ -14,8 +15,10 @@ class LookupNew extends Component
     public $results = [];
     public $highlightIndex = 0;
     public $showDropdown = false;
+    public $showCreateModal = false;
 
     public $initialContactId;
+
     public function mount($initialContactId = null): void
     {
         $this->initialContactId = $initialContactId;
@@ -36,7 +39,9 @@ class LookupNew extends Component
     }
 
 
-    public function updatedSearch($value)
+    public string $searchText = '';
+
+    public function updatedSearch($value): void
     {
         if (!$this->getTenantConnection()) {
             return;
@@ -50,27 +55,28 @@ class LookupNew extends Component
         if (strlen(trim($value)) > 0) {
             $query->where('vname', 'like', '%' . $value . '%')->limit(10);
         }
+        $results = $query->get();
 
-        $this->results = $query->get();
+        $this->results = $results;
         $this->highlightIndex = 0;
         $this->showDropdown = true;
     }
 
-    public function incrementHighlight()
+    public function incrementHighlight(): void
     {
         if ($this->highlightIndex < count($this->results) - 1) {
             $this->highlightIndex++;
         }
     }
 
-    public function decrementHighlight()
+    public function decrementHighlight(): void
     {
         if ($this->highlightIndex > 0) {
             $this->highlightIndex--;
         }
     }
 
-    public function selectHighlighted()
+    public function selectHighlighted(): void
     {
         $selected = $this->results[$this->highlightIndex] ?? null;
         if ($selected) {
@@ -78,21 +84,33 @@ class LookupNew extends Component
         }
     }
 
-    public function selectContact($contact)
+    public function selectContact($contact): void
     {
         $contact = (object)$contact;
 
         $this->search = $contact->vname;
         $this->results = [];
         $this->showDropdown = false;
-
-        $this->dispatch('refresh-contact', id: $contact->id);
     }
 
-    public function hideDropdown()
+    public function hideDropdown(): void
     {
         $this->showDropdown = false;
     }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-contact-modal', name: $this->search);
+        $this->showCreateModal = true;
+    }
+
+    #[On('refresh-contact')]
+    public function refreshContact($contact): void
+    {
+        $this->search = $contact['vname'];
+        $this->showCreateModal = false;
+    }
+
 
     public function render()
     {
