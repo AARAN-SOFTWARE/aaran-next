@@ -7,6 +7,7 @@ use Aaran\BMS\Billing\Books\Providers\BooksServiceProvider;
 use Aaran\BMS\Billing\Common\Providers\CommonServiceProvider;
 use Aaran\BMS\Billing\Entries\Providers\EntriesServiceProvider;
 use Aaran\BMS\Billing\Master\Providers\MasterServiceProvider;
+use Aaran\BMS\Billing\Reports\Providers\ReportsServiceProvider;
 use Aaran\Core\Setup\Providers\SetupServiceProvider;
 use Aaran\Core\Tenant\Providers\TenantServiceProvider;
 use Aaran\Core\User\Providers\UserServiceProvider;
@@ -41,6 +42,8 @@ class AaranServiceProvider extends ServiceProvider
         $this->app->register(MasterServiceProvider::class);
 
         $this->app->register(EntriesServiceProvider::class);
+
+        $this->app->register(ReportsServiceProvider::class);
     }
 
     public function boot()

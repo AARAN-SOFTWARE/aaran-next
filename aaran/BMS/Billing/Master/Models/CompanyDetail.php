@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Master\Models;
+namespace Aaran\BMS\Billing\Master\Models;
 
 use Aaran\Master\Database\Factories\CompanyDetailFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

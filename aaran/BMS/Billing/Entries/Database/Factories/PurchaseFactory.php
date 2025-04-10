@@ -4,9 +4,9 @@ namespace Aaran\Entries\Database\Factories;
 
 use Aaran\Common\Models\Common;
 use Aaran\BMS\Billing\Entries\Models\Purchase;
-use Aaran\Master\Models\Company;
-use Aaran\Master\Models\Contact;
-use Aaran\Master\Models\Order;
+use Aaran\BMS\Billing\Master\Models\Company;
+use Aaran\BMS\Billing\Master\Models\Contact;
+use Aaran\BMS\Billing\Master\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PurchaseFactory extends Factory

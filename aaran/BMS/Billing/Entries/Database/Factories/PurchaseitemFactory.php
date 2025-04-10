@@ -5,7 +5,7 @@ namespace Aaran\Entries\Database\Factories;
 use Aaran\Common\Models\Common;
 use Aaran\BMS\Billing\Entries\Models\Purchase;
 use Aaran\BMS\Billing\Entries\Models\Purchaseitem;
-use Aaran\Master\Models\Product;
+use Aaran\BMS\Billing\Master\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PurchaseitemFactory extends Factory
