@@ -20,7 +20,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ContactUpsert extends Component
+class Upsert extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
@@ -904,7 +904,7 @@ class ContactUpsert extends Component
         $this->getMsmeTypeList();
         $this->getContactTypeList();
 
-        return view('master::contact-upsert');
+        return view('master::contact.upsert');
     }
     #endregion
 }

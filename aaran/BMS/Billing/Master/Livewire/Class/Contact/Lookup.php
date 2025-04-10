@@ -4,24 +4,27 @@ namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Master\Models\Contact;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Lookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
-
-    public bool $showModal = false;
     public $contact_name = '';
 
     public $contact_id = '';
     public $contactCollection;
     public $highlightContact = 0;
     public $contactTyped = false;
+
+    public function mount($id = null): void
+    {
+        $this->contact_id = $id;
+    }
 
     public function decrementContact(): void
     {
@@ -45,17 +48,12 @@ class Lookup extends Component
     {
         $this->contact_name = $name;
         $this->contact_id = $id;
-        $this->getContactList();
     }
 
     public function enterContact(): void
     {
         $obj = $this->contactCollection[$this->highlightContact] ?? null;
-
-        $this->contact_name = '';
-        $this->contactCollection = Collection::empty();
         $this->highlightContact = 0;
-
         $this->contact_name = $obj->vname ?? '';
         $this->contact_id = $obj->id ?? '';
     }

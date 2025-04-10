@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Order;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
@@ -9,11 +9,9 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class OrderModal extends Component
+class Index extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
-
-    public bool $showModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -50,7 +48,7 @@ class OrderModal extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        $order = Order::on($connection)->updateOrCreate(
+        Order::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
@@ -58,17 +56,13 @@ class OrderModal extends Component
                 'active_id' => $this->active_id
             ],
         );
-        $this->dispatch('refresh-order',$order);
+
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->closeModal();
+        $this->clearFields();
     }
 
     #endregion
 
-    public function closeModal(): void{
-        $this->showModal = false;
-        $this->clearFields();
-    }
 
     public function clearFields(): void
     {
@@ -89,21 +83,35 @@ class OrderModal extends Component
             $this->active_id = $obj->active_id;
         }
     }
+
+    public function getList()
+    {
+        return Order::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
+    }
     #endregion
 
-    public function mount($v = null): void
+    #region[Delete]
+    public function deleteFunction(): void
     {
-        if ($v !== null) {
-            $this->vname = $v;
+        if (!$this->deleteId) return;
+
+        $obj = Order::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
-
     }
-
+    #endregion
 
     #region[Render]
     public function render()
     {
-        return view('master::order-modal');
+        return view('master::order.index', [
+            'list' => $this->getList()
+        ]);
     }
     #endregion
 }

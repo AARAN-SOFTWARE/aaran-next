@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Product;
 
 use Aaran\Assets\Enums\ProductType;
 use Aaran\Assets\Traits\ComponentStateTrait;
@@ -16,7 +16,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class ProductList extends Component
+class Index extends Component
 {
     use WithFileUploads;
 
@@ -453,7 +453,7 @@ class ProductList extends Component
         $this->getUnitList();
         $this->getGstPercentList();
 
-        return view('master::product-list')->with([
+        return view('master::product.index')->with([
             'list' => $this->getList(),
         ]);
     }
