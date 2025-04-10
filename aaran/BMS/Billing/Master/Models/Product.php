@@ -45,7 +45,7 @@ class Product extends Model
         return $this->belongsTo(Unit::class, 'unit_id');
     }
 
-    public function gstPercent(): BelongsTo
+    public function gst_percent(): BelongsTo
     {
         return $this->belongsTo(GstPercent::class, 'gst_percent_id');
     }

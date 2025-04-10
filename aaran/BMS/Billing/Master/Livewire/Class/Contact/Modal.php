@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Master\Livewire\Class;
+namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
 use Aaran\Assets\Enums\MsmeType;
 use Aaran\Assets\Traits\ComponentStateTrait;
@@ -20,12 +20,13 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ContactList extends Component
+class Modal extends Component
 {
 
     use ComponentStateTrait, TenantAwareTrait;
 
     #region[properties]
+    public bool $showModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -614,14 +615,20 @@ class ContactList extends Component
             ]
         );
 
-
+        $this->dispatch('refresh-contact',$contact);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->clearFields();
+        $this->closeModal();
     }
 
     #endregion
 
     #region[clear fields]
+
+    public function closeModal(): void{
+        $this->showModal = false;
+        $this->clearFields();
+    }
+
     public function clearFields()
     {
         $this->vid = null;
@@ -726,37 +733,13 @@ class ContactList extends Component
 
     #endregion
 
-    #region[route]
-    public function getRoute(): void
+    public function mount($v = null): void
     {
-        $this->redirect(route('contacts'));
-    }
-    #endregion
-
-    #region[getList]
-    public function getList()
-    {
-        return Contact::on($this->getTenantConnection())
-            ->active($this->activeRecord)
-            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
-            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-            ->paginate($this->perPage);
-    }
-    #endregion
-
-    #region[delete]
-    public function deleteFunction($id): void
-    {
-        if ($id) {
-            $obj = Contact::on($this->getTenantConnection())->find($id);
-            if ($obj) {
-                $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
-            }
+        if ($v !== null) {
+            $this->vname = $v;
         }
+
     }
-    #endregion
 
     #region[render]
     public function render()
@@ -768,9 +751,7 @@ class ContactList extends Component
         $this->getCountryList();
         $this->getContactTypeList();
 
-        return view('master::contact-list')->with([
-            'list' => $this->getList(),
-        ]);
+        return view('master::contact.modal');
     }
     #endregion
 }

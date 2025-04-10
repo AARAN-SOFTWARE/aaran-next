@@ -4,6 +4,8 @@ namespace Aaran\BMS\Billing\Entries\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesForm;
+use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Entries\Models\Saleitem;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
@@ -18,181 +20,89 @@ use Livewire\Component;
 
 class SalesUpsert extends Component
 {
-
     use ComponentStateTrait, TenantAwareTrait;
 
-    #region[E-invoice properties]
-//    public MasterGstApi $masterGstApi;
-    public $e_invoiceDetails;
-    public $e_wayDetails;
-    public $token;
-    public $irnData;
-    public $IrnCancel;
-    public $sales_id;
-    public $Irn_no;
-    public $CnlRsn;
-    public $CnlRem;
-    #[validate]
-    public $distance = 0;
-    public $showModel = false;
-    public $successMessage = '';
-    public $Transid;
-    public $Transname;
-    public $Transdocno;
-    public $TransdocDt;
-    #[validate]
-    public $Vehno;
-    public $Vehtype;
-    public $TransMode;
-    public $term;
-    #endregion
+    public $showModal = false;
 
-    #region[Properties]
-    public string $uniqueno = '';
-    public string $acyear = '';
-    public string $invoice_no = '';
-    public string $invoice_date = '';
-    public string $sales_type = '';
-    public string $destination = '';
-    public string $bundle = '';
-    public mixed $total_qty = 0;
-    public mixed $total_taxable = '';
-    public string $total_gst = '';
-    public mixed $additional = '';
-    public mixed $round_off = '';
-    public mixed $grand_total = '';
-    public mixed $qty = '';
-    public mixed $price = '';
-    public string $gst_percent = '';
+    #region[properties]
+
+    public SalesForm $sale;
+    public SalesItemForm $saleItem;
     public string $itemIndex = "";
+    public $successMessage = '';
+
+    public ?float $grandTotalBeforeRound = null;
+
     #[validate]
     public $itemList = [];
-    public $description;
 
-    public string $company;
-    public string $contact;
-    public string $order;
-    public string $transport;
-    public string $ledger;
-    public string $sale;
-    public string $product;
-    public string $colour;
-    public string $size;
-    public bool $active_id;
-    public mixed $job_no = '';
-    public $po_no;
-    public $grandtotalBeforeRound;
-    public $dc_no;
-    public $no_of_roll;
-    public $salesLogs;
-    #endregion
 
-    #region[rules]
-    public function rules(): array
-    {
-        return [
-            'uniqueno' => 'required|string|max:255|unique:sales,uniqueno',
-//            'company_id' => 'required|exists:companies,id',
-            'contact_id' => 'required',
-            'invoice_no' => 'required|integer|unique:sales,invoice_no',
-            'invoice_date' => 'required|date',
-            'order_id' => 'required',
-            'billing_id' => 'required',
-            'shipping_id' => 'required',
-            'style_id' => 'required',
-            'despatch_id' => 'required',
-            'transport_id' => 'required',
-            'transport_name' => 'required|string'
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'contact_name.required' => 'The :attribute is required.',
-            'transport_name.required' => 'The :attribute is required.',
-            'distance.required' => 'The :attribute is required.',
-            'Vehno.required' => 'The :attribute is required.',
-        ];
-    }
-
-    public function validationAttributes()
-    {
-        return [
-            'contact_name' => 'party name',
-            'transport_name' => 'transport name',
-            'distance' => 'distance ',
-            'Vehno' => 'Vechile no',
-        ];
-    }
-    #endregion
-
-    #region[Contact]
-    #[validate]
-    public $contact_name = '';
-    public $contact_id = '';
-    public $contactCollection;
-    public $highlightContact = 0;
-    public $contactTyped = false;
-
-    public function decrementContact(): void
-    {
-        if ($this->highlightContact === 0) {
-            $this->highlightContact = count($this->contactCollection) - 1;
-            return;
-        }
-        $this->highlightContact--;
-    }
-
-    public function incrementContact(): void
-    {
-        if ($this->highlightContact === count($this->contactCollection) - 1) {
-            $this->highlightContact = 0;
-            return;
-        }
-        $this->highlightContact++;
-    }
-
-    public function setContact($name, $id): void
-    {
-        $this->contact_name = $name;
-        $this->contact_id = $id;
-        $this->getContactList();
-    }
-
-    public function enterContact(): void
-    {
-        $obj = $this->contactCollection[$this->highlightContact] ?? null;
-
-        $this->contact_name = '';
-        $this->contactCollection = Collection::empty();
-        $this->highlightContact = 0;
-
-        $this->contact_name = $obj['vname'] ?? '';
-        $this->contact_id = $obj['id'] ?? '';
-    }
-
-    #[On('refresh-contact')]
-    public function refreshContact($v): void
-    {
-        $this->contact_id = $v['id'];
-        $this->contact_name = $v['vname'];
-        $this->contactTyped = false;
-    }
-
-    public function getContactList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->contactCollection = DB::connection($this->getTenantConnection())
-            ->table('contacts')
-            ->when($this->contact_name, fn($query) => $query->where('vname', 'like', "%{$this->contact_name}%"))
-            ->get();
-    }
-
-    #endregion
+//    #region[Contact]
+//    #[validate]
+//    public $contact_name = '';
+//    public $contact_id = '';
+//    public $contactCollection;
+//    public $highlightContact = 0;
+//    public $contactTyped = false;
+//
+//    public function decrementContact(): void
+//    {
+//        if ($this->highlightContact === 0) {
+//            $this->highlightContact = count($this->contactCollection) - 1;
+//            return;
+//        }
+//        $this->highlightContact--;
+//    }
+//
+//    public function incrementContact(): void
+//    {
+//        if ($this->highlightContact === count($this->contactCollection) - 1) {
+//            $this->highlightContact = 0;
+//            return;
+//        }
+//        $this->highlightContact++;
+//    }
+//
+//    public function setContact($name, $id): void
+//    {
+//        $this->contact_name = $name;
+//        $this->contact_id = $id;
+//        $this->getContactList();
+//    }
+//
+//    public function enterContact(): void
+//    {
+//        $obj = $this->contactCollection[$this->highlightContact] ?? null;
+//
+//        $this->contact_name = '';
+//        $this->contactCollection = Collection::empty();
+//        $this->highlightContact = 0;
+//
+//        $this->contact_name = $obj['vname'] ?? '';
+//        $this->contact_id = $obj['id'] ?? '';
+//    }
+//
+//    #[On('refresh-contact')]
+//    public function refreshContact($v): void
+//    {
+//        $this->contact_id = $v['id'];
+//        $this->contact_name = $v['vname'];
+//        $this->contactTyped = false;
+//    }
+//
+//    public function getContactList(): void
+//    {
+//        if (!$this->getTenantConnection()) {
+//            return; // Prevent execution if tenant is not set
+//        }
+//
+//        $this->contactCollection = DB::connection($this->getTenantConnection())
+//            ->table('contacts')
+//            ->when($this->contact_name, fn($query) => $query->where('vname', 'like', "%{$this->contact_name}%"))
+//            ->get();
+//    }
+//
+//    #endregion
 
     #region[Billing Address]
     public mixed $billing_id = '';
@@ -256,7 +166,7 @@ class SalesUpsert extends Component
 
         $this->billing_addressCollection = DB::connection($this->getTenantConnection())
             ->table('contact_addresses')
-            ->where('contact_id', '=', $this->contact_id)
+            ->where('contact_id', '=', $this->sale->contact_id)
             ->get();
     }
 
@@ -325,7 +235,7 @@ class SalesUpsert extends Component
 
         $this->shipping_addressCollection = DB::connection($this->getTenantConnection())
             ->table('contact_addresses')
-            ->where('contact_id', '=', $this->contact_id)
+            ->where('contact_id', '=', $this->sale->contact_id)
             ->get();
 
     }
@@ -740,7 +650,7 @@ class SalesUpsert extends Component
     {
         $this->product_name = $name;
         $this->product_id = $id;
-//        $this->gst_percent1 = Sale::commons($percent);
+        $this->gst_percent1 = $percent;
         $this->getProductList();
     }
 
@@ -760,6 +670,7 @@ class SalesUpsert extends Component
     {
         $this->product_id = $v['id'];
         $this->product_name = $v['vname'];
+        $this->gst_percent1 = $v['gst_percent_id'];
         $this->productTyped = false;
     }
 
@@ -771,7 +682,9 @@ class SalesUpsert extends Component
 
         $this->productCollection = DB::connection($this->getTenantConnection())
             ->table('products')
-            ->when($this->product_name, fn($query) => $query->where('vname', 'like', "%{$this->product_name}%"))
+            ->leftJoin('gst_percents', 'products.gst_percent_id', '=', 'gst_percents.id')
+            ->select('products.*', 'gst_percents.vname as gst_percent_vname')
+            ->when($this->product_name, fn($query) => $query->where('products.vname', 'like', "%{$this->product_name}%"))
             ->get();
     }
 
@@ -1507,7 +1420,7 @@ class SalesUpsert extends Component
     public function render()
     {
 //        $this->getSalesLog();
-        $this->getContactList();
+//        $this->getContactList();
         $this->getOrderList();
         $this->getTransportList();
         $this->getLedgerList();

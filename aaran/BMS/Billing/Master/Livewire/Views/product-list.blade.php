@@ -46,7 +46,7 @@
                             {{ $row->product_type_id ? \Aaran\Assets\Enums\ProductType::tryFrom($row->product_type_id)->getName():''}}
                         </x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->hsncode->vname}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text>{{$row->gstPercent->vname}}%</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text>{{$row->gst_percent->vname}}%</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->initial_quantity+0}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>

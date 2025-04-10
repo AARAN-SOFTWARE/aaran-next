@@ -24,35 +24,40 @@
                                     <div class="w-full space-y-3">
 
                                         <div>
+                                            @livewire('master::contact-lookup')
+                                        </div>
 
-                                            <x-Ui::dropdown.wrapper label="Party Name" type="contactTyped">
-                                                <div class="relative ">
-                                                    <x-Ui::dropdown.input label="Party Name" id="contact_name"
-                                                                          wire:model.live.debounce="contact_name"
-                                                                          wire:keydown.arrow-up="decrementContact"
-                                                                          wire:keydown.arrow-down="incrementContact"
-                                                                          wire:keydown.enter="enterContact"/>
-                                                    @error('contact_id')
-                                                    <span
-                                                        class="text-red-500">{{'The Party Name is Required.'}}</span>
-                                                    @enderror
-                                                    <x-Ui::dropdown.select>
-                                                        @if($contactCollection)
-                                                            @forelse ($contactCollection as $i => $contact)
-                                                                <x-Ui::dropdown.option
-                                                                    highlight="{{$highlightContact === $i  }}"
-                                                                    wire:click.prevent="setContact('{{$contact->vname}}','{{$contact->id}}')">
-                                                                    {{ $contact->vname }}
-                                                                </x-Ui::dropdown.option>
-                                                            @empty
-                                                                @livewire('master::contact-modal',[$contact_name])
-                                                            @endforelse
-                                                        @endif
-                                                    </x-Ui::dropdown.select>
-                                                </div>
-                                            </x-Ui::dropdown.wrapper>
 
-                                            <x-Ui::input.error-text wire:model="contact_name"/>
+                                        <div>
+
+                                            {{--                                            <x-Ui::dropdown.wrapper label="Party Name" type="contactTyped">--}}
+                                            {{--                                                <div class="relative ">--}}
+                                            {{--                                                    <x-Ui::dropdown.input label="Party Name" id="contact_name"--}}
+                                            {{--                                                                          wire:model.live.debounce="contact_name"--}}
+                                            {{--                                                                          wire:keydown.arrow-up="decrementContact"--}}
+                                            {{--                                                                          wire:keydown.arrow-down="incrementContact"--}}
+                                            {{--                                                                          wire:keydown.enter="enterContact"/>--}}
+                                            {{--                                                    @error('contact_id')--}}
+                                            {{--                                                    <span--}}
+                                            {{--                                                        class="text-red-500">{{'The Party Name is Required.'}}</span>--}}
+                                            {{--                                                    @enderror--}}
+                                            {{--                                                    <x-Ui::dropdown.select>--}}
+                                            {{--                                                        @if($contactCollection)--}}
+                                            {{--                                                            @forelse ($contactCollection as $i => $contact)--}}
+                                            {{--                                                                <x-Ui::dropdown.option--}}
+                                            {{--                                                                    highlight="{{$highlightContact === $i  }}"--}}
+                                            {{--                                                                    wire:click.prevent="setContact('{{$contact->vname}}','{{$contact->id}}')">--}}
+                                            {{--                                                                    {{ $contact->vname }}--}}
+                                            {{--                                                                </x-Ui::dropdown.option>--}}
+                                            {{--                                                            @empty--}}
+                                            {{--                                                                @livewire('master::contact-modal',[$contact_name])--}}
+                                            {{--                                                            @endforelse--}}
+                                            {{--                                                        @endif--}}
+                                            {{--                                                    </x-Ui::dropdown.select>--}}
+                                            {{--                                                </div>--}}
+                                            {{--                                            </x-Ui::dropdown.wrapper>--}}
+
+                                            {{--                                            <x-Ui::input.error-text wire:model="contact_name"/>--}}
 
                                         </div>
 
@@ -227,7 +232,7 @@
                                                                 highlight="{{ $highlightProduct === $i }}"
                                                                 wire:click.prevent="setProduct('{{ $product->vname }}', '{{ $product->id }}', '{{ $product->gst_percent_id }}')">
                                                                 {{ $product->vname }} &nbsp;-&nbsp;
-                                                                GST&nbsp;: {{ $product->gst_percent->vname ?? 'N/A' }}
+                                                                GST&nbsp;: {{ $product->gst_percent_vname ?? 'N/A'  }}
                                                                 %
                                                             </x-Ui::dropdown.option>
                                                         @empty
@@ -411,12 +416,12 @@
                                                 @else
                                                     <td class="py-2 border-r" colspan="4">TOTALS.</td>
                                                 @endif
-                                                <td class="border-r font-semibold">{{$total_qty}}</td>
+                                                <td class="border-r font-semibold">{{$sale->total_qty ??'' }}</td>
                                                 <td class="border-r">&nbsp;</td>
-                                                <td class="border-r font-semibold">{{number_format($total_taxable,2,'.','')}}</td>
+                                                <td class="border-r font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</td>
                                                 <td class="border-r">&nbsp;</td>
-                                                <td class="border-r font-semibold">{{$total_gst}}</td>
-                                                <td class="border-r font-semibold">{{number_format($grandtotalBeforeRound,2,'.','')}}</td>
+                                                <td class="border-r font-semibold">{{$sale->total_gst}}</td>
+                                                <td class="border-r font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($grandTotalBeforeRound)}}</td>
                                                 <td>&nbsp;</td>
                                             </tr>
                                         </table>
@@ -453,10 +458,10 @@
                                         <div>:</div>
                                     </div>
                                     <div class="w-1/4 text-end space-y-4 tracking-wider font-lex">
-                                        <div>{{number_format($total_taxable,2,'.','')}}</div>
-                                        <div>{{number_format($total_gst,2,'.','')}}</div>
-                                        <div>{{$round_off}}</div>
-                                        <div class="font-semibold">{{number_format($grand_total,2,'.','')}}</div>
+                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</div>
+                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_gst)}}</div>
+                                        <div>{{$sale->round_off}}</div>
+                                        <div class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->grand_total)}}</div>
                                     </div>
                                 </div>
                             </div>

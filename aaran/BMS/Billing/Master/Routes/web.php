@@ -7,9 +7,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 
     Route::get('/companies', Class\CompanyList::class)->name('companies');
 
-    Route::get('/contacts', Class\ContactList::class)->name('contacts');
+    Route::get('/contacts', Class\Contact\Index::class)->name('contacts');
 
-    Route::get('/contacts/{id}/upsert', Class\ContactUpsert::class)->name('contacts.upsert');
+    Route::get('/contacts/{id}/upsert', Class\Contact\ContactUpsert::class)->name('contacts.upsert');
 
     Route::get('/products', Class\ProductList::class)->name('products');
 

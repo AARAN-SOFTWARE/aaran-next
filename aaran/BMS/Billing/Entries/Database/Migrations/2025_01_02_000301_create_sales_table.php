@@ -24,29 +24,28 @@ return new class extends Migration {
                 $table->foreignId('style_id')->references('id')->on('styles');
                 $table->foreignId('despatch_id')->references('id')->on('despatches');
                 $table->string('job_no')->nullable();
-                $table->foreignId('transport_id')->references('id')->on('transports');
                 $table->string('destination')->nullable();
                 $table->string('bundle')->nullable();
 
                 $table->string('distance')->nullable();
-                $table->string('TransMode')->nullable();
-                $table->string('Transid')->nullable();
-                $table->string('Transname')->nullable();
-                $table->string('Transdocno')->nullable();
-                $table->string('TransdocDt')->nullable();
-                $table->string('Vehno')->nullable();
-                $table->string('Vehtype')->nullable();
+                $table->string('trans_mode')->nullable();
+                $table->foreignId('trans_id')->references('id')->on('transports');
+                $table->string('trans_name')->nullable();
+                $table->string('trans_doc')->nullable();
+                $table->string('trans_doc_dt')->nullable();
+                $table->string('veh_no')->nullable();
+                $table->string('veh_type')->nullable();
                 $table->text('term')->nullable();
 
-                $table->decimal('total_qty', 11, 3)->nullable();
-                $table->decimal('total_taxable', 11, 2)->nullable();
-                $table->decimal('total_gst', 11, 2)->nullable();
+                $table->decimal('total_qty', 13, 3)->nullable();
+                $table->decimal('total_taxable', 13, 2)->nullable();
+                $table->decimal('total_gst', 13, 2)->nullable();
                 $table->foreignId('ledger_id')->nullable();
-                $table->decimal('additional', 11, 2)->nullable();
+                $table->decimal('additional', 13, 2)->nullable();
                 $table->decimal('round_off')->nullable();
-                $table->decimal('grand_total', 11, 2)->nullable();
+                $table->decimal('grand_total', 13, 2)->nullable();
                 $table->string('received_by')->nullable();
-                $table->string('active_id', 10)->nullable();
+                $table->smallInteger('active_id')->nullable();
                 $table->timestamps();
             });
         }
