@@ -17,7 +17,7 @@
 
 ## Master
 -  Contact List 
--           1. We need to write validation for contact_types.
+-            1. We need to write validation for contact_types.
 -            2. The address is not being stored in the database. & also bank section.
 -    Company 
 -            1. In the Bank section, the bank input field's dropdown is not showing.
@@ -27,15 +27,11 @@
 
 ## Books 
 -    Account Heads
--            1. The error message is showing with extra padding. (in Name)
--            2. The description input field should be a rich text box.
+-            1. The error message is showing with extra padding. (in Name)✅
 -    Ledger Group 
--            1. We need to write validation for Account Head.
--            2. The description input field should be a rich text box.
+-            1. We need to write validation for Account Head.✅
 -    Ledger -> 
--            1. I see two 'Ledger Name' input fields. The second one should be 'Ledger Group Name', not 'Ledger Name'. It's causing confusion.
--            2. We need to write validation for Ledger Name (2nd).
--            3. When I try to edit or update, the second 'Ledger Name' value automatically changes to 4.
--            4. The description input field should be a rich text box.
-
-- ["The data type of all 'Current Balance' and 'Opening Balance' columns should be changed to integer.(we can also add validation)]
+-            1. I see two 'Ledger Name' input fields. The second one should be 'Ledger Group Name', not 'Ledger Name'. It's causing confusion.✅
+-            2. We need to write validation for Ledger Name (2nd).✅
+-            3. When I try to edit or update, the second 'Ledger Name' value , it only returns ID.✅
+- ["The data type of all 'Current Balance' and 'Opening Balance' columns should be changed to integer.(we can also add validation)]✅

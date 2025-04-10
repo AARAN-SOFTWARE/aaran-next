@@ -34,6 +34,7 @@ class LedgerGroupList extends Component
     {
         return [
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.ledger_groups,vname"),
+            'account_head_id' => 'required',
         ];
     }
 
@@ -42,6 +43,7 @@ class LedgerGroupList extends Component
         return [
             'vname.required' => ':attribute is missing.',
             'vname.unique' => 'This :attribute is already created.',
+            'account_head_id.required' => ':attribute is missing.',
         ];
     }
 
@@ -49,6 +51,7 @@ class LedgerGroupList extends Component
     {
         return [
             'vname' => 'Ledger Group',
+            'account_head_id' => 'Account Head',
         ];
     }
     #endregion

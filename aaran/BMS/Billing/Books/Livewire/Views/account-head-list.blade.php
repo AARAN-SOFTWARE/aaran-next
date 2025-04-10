@@ -56,20 +56,21 @@
 
         <x-Ui::forms.create :id="$vid">
 
-            <div class="flex flex-col  gap-3">
+            <div class="flex flex-col gap-3">
+                <div>
+                    <x-Ui::input.floating wire:model="vname" label="Name"/>
+                    <x-Ui::input.error-text wire:model="vname"/>
+                </div>
 
-                <x-Ui::input.floating wire:model="vname" label="Name"/>
-                <x-Ui::input.error-text wire:model="vname"/>
+                    <x-Ui::input.lookup-text wire:model="desc" label="Desc"/>
 
-                <x-Ui::input.lookup-text wire:model="desc" label="Desc"/>
+                    <x-Ui::input.floating wire:model="opening" label="Opening"/>
 
-                <x-Ui::input.floating wire:model="opening" label="Opening"/>
+                    <x-Ui::input.floating wire:model.live="opening_date" type="date" label="Opening Date"/>
 
-                <x-Ui::input.floating wire:model.live="opening_date" type="date" label="Opening Date"/>
-
-                <x-Ui::input.floating wire:model="current" label="Current"/>
-
+                    <x-Ui::input.floating wire:model="current" label="Current"/>
             </div>
+
 
         </x-Ui::forms.create>
 
