@@ -21,15 +21,20 @@ class SalesUpsert extends Component
 
 
     #[On('refresh-contact')]
-    public function refreshContact($v): void
+    public function refreshContact($id): void
     {
-        $this->sale->contact_id = $v['id'];
+        $this->sale->contact_id = $id;
     }
 
-    public function getSave(){
+    public function getSave()
+    {
         dd($this->sale->contact_id);
     }
 
+    public function mount()
+    {
+        $this->sale->contact_id = 3;
+    }
 
 
     public function render()

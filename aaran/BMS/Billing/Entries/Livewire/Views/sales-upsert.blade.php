@@ -24,7 +24,7 @@
                                     <div class="w-full space-y-3">
 
                                         <div>
-                                            @livewire('master::contact.lookup')
+                                            @livewire('master::contact.lookup-new',['initialContactId' => $sale->contact_id] )
                                         </div>
 
                                         <div>
