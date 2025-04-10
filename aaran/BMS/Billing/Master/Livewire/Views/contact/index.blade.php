@@ -22,14 +22,14 @@
                 <x-Ui::table.header-serial width="20%"/>
 
                 <x-Ui::table.header-text wire:click.prevent="sortBy('vname')" sortIcon="{{$sortAsc}}">
-                    Company&nbsp;Name
+                    Contact&nbsp;Name
                 </x-Ui::table.header-text>
 
                 <x-Ui::table.header-text sortIcon="none">GST</x-Ui::table.header-text>
 
                 <x-Ui::table.header-text sortIcon="none">Mobile</x-Ui::table.header-text>
 
-                <x-Ui::table.header-text sortIcon="none">Address</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Email</x-Ui::table.header-text>
 
 
                 <x-Ui::table.header-action/>
@@ -45,7 +45,7 @@
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->gstin}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text>{{$row->mobile}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->address_1}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->email}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
                 @endforeach
