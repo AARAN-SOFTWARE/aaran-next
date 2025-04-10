@@ -14,9 +14,9 @@ return new class extends Migration {
                 $table->id();
                 $table->string('vname')->unique();
                 $table->longText('description')->nullable();
-                $table->string('opening')->nullable();
-                $table->string('opening_date')->nullable();
-                $table->string('current')->nullable();
+                $table->decimal('opening', 13, 2)->nullable();
+                $table->date('opening_date')->nullable();
+                $table->decimal('current', 13, 2)->nullable();
                 $table->tinyInteger('active_id')->nullable();
                 $table->timestamps();
             });

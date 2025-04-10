@@ -3,7 +3,7 @@
 namespace Aaran\Entries\Models;
 
 use Aaran\BMS\Billing\Entries\Database\Factories\PurchaseitemFactory;
-use Aaran\Master\Models\Product;
+use Aaran\BMS\Billing\Master\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

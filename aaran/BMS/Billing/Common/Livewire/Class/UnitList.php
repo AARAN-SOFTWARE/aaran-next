@@ -37,7 +37,7 @@ class UnitList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'Unit',
+            'vname' => 'Unit name',
         ];
     }
     #endregion

@@ -48,10 +48,12 @@
         <!-- Create/ Edit Popup --------------------------------------------------------------------------------------->
 
         <x-Ui::forms.create :id="$vid">
-            <x-Ui::input.floating wire:model="vname" label="Name" style="margin-bottom: 1rem" />
+            <div class="mb-4">
+                <x-Ui::input.floating wire:model="vname" label="Name" />
+                <x-Ui::input.error-text wire:model="vname" />
+            </div>
             <x-Ui::input.model-date wire:model="vdate" label="Date"/>
         </x-Ui::forms.create>
-
 
 
     </x-Ui::forms.m-panel>

@@ -35,6 +35,7 @@ class LedgerList extends Component
     {
         return [
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.ledgers,vname"),
+            'ledger_group_id' => 'required',
         ];
     }
 
@@ -43,6 +44,7 @@ class LedgerList extends Component
         return [
             'vname.required' => ':attribute is missing.',
             'vname.unique' => 'This :attribute is already created.',
+            'ledger_group_id.required' => ':attribute is missing.',
         ];
     }
 
@@ -50,6 +52,7 @@ class LedgerList extends Component
     {
         return [
             'vname' => 'Ledger Name',
+            'ledger_group_id' => 'Ledger Group Name',
         ];
     }
     #endregion
@@ -101,7 +104,7 @@ class LedgerList extends Component
             $this->vname = $obj->vname;
             $this->description = $obj->description;
             $this->ledger_group_id = $obj->ledger_group_id;
-            $this->ledger_group_name = $obj->ledger_group_id;
+            $this->ledger_group_name = $obj->ledger_group->vname;
             $this->opening = $obj->opening;
             $this->opening_date = $obj->opening_date;
             $this->current = $obj->current;

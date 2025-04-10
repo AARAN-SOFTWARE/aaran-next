@@ -21,7 +21,7 @@
 
                 <x-Ui::table.header-serial width="20%"/>
 
-                <x-Ui::table.header-text sortIcon="none">Ledger</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Ledger Group Name</x-Ui::table.header-text>
 
                 <x-Ui::table.header-text wire:click.prevent="sortBy('vname')" sortIcon="{{$sortAsc}}">
                     Name
@@ -69,7 +69,7 @@
                 <x-Ui::dropdown.wrapper label="Ledger Name" type="ledgerTyped">
                     <div class="relative">
 
-                        <x-Ui::dropdown.input label="Ledger Name*" id="ledger_name"
+                        <x-Ui::dropdown.input label="Ledger Group Name*" id="ledger_name"
                                               wire:model.live="ledger_group_name"
                                               wire:keydown.arrow-up="decrementLedger"
                                               wire:keydown.arrow-down="incrementLedger"
@@ -89,6 +89,7 @@
 
                         </x-Ui::dropdown.select>
                     </div>
+                    <x-Ui::input.error-text wire:model="ledger_group_id"/>
                 </x-Ui::dropdown.wrapper>
 
 
