@@ -91,12 +91,11 @@ class Modal extends Component
     }
     #endregion
 
-    public function mount($v = null): void
-    {
-        if ($v !== null) {
-            $this->vname = $v;
-        }
+    protected $listeners = ['open-create-order-modal' => 'setInitialName'];
 
+    public function setInitialName($name): void
+    {
+        $this->vname = $name;
     }
 
 

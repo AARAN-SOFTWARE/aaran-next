@@ -24,12 +24,12 @@
                                     <div class="w-full space-y-3">
 
                                         <div>
-                                            @livewire('master::contact.lookup-new',['initialContactId' => $sale->contact_id] )
+                                            @livewire('master::contact.lookup',['initialContactId' => $sale->contact_id] )
                                         </div>
 
                                         <div>
                                             @if(\Aaran\Assets\Features\SaleEntry::hasOrder())
-                                                @livewire('master::order.lookup')
+                                                @livewire('master::order.lookup',['initId' => $sale->contact_id])
                                             @endif
                                         </div>
 

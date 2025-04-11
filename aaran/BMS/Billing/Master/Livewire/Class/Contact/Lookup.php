@@ -2,10 +2,7 @@
 
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Master\Models\Contact;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -14,74 +11,109 @@ class Lookup extends Component
 {
     use TenantAwareTrait;
 
-    public $contact_name = '';
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public $contact_id = '';
-    public $contactCollection;
-    public $highlightContact = 0;
-    public $contactTyped = false;
+    public $initialContactId;
 
-    public function mount($id = null): void
+    public function mount($initialContactId = null): void
     {
-        $this->contact_id = $id;
+        $this->initialContactId = $initialContactId;
+
+        if ($initialContactId && $this->getTenantConnection()) {
+            // Trigger updatedSearch with a contact name pulled via id
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('contacts')
+                ->where('id', $initialContactId)
+                ->value('vname'); // fetch only the name
+
+            if ($vname) {
+                $this->search = $vname; // triggers updatedSearch automatically
+            }
+        } else {
+            $this->search = ''; // triggers full preload
+        }
     }
 
-    public function decrementContact(): void
+
+    public string $searchText = '';
+
+    public function updatedSearch($value): void
     {
-        if ($this->highlightContact === 0) {
-            $this->highlightContact = count($this->contactCollection) - 1;
+        if (!$this->getTenantConnection()) {
             return;
         }
-        $this->highlightContact--;
-    }
 
-    public function incrementContact(): void
-    {
-        if ($this->highlightContact === count($this->contactCollection) - 1) {
-            $this->highlightContact = 0;
-            return;
+        $query = DB::connection($this->getTenantConnection())
+            ->table('contacts')
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
         }
-        $this->highlightContact++;
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
     }
 
-    public function setContact($name, $id): void
+    public function incrementHighlight(): void
     {
-        $this->contact_name = $name;
-        $this->contact_id = $id;
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
     }
 
-    public function enterContact(): void
+    public function decrementHighlight(): void
     {
-        $obj = $this->contactCollection[$this->highlightContact] ?? null;
-        $this->highlightContact = 0;
-        $this->contact_name = $obj->vname ?? '';
-        $this->contact_id = $obj->id ?? '';
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
+
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectContact($selected);
+        }
+    }
+
+    public function selectContact($contact): void
+    {
+        $contact = (object)$contact;
+
+        $this->search = $contact->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-contact-modal', name: $this->search);
+        $this->showCreateModal = true;
     }
 
     #[On('refresh-contact')]
-    public function refreshContact($v): void
+    public function refreshContact($contact): void
     {
-        $this->contact_id = $v['id'];
-        $this->contact_name = $v['vname'];
-        $this->contactTyped = false;
+        $this->search = $contact['vname'];
+        $this->showCreateModal = false;
     }
 
-    public function getContactList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->contactCollection = DB::connection($this->getTenantConnection())
-            ->table('contacts')
-            ->when(trim($this->contact_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->contact_name) . '%'))
-            ->get();
-    }
 
     public function render()
     {
-        $this->getContactList();
-
         return view('master::contact.lookup');
     }
 }

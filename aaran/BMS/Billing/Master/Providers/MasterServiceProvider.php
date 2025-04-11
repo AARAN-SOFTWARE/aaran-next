@@ -26,7 +26,6 @@ class MasterServiceProvider extends ServiceProvider
         Livewire::component('master::contact.upsert', Class\Contact\Upsert::class);
         Livewire::component('master::contact.modal', Class\Contact\Modal::class);
         Livewire::component('master::contact.lookup', Class\Contact\Lookup::class);
-        Livewire::component('master::contact.lookup-new', Class\Contact\LookupNew::class);
 
         Livewire::component('master::product.index', Class\Product\Index::class);
         Livewire::component('master::product.modal', Class\Product\Modal::class);

@@ -422,13 +422,13 @@ class Modal extends Component
     #endregion
 
     #region[Render]
-    public function mount($v = null): void
-    {
-        if ($v !== null) {
-            $this->vname = $v;
-        }
+    protected $listeners = ['open-create-product-modal' => 'setInitialName'];
 
+    public function setInitialName($name): void
+    {
+        $this->vname = $name;
     }
+
     public function render()
     {
         $this->getHsncodeList();

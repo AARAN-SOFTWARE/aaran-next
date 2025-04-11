@@ -97,12 +97,13 @@ class Modal extends Component
 
     #endregion
 
-    public function mount($v = null): void
+    protected $listeners = ['open-create-style-modal' => 'setInitialName'];
+
+    public function setInitialName($name): void
     {
-        if ($v !== null) {
-            $this->vname = $v;
-        }
+        $this->vname = $name;
     }
+
 
     #region[Render]
     public function render()

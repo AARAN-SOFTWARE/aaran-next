@@ -1,7 +1,5 @@
 <div>
-    <div x-data @keydown.tab.stop>
-        <x-Ui::lookup.modal :show-modal="$showModal" :height="'h-fit'" :width="'w-3/5'"
-                            label="Product">
+    <x-Ui::lookup.modal-new>
 
             <div class="flex flex-col gap-3">
 
@@ -129,6 +127,6 @@
                 <x-Ui::input.floating wire:model="price" label="Opening Price"/>
             </div>
 
-        </x-Ui::lookup.modal>
-    </div>
+
+    </x-Ui::lookup.modal-new>
 </div>
