@@ -7,8 +7,9 @@
 
     <input
         type="text"
-        wire:model.live.debounce.300ms="search"
-        wire:focus="showDropdown"
+        wire:model.live.debounce="search"
+        wire:input="searchBy"
+        wire:focus="searchBy"
         wire:blur="hideDropdown"
 
         class="block px-2.5 pb-2.5 pt-4 w-full text-xs text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none
