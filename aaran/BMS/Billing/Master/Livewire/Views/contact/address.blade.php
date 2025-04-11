@@ -31,7 +31,15 @@
                             <li wire:click="selectContact(@js($contact))"
                                 class="cursor-pointer px-3 py-1 hover:font-bold hover:bg-zinc-100 text-blue-900 h-fit ml-2 mr-2 rounded-md
                                 {{ $highlightIndex === $index ? 'bg-blue-100' : '' }}">
-                                {{ $contact->address_type ?? 'No Label' }} ({{ $contact->city ?? '' }})
+                                {{ $contact->address_type ?? 'No Label' }}
+                                &nbsp;&nbsp;(&nbsp;
+                                {{ $contact->address_1 ?? '' }}
+                                {{ $contact->address_2 ?? '' }}
+                                {{ $contact->city ?? '' }}
+                                {{ $contact->state ?? '' }}
+                                {{ $contact->pincode ?? '' }}
+                                {{ $contact->country ?? '' }}
+                                &nbsp;)&nbsp;
                             </li>
                         @empty
                             <li class="px-4 py-2 text-gray-500 text-sm tracking-wider">No Results Found ...</li>
@@ -53,5 +61,5 @@
         </div>
     @endif
 
-    <livewire:master::contact.modal wire:key="create-contact-modal"/>
+    <livewire:master::contact.address-modal wire:key="create-contact-address-modal"/>
 </div>

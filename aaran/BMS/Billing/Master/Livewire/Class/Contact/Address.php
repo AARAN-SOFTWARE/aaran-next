@@ -59,6 +59,7 @@ class Address extends Component
             ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
             ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_addresses.pincode_id')
             ->leftJoin('countries', 'countries.id', '=', 'contact_addresses.country_id')
+            ->where('contact_addresses.contact_id', $this->initId)
             ->orderBy('contact_addresses.id');
 
         if (trim($this->search) !== '') {
@@ -68,33 +69,6 @@ class Address extends Component
         $this->highlightIndex = 0;
         $this->showDropdown = true;
     }
-
-    public function onFocus(): void
-    {
-        if (!$this->getTenantConnection()) return;
-
-        $this->results = DB::connection($this->getTenantConnection())
-            ->table('contact_addresses')
-            ->select(
-                'contact_addresses.*',
-                'cities.vname as city',
-                'states.vname as state',
-                'pincodes.vname as pincode',
-                'countries.vname as country'
-            )
-            ->leftJoin('cities', 'cities.id', '=', 'contact_addresses.city_id')
-            ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
-            ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_addresses.pincode_id')
-            ->leftJoin('countries', 'countries.id', '=', 'contact_addresses.country_id')
-            ->orderBy('contact_addresses.id')
-            ->limit(10)
-            ->get();
-
-        $this->highlightIndex = 0;
-        $this->showDropdown = true;
-        $this->showCreateModal = $this->results->isEmpty();
-    }
-
 
     public function incrementHighlight(): void
     {
@@ -135,14 +109,22 @@ class Address extends Component
 
     public function openCreateModal(): void
     {
-        $this->dispatch('open-create-address-modal', name: $this->search);
+        $this->dispatch('open-create-address-modal', name: $this->initId);
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-address')]
+    #[On('refresh-address-lookup')]
+    public function refreshProduct($contact): void
+    {
+        if (!empty($contact['id'])) {
+            $this->initId = $contact['id'];
+        }
+    }
+
+    #[On('refresh-address-model')]
     public function refreshContact($contact): void
     {
-        $this->search = $contact['address_type'];
+        $this->search = $contact['address_type'] . $contact['address_1'] . $contact['address_2'];
         $this->showCreateModal = false;
     }
 

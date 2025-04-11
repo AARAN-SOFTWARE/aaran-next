@@ -93,6 +93,7 @@ class Lookup extends Component
         $this->search = $contact->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-address-lookup', $contact);
     }
 
     public function hideDropdown(): void

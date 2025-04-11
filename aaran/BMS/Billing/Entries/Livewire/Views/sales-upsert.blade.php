@@ -178,10 +178,6 @@
                                                             <td class="py-2 border-r"
                                                                 wire:click.prevent="changeItems({{$index}})">{{$row['dc_no']}}</td>
                                                         @endif
-                                                        @if(\Aaran\Assets\Features\SaleEntry::hasNo_of_roll())
-                                                            <td class="py-2 border-r"
-                                                                wire:click.prevent="changeItems({{$index}})">{{$row['no_of_roll']}}</td>
-                                                        @endif
 
                                                         <td class="py-2 border-r text-left px-2"
                                                             wire:click.prevent="changeItems({{$index}})">
@@ -198,6 +194,11 @@
                                                         @if(\Aaran\Assets\Features\SaleEntry::hasSize())
                                                             <td class="py-2 border-r"
                                                                 wire:click.prevent="changeItems({{$index}})">{{$row['size_name']}}</td>
+                                                        @endif
+
+                                                        @if(\Aaran\Assets\Features\SaleEntry::hasNo_of_roll())
+                                                            <td class="py-2 border-r"
+                                                                wire:click.prevent="changeItems({{$index}})">{{$row['no_of_roll']}}</td>
                                                         @endif
 
                                                         <td class="py-2 border-r"
@@ -298,14 +299,14 @@
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasBillingAddress())
-                                        @livewire('master::contact.address',['initId' => $form->billing_id,'label'=>'Billing Address'],
+                                        @livewire('master::contact.address',['initId' => $form->contact_id,'label'=>'Billing Address'],
                                                     key('contact-billing-address-' .$form->billing_id))
                                         <x-Ui::input.error-text wire:model="form.billing_id"/>
                                     @endif
                                 </div>
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasShippingAddress())
-                                        @livewire('master::contact.address',['initId' => $form->order_id ,'label'=>'Shipping Address'],
+                                        @livewire('master::contact.address',['initId' => $form->contact_id ,'label'=>'Shipping Address'],
                                                     key('contact-shipping-address-' .$form->shipping_id))
                                         <x-Ui::input.error-text wire:model="form.shipping_id"/>
                                     @endif
