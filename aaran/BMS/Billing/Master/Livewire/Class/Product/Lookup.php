@@ -28,13 +28,13 @@ class Lookup extends Component
             $vname = DB::connection($this->getTenantConnection())
                 ->table('products')
                 ->where('id', $initId)
-                ->value('vname'); // fetch only the name
+                ->value('vname');
 
             if ($vname) {
-                $this->search = $vname; // triggers updatedSearch automatically
+                $this->search = $vname;
             }
         } else {
-            $this->search = ''; // triggers full preload
+            $this->search = '';
         }
     }
 

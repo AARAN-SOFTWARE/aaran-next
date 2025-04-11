@@ -19,7 +19,7 @@
                                px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2
                                peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4
                                rtl:peer-focus:left-auto start-1 pointer-events-none">
-        Product Name
+        Party Name
     </label>
 
     @if($showDropdown)
@@ -29,15 +29,15 @@
                         rounded-lg border-transparent flex-1 appearance-none border
                         bg-white text-gray-800 ring-1 ring-blue-600">
                     <ul class="overflow-y-scroll h-44 text-xs">
-                        @forelse ($results as $index => $product)
-                            <li wire:click="selectProduct(@js($product))"
+                        @forelse ($results as $index => $transport)
+                            <li wire:click="selectTransport(@js($transport))"
                                 class="cursor-pointer px-3 py-1 hover:font-bold hover:bg-zinc-100 text-blue-900 h-fit ml-2 mr-2 rounded-md
                                 {{ $highlightIndex === $index ? 'bg-blue-100 ' : '' }}">
-                                {{ $product->vname }}
+                                {{ $transport->vname }}
                             </li>
                         @empty
-                            <li class="px-4 py-2 text-gray-500 text-sm tracking-wider">No Results Found ...</li>
-                            <button @click="showCreateModal = true;" wire:click="openCreateModal"
+                            <li class="px-4 py-2 text-gray-500 text-sm tracking-wider">No Results ...</li>
+                            <button @click="showCreateModal = true;" wire:click="createNew"
                                     class="w-full inline-flex items-center gap-x-3 px-4 py-2  text-blue-600 border-t border-b border-gray-300px-2 hover:bg-blue-100 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                      class="size-6">
@@ -45,7 +45,7 @@
                                           d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
                                           clip-rule="evenodd"/>
                                 </svg>
-                                <span>New Product</span>
+                                <span>New Transport</span>
                             </button>
 
                         @endforelse
@@ -55,5 +55,5 @@
         </div>
     @endif
     <!-- Modal -------------------------------------------------------------------------------------------------------->
-    <livewire:master::product.modal wire:key="create-product-modal"/>
+    <livewire:master::transport.modal wire:key="create-transport-modal"/>
 </div>

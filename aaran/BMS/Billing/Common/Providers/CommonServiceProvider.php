@@ -36,8 +36,7 @@ class CommonServiceProvider extends ServiceProvider
 
         Livewire::component('common::lookup.colour', Class\Lookup\ColourLookup::class);
         Livewire::component('common::lookup.size', Class\Lookup\SizeLookup::class);
-
-
+        Livewire::component('common::lookup.transport', Class\Lookup\TransportLookup::class);
     }
 
     protected function loadViews(): void

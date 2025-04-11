@@ -2,88 +2,116 @@
 
 namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
+use Aaran\BMS\Billing\Common\Models\Size;
 use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class SizeLookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
-    public $size_name = '';
+    public $initId;
 
-    public $size_id = '';
-    public $sizeCollection;
-    public $highlightSize = 0;
-    public $sizeTyped = false;
-
-    public function decrementSize(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightSize === 0) {
-            $this->highlightSize = count($this->sizeCollection) - 1;
-            return;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('sizes')
+                ->where('id', $initId)
+                ->value('vname');
+
+            if ($vname) {
+                $this->search = $vname;
+            }
+        } else {
+            $this->search = '';
         }
-        $this->highlightSize--;
     }
 
-    public function incrementSize(): void
-    {
-        if ($this->highlightSize === count($this->sizeCollection) - 1) {
-            $this->highlightSize = 0;
-            return;
-        }
-        $this->highlightSize++;
-    }
 
-    public function setSize($name, $id): void
-    {
-        $this->size_name = $name;
-        $this->size_id = $id;
-        $this->getSizeList();
-    }
+    public string $searchText = '';
 
-    public function enterSize(): void
-    {
-        $obj = $this->sizeCollection[$this->highlightSize] ?? null;
-
-        $this->size_name = '';
-        $this->sizeCollection = Collection::empty();
-        $this->highlightSize = 0;
-
-        $this->size_name = $obj->vname ?? '';
-        $this->size_id = $obj->id ?? '';
-    }
-
-    #[On('refresh-size')]
-    public function refreshSize($v): void
-    {
-        $this->size_id = $v['id'];
-        $this->size_name = $v['vname'];
-        $this->sizeTyped = false;
-    }
-
-    public function getSizeList(): void
+    public function updatedSearch($value): void
     {
         if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
+            return;
         }
 
-        $this->sizeCollection = DB::connection($this->getTenantConnection())
+        $query = DB::connection($this->getTenantConnection())
             ->table('sizes')
-            ->when(trim($this->size_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->size_name) . '%'))
-            ->get();
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
+        }
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
     }
+
+    public function incrementHighlight(): void
+    {
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
+    }
+
+    public function decrementHighlight(): void
+    {
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
+
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectSize($selected);
+        }
+    }
+
+    public function selectSize($size): void
+    {
+        $size = (object)$size;
+
+        $this->search = $size->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function createNew(): void
+    {
+        $obj = Size::on($this->getTenantConnection())->create([
+            'vname' => $this->search,
+            'active_id' => 1
+        ]);
+        $this->dispatch('refresh-size', name: $obj);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Size Saved Successfully']);
+        $this->showDropdown = false;
+    }
+
 
     public function render()
     {
-        $this->getSizeList();
-
         return view('common::lookup.size-lookup');
     }
 }

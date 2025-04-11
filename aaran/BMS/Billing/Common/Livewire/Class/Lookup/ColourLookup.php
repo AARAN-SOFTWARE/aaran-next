@@ -2,88 +2,116 @@
 
 namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
+use Aaran\BMS\Billing\Common\Models\Colour;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class ColourLookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
-    public $colour_name = '';
+    public $initId;
 
-    public $colour_id = '';
-    public $colourCollection;
-    public $highlightColour = 0;
-    public $colourTyped = false;
-
-    public function decrementColour(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightColour === 0) {
-            $this->highlightColour = count($this->colourCollection) - 1;
-            return;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('colours')
+                ->where('id', $initId)
+                ->value('vname');
+
+            if ($vname) {
+                $this->search = $vname;
+            }
+        } else {
+            $this->search = '';
         }
-        $this->highlightColour--;
     }
 
-    public function incrementColour(): void
-    {
-        if ($this->highlightColour === count($this->colourCollection) - 1) {
-            $this->highlightColour = 0;
-            return;
-        }
-        $this->highlightColour++;
-    }
 
-    public function setColour($name, $id): void
-    {
-        $this->colour_name = $name;
-        $this->colour_id = $id;
-        $this->getColourList();
-    }
+    public string $searchText = '';
 
-    public function enterColour(): void
-    {
-        $obj = $this->colourCollection[$this->highlightColour] ?? null;
-
-        $this->colour_name = '';
-        $this->colourCollection = Collection::empty();
-        $this->highlightColour = 0;
-
-        $this->colour_name = $obj->vname ?? '';
-        $this->colour_id = $obj->id ?? '';
-    }
-
-    #[On('refresh-colour')]
-    public function refreshColour($v): void
-    {
-        $this->colour_id = $v['id'];
-        $this->colour_name = $v['vname'];
-        $this->colourTyped = false;
-    }
-
-    public function getColourList(): void
+    public function updatedSearch($value): void
     {
         if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
+            return;
         }
 
-        $this->colourCollection = DB::connection($this->getTenantConnection())
+        $query = DB::connection($this->getTenantConnection())
             ->table('colours')
-            ->when(trim($this->colour_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->colour_name) . '%'))
-            ->get();
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
+        }
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
+    }
+
+    public function incrementHighlight(): void
+    {
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
+    }
+
+    public function decrementHighlight(): void
+    {
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
+
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectColour($selected);
+        }
+    }
+
+    public function selectColour($colour): void
+    {
+        $colour = (object)$colour;
+
+        $this->search = $colour->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function createNew(): void
+    {
+        $colour = Colour::on($this->getTenantConnection())->create([
+            'vname' => $this->search,
+            'active_id' => 1
+        ]);
+        $this->dispatch('refresh-colour', name: $colour);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Colour Saved Successfully']);
+        $this->showDropdown = false;
     }
 
     public function render()
     {
-        $this->getColourList();
-
         return view('common::lookup.colour-lookup');
     }
 }
