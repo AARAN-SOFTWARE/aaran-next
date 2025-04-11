@@ -54,6 +54,18 @@ class SalesUpsert extends Component
         $this->itemForm->size_name = $v['vname'];
     }
 
+    #[On('refresh-billing_address')]
+    public function refreshBillingAddress($v): void
+    {
+        $this->form->billing_id = $v;
+    }
+
+    #[On('refresh-shipping_address')]
+    public function refreshShippingAddress($v): void
+    {
+        $this->form->shipping_id = $v;
+    }
+
     public function getSave()
     {
         $message = $this->form->createOrUpdate();

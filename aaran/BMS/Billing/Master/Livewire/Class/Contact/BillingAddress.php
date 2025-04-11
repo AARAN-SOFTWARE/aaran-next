@@ -3,11 +3,12 @@
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class Address extends Component
+class BillingAddress extends Component
 {
     use TenantAwareTrait;
 
@@ -20,10 +21,9 @@ class Address extends Component
 
     public $initId;
 
-    public function mount($initId = null, $label = null): void
+    public function mount($initId = null): void
     {
         $this->initId = $initId;
-        $this->label = $label ?? '';
 
         if ($initId && $this->getTenantConnection()) {
 
@@ -40,6 +40,7 @@ class Address extends Component
     {
         $this->searchBy();
     }
+
     public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
@@ -50,10 +51,10 @@ class Address extends Component
             ->table('contact_addresses')
             ->select(
                 'contact_addresses.*',
-                        'cities.vname as city',
-                        'states.vname as state',
-                        'pincodes.vname as pincode',
-                        'countries.vname as country',
+                'cities.vname as city',
+                'states.vname as state',
+                'pincodes.vname as pincode',
+                'countries.vname as country',
             )
             ->leftJoin('cities', 'cities.id', '=', 'contact_addresses.city_id')
             ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
@@ -92,14 +93,32 @@ class Address extends Component
         }
     }
 
-    public function selectContact($contact): void
+    public function selectContact($contactAddress): void
     {
-        $contact = (object)$contact;
+        $contactAddress = (object)$contactAddress;
 
-        $this->search = $contact->address_type ;
+        $contactAddress = ContactAddress::on($this->getTenantConnection())
+            ->where('id', $contactAddress->id)
+            ->first();
+
+        $v = $contactAddress->address_type .
+            '  (' .
+            $contactAddress->address_1 .', '.
+            $contactAddress->address_2 .', '.
+            $contactAddress->city->vname .', '.
+            $contactAddress->state->vname .'- '.
+            $contactAddress->pincode->vname .', '.
+            $contactAddress->country->vname .'. '.
+            ')';
+
+        $this->search = $v;
+        $this->dispatch('refresh-billing_address', $contactAddress->id);
+
         $this->results = [];
         $this->showDropdown = false;
         $this->showCreateModal = false;
+
+
     }
 
     public function hideDropdown(): void
@@ -118,6 +137,23 @@ class Address extends Component
     {
         if (!empty($contact['id'])) {
             $this->initId = $contact['id'];
+
+            $contactAddress = ContactAddress::on($this->getTenantConnection())
+                ->where('contact_id', $this->initId)
+                ->first();
+
+            $v = $contactAddress->address_type .
+                '  (' .
+                $contactAddress->address_1 .', '.
+                $contactAddress->address_2 .', '.
+                $contactAddress->city->vname .', '.
+                $contactAddress->state->vname .'- '.
+                $contactAddress->pincode->vname .', '.
+                $contactAddress->country->vname .'. '.
+                ')';
+
+
+            $this->search = $v;
         }
     }
 
@@ -131,6 +167,6 @@ class Address extends Component
 
     public function render()
     {
-        return view('master::contact.address');
+        return view('master::contact.billing-address');
     }
 }

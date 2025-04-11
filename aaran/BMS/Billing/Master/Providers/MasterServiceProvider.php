@@ -25,7 +25,8 @@ class MasterServiceProvider extends ServiceProvider
         Livewire::component('master::contact.index', Class\Contact\Index::class);
         Livewire::component('master::contact.modal', Class\Contact\Modal::class);
         Livewire::component('master::contact.lookup', Class\Contact\Lookup::class);
-        Livewire::component('master::contact.address', Class\Contact\Address::class);
+        Livewire::component('master::contact.billing-address', Class\Contact\BillingAddress::class);
+        Livewire::component('master::contact.shipping-address', Class\Contact\ShippingAddress::class);
         Livewire::component('master::contact.address-modal', Class\Contact\AddressModal::class);
 
         Livewire::component('master::product.index', Class\Product\Index::class);

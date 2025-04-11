@@ -299,14 +299,14 @@
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasBillingAddress())
-                                        @livewire('master::contact.address',['initId' => $form->contact_id,'label'=>'Billing Address'],
+                                        @livewire('master::contact.billing-address',['initId' => $form->contact_id],
                                                     key('contact-billing-address-' .$form->billing_id))
                                         <x-Ui::input.error-text wire:model="form.billing_id"/>
                                     @endif
                                 </div>
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasShippingAddress())
-                                        @livewire('master::contact.address',['initId' => $form->contact_id ,'label'=>'Shipping Address'],
+                                        @livewire('master::contact.shipping-address',['initId' => $form->contact_id],
                                                     key('contact-shipping-address-' .$form->shipping_id))
                                         <x-Ui::input.error-text wire:model="form.shipping_id"/>
                                     @endif
