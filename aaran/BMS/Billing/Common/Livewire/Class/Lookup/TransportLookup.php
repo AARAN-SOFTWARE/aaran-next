@@ -2,88 +2,128 @@
 
 namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
+use Aaran\BMS\Billing\Common\Models\Transport;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class TransportLookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
-    public $transport_name = '';
+    public $initId;
 
-    public $transport_id = '';
-    public $transportCollection;
-    public $highlightTransport = 0;
-    public $transportTyped = false;
-
-    public function decrementTransport(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightTransport === 0) {
-            $this->highlightTransport = count($this->transportCollection) - 1;
-            return;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('transports')
+                ->where('id', $initId)
+                ->value('vname');
+
+            if ($vname) {
+                $this->search = $vname;
+            }
+        } else {
+            $this->search = '';
         }
-        $this->highlightTransport--;
     }
 
-    public function incrementTransport(): void
-    {
-        if ($this->highlightTransport === count($this->transportCollection) - 1) {
-            $this->highlightTransport = 0;
-            return;
-        }
-        $this->highlightTransport++;
-    }
 
-    public function setTransport($name, $id): void
-    {
-        $this->transport_name = $name;
-        $this->transport_id = $id;
-        $this->getTransportList();
-    }
+    public string $searchText = '';
 
-    public function enterTransport(): void
-    {
-        $obj = $this->transportCollection[$this->highlightTransport] ?? null;
-
-        $this->transport_name = '';
-        $this->transportCollection = Collection::empty();
-        $this->highlightTransport = 0;
-
-        $this->transport_name = $obj->vname ?? '';
-        $this->transport_id = $obj->id ?? '';
-    }
-
-    #[On('refresh-transport')]
-    public function refreshTransport($v): void
-    {
-        $this->transport_id = $v['id'];
-        $this->transport_name = $v['vname'];
-        $this->transportTyped = false;
-    }
-
-    public function getTransportList(): void
+    public function updatedSearch($value): void
     {
         if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
+            return;
         }
 
-        $this->transportCollection = DB::connection($this->getTenantConnection())
+        $query = DB::connection($this->getTenantConnection())
             ->table('transports')
-            ->when(trim($this->transport_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->transport_name) . '%'))
-            ->get();
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
+        }
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
+    }
+
+    public function incrementHighlight(): void
+    {
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
+    }
+
+    public function decrementHighlight(): void
+    {
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
+
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectTransport($selected);
+        }
+    }
+
+    public function selectTransport($transport): void
+    {
+        $transport = (object)$transport;
+
+        $this->search = $transport->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+        $this->dispatch('refresh-transport', $transport);
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function createNew(): void
+    {
+        $transport = Transport::on($this->getTenantConnection())->create([
+            'vname' => $this->search,
+            'active_id' => 1
+        ]);
+        $this->dispatch('refresh-transport', $transport);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Transport Saved Successfully']);
+        $this->showDropdown = false;
+    }
+
+    #[On('refresh-transport-lookup')]
+    public function refreshSize($transport): void
+    {
+        if (!empty($transport['vname'])) {
+            $this->search = $transport['vname'];
+            $this->showCreateModal = false;
+        } else {
+            $this->search = '';
+        }
     }
 
     public function render()
     {
-        $this->getTransportList();
-
-        return view('common::lookup.transport-lookup');
+        return view('master::transport.lookup');
     }
 }

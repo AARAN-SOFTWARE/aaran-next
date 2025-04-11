@@ -24,39 +24,39 @@
                                     <div class="w-full space-y-3">
 
                                         <div>
-                                            @livewire('master::contact.lookup',['initialContactId' => $sale->contact_id] )
+                                            @livewire('master::contact.lookup',['initId' => $form->contact_id] )
                                         </div>
 
                                         <div>
                                             @if(\Aaran\Assets\Features\SaleEntry::hasOrder())
-                                                @livewire('master::order.lookup',['initId' => $sale->contact_id])
+                                                @livewire('master::order.lookup',['initId' => $form->order_id])
                                             @endif
                                         </div>
 
                                         <div>
 
                                             @if(\Aaran\Assets\Features\SaleEntry::hasStyle())
-                                                @livewire('master::style.lookup')
+                                                @livewire('master::style.lookup',['initId' => $form->order_id])
                                             @endif
                                         </div>
                                     </div>
 
                                     <div class="w-full space-y-3 ">
                                         <div class="h-16 ">
-                                            <x-Ui::input.floating wire:model="invoice_no" label="Invoice No"/>
-                                            @error('invoice_no')
+                                            <x-Ui::input.floating wire:model="form.invoice_no" label="Invoice No"/>
+                                            @error('form.invoice_no')
                                             <span class="text-red-500">{{'Invoice No is Required.'}}</span>
                                             @enderror
                                         </div>
                                         <div class="h-16 ">
-                                            <x-Ui::input.model-date wire:model="invoice_date" label="Invoice Date"/>
-                                            @error('invoice_date')
+                                            <x-Ui::input.model-date wire:model="form.invoice_date" label="Invoice Date"/>
+                                            @error('form.invoice_date')
                                             <span class="text-red-500">{{'Invoice Date is Required.'}}</span>
                                             @enderror
                                         </div>
                                         <div class=" ">
                                             @if(\Aaran\Assets\Features\SaleEntry::hasJob_no())
-                                                <x-Ui::input.floating wire:model="job_no" label="Job No"/>
+                                                <x-Ui::input.floating wire:model="form.job_no" label="Job No"/>
                                             @endif
                                         </div>
                                         <div class="">
@@ -97,7 +97,7 @@
                                             @endif
                                         </div>
                                         <div class="h-16 ">
-                                            <x-Ui::input.model-select wire:model="sales_type" :label="'Sales Type'">
+                                            <x-Ui::input.model-select wire:model="form.sales_type" :label="'Sales Type'">
                                                 <option class="text-gray-400"> choose ..</option>
                                                 <option value="1">CGST-SGST</option>
                                                 <option value="2">IGST</option>
@@ -113,48 +113,48 @@
                                 <div class="w-full flex  gap-x-1 pb-4">
                                     @if(\Aaran\Assets\Features\SaleEntry::hasPo_no())
                                         <div class="">
-                                            <x-Ui::input.floating id="qty" wire:model.live="po_no" label="Po No"/>
+                                            <x-Ui::input.floating id="qty" wire:model="itemForm.po_no" label="Po No"/>
                                         </div>
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasDc_no())
                                         <div class="">
-                                            <x-Ui::input.floating id="dc" wire:model.live="dc_no" label="DC No."/>
+                                            <x-Ui::input.floating id="dc" wire:model="itemForm.dc_no" label="DC No."/>
                                         </div>
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasNo_of_roll())
                                         <div class="">
-                                            <x-Ui::input.floating id="no_of_roll" wire:model.live="no_of_roll"
+                                            <x-Ui::input.floating id="no_of_roll" wire:model="itemForm.no_of_roll"
                                                                   label="No of Roll"/>
                                         </div>
                                     @endif
                                     <div class="w-[30%]">
 
-                                        @livewire('master::product.lookup')
+                                        @livewire('master::product.lookup',['initId' => $itemForm->product_id])
 
                                     </div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasProductDescription())
                                         <div class="w-[20%]">
-                                            <x-Ui::input.floating id="qty" wire:model.live="description"
+                                            <x-Ui::input.floating id="description" wire:model="itemForm.description"
                                                                   label="description"/>
                                         </div>
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasColour())
                                         <div class="w-[15%]">
-                                            @livewire('common::lookup.colour')
+                                            @livewire('common::lookup.colour',['initId' => $itemForm->colour_id])
                                         </div>
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasSize())
                                         <div class="w-[15%]">
-                                            @livewire('common::lookup.size')
+                                            @livewire('common::lookup.size',['initId' => $itemForm->size_id])
                                         </div>
                                     @endif
                                     <div class="w-[10%]">
-                                        <x-Ui::input.floating id="qty" wire:model.live="qty" label="Quantity"/>
+                                        <x-Ui::input.floating id="qty" wire:model="itemForm.qty" label="Quantity"/>
                                     </div>
                                     <div class="w-[10%]">
-                                        <x-Ui::input.floating id="price" wire:model.live="price" label="Price"/>
+                                        <x-Ui::input.floating id="price" wire:model="itemForm.price" label="Price"/>
                                     </div>
-                                    <x-Ui::button.add wire:click="addItems"/>
+                                    <x-Ui::button.add wire:click.prevent="addItems"/>
                                 </div>
                                 <div class="max-w-6xl mx-auto">
                                     <div class="w-full border rounded-lg overflow-hidden">
@@ -185,11 +185,11 @@
                                                 <th width="9%" class="border-r">Sub Total</th>
                                                 <th width="4%">Action</th>
                                             </tr>
-                                            @if ($itemList)
-                                                @foreach($itemList as $index => $row)
+                                            @if ($itemForm->itemList)
+                                                @foreach($itemForm->itemList as $index => $row)
                                                     <tr class="text-center border-b font-lex tracking-wider hover:bg-amber-50">
                                                         <td class="py-2 border-r"
-                                                            wire:click.prevent="changeItems({{$index}})">{{$index+1}}</td>
+                                                            wire:click.prevent="changeItems({{$index}})">{{(int)$index+1}}</td>
                                                         @if(\Aaran\Assets\Features\SaleEntry::hasPo_no())
                                                             <td class="py-2 border-r"
                                                                 wire:click.prevent="changeItems({{$index}})">{{$row['po_no']}}</td>
@@ -228,13 +228,13 @@
                                                         <td class="py-2 border-r"
                                                             wire:click.prevent="changeItems({{$index}})">{{$row['price']}}</td>
                                                         <td class="py-2 border-r"
-                                                            wire:click.prevent="changeItems({{$index}})">{{number_format($row['taxable'],2,'.','')}}</td>
+                                                            wire:click.prevent="changeItems({{$index}})">{{ \Aaran\Assets\Helper\Format::Decimal($row['taxable'])}}</td>
                                                         <td class="py-2 border-r"
                                                             wire:click.prevent="changeItems({{$index}})">{{$row['gst_percent']}}</td>
                                                         <td class="py-2 border-r"
-                                                            wire:click.prevent="changeItems({{$index}})">{{$row['gst_amount']}}</td>
+                                                            wire:click.prevent="changeItems({{$index}})">{{\Aaran\Assets\Helper\Format::Decimal($row['gst_amount'])}}</td>
                                                         <td class="py-2 border-r"
-                                                            wire:click.prevent="changeItems({{$index}})">{{number_format($row['subtotal'],2,'.','')}}</td>
+                                                            wire:click.prevent="changeItems({{$index}})">{{\Aaran\Assets\Helper\Format::Decimal($row['subtotal'])}}</td>
                                                         <td class="py-2 border-r"
                                                             wire:click.prevent="changeItems({{$index}})">
                                                             <x-Ui::button.delete
@@ -246,15 +246,15 @@
                                             <tr class="bg-zinc-50 text-gray-400 text-center font-sans tracking-wider">
                                                 @if(\Aaran\Assets\Features\SaleEntry::hasSize() or \Aaran\Assets\Features\SaleEntry::hasColour())
 
-                                                    <td class="py-2 border-r" colspan="4">TOTALS.</td>
+                                                    <td class="py-2 border-r" colspan="6">TOTALS.</td>
                                                 @else
                                                     <td class="py-2 border-r" colspan="4">TOTALS.</td>
                                                 @endif
-                                                <td class="border-r font-semibold">{{$sale->total_qty ??'' }}</td>
+                                                <td class="border-r font-semibold">{{$form->total_qty ??'' }}</td>
                                                 <td class="border-r">&nbsp;</td>
-                                                <td class="border-r font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</td>
+                                                <td class="border-r font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($form->total_taxable)}}</td>
                                                 <td class="border-r">&nbsp;</td>
-                                                <td class="border-r font-semibold">{{$sale->total_gst}}</td>
+                                                <td class="border-r font-semibold">{{ \Aaran\Assets\Helper\Format::Decimal($form->total_gst)}}</td>
                                                 <td class="border-r font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($grandTotalBeforeRound)}}</td>
                                                 <td>&nbsp;</td>
                                             </tr>
@@ -292,11 +292,11 @@
                                         <div>:</div>
                                     </div>
                                     <div class="w-1/4 text-end space-y-4 tracking-wider font-lex">
-                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</div>
-                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_gst)}}</div>
-                                        <div>{{$sale->round_off}}</div>
+                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($form->total_taxable)}}</div>
+                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($form->total_gst)}}</div>
+                                        <div>{{$form->round_off}}</div>
                                         <div
-                                            class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->grand_total)}}</div>
+                                            class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($form->grand_total)}}</div>
                                     </div>
                                 </div>
                             </div>

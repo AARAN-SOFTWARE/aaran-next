@@ -17,17 +17,17 @@ class Lookup extends Component
     public $showDropdown = false;
     public $showCreateModal = false;
 
-    public $initialContactId;
+    public $initId;
 
-    public function mount($initialContactId = null): void
+    public function mount($initId = null): void
     {
-        $this->initialContactId = $initialContactId;
+        $this->initId = $initId;
 
-        if ($initialContactId && $this->getTenantConnection()) {
+        if ($initId && $this->getTenantConnection()) {
             // Trigger updatedSearch with a contact name pulled via id
             $vname = DB::connection($this->getTenantConnection())
                 ->table('contacts')
-                ->where('id', $initialContactId)
+                ->where('id', $initId)
                 ->value('vname'); // fetch only the name
 
             if ($vname) {

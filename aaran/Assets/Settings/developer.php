@@ -22,6 +22,9 @@ return [
     ],
 
     'SalesEntry' => [
+        SaleEntry::dc_no(),
+        SaleEntry::po_no(),
+        SaleEntry::order(),
         SaleEntry::order(),
         SaleEntry::billingAddress(),
         SaleEntry::shippingAddress(),

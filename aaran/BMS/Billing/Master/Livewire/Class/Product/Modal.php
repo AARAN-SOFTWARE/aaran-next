@@ -83,6 +83,7 @@ class Modal extends Component
             ],
         );
         $this->dispatch('refresh-product',$product);
+        $this->dispatch('refresh-product-lookup',$product);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->closeModal();
     }
