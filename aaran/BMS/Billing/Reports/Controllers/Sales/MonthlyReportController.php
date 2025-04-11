@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Reports\Controllers\Sales;
+namespace Aaran\BMS\Billing\Reports\Controllers\Sales;
 
 use Aaran\Common\Models\GstPercent;
 use Aaran\Entries\Models\Sale;
