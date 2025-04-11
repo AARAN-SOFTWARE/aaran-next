@@ -92,6 +92,7 @@ class ColourLookup extends Component
         $this->search = $colour->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-colour', $colour);
     }
 
     public function hideDropdown(): void
@@ -105,9 +106,20 @@ class ColourLookup extends Component
             'vname' => $this->search,
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-colour', name: $colour);
+        $this->dispatch('refresh-colour', $colour);
         $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Colour Saved Successfully']);
         $this->showDropdown = false;
+    }
+
+    #[On('refresh-colour-lookup')]
+    public function refreshColour($colour): void
+    {
+        if (!empty($colour['vname'])) {
+            $this->search = $colour['vname'];
+            $this->showCreateModal = false;
+        } else {
+            $this->search = '';
+        }
     }
 
     public function render()

@@ -5,6 +5,7 @@ namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Common\Models\Size;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class SizeLookup extends Component
@@ -91,6 +92,7 @@ class SizeLookup extends Component
         $this->search = $size->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-size', $size);
     }
 
     public function hideDropdown(): void
@@ -100,14 +102,26 @@ class SizeLookup extends Component
 
     public function createNew(): void
     {
-        $obj = Size::on($this->getTenantConnection())->create([
+        $size = Size::on($this->getTenantConnection())->create([
             'vname' => $this->search,
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-size', name: $obj);
+        $this->dispatch('refresh-size', $size);
         $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Size Saved Successfully']);
         $this->showDropdown = false;
     }
+
+    #[On('refresh-size-lookup')]
+    public function refreshSize($size): void
+    {
+        if (!empty($size['vname'])) {
+            $this->search = $size['vname'];
+            $this->showCreateModal = false;
+        } else {
+            $this->search = '';
+        }
+    }
+
 
 
     public function render()

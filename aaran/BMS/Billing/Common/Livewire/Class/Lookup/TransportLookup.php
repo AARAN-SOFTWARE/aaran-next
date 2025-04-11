@@ -92,6 +92,7 @@ class TransportLookup extends Component
         $this->search = $transport->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-transport', $transport);
     }
 
     public function hideDropdown(): void
@@ -101,15 +102,25 @@ class TransportLookup extends Component
 
     public function createNew(): void
     {
-        $obj = Transport::on($this->getTenantConnection())->create([
+        $transport = Transport::on($this->getTenantConnection())->create([
             'vname' => $this->search,
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-transport', name: $obj);
+        $this->dispatch('refresh-transport', $transport);
         $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Transport Saved Successfully']);
         $this->showDropdown = false;
     }
 
+    #[On('refresh-transport-lookup')]
+    public function refreshSize($transport): void
+    {
+        if (!empty($transport['vname'])) {
+            $this->search = $transport['vname'];
+            $this->showCreateModal = false;
+        } else {
+            $this->search = '';
+        }
+    }
 
     public function render()
     {

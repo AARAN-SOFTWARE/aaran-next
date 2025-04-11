@@ -49,11 +49,17 @@ class Lookup extends Component
 
         $query = DB::connection($this->getTenantConnection())
             ->table('products')
-            ->select('id', 'vname')
-            ->orderBy('vname');
+            ->select(
+                'products.id',
+                'products.vname',
+                'gst_percents.vname as gst_percent'
+            )
+            ->leftJoin('gst_percents', 'products.gst_percent_id', '=', 'gst_percents.id')
+            ->orderBy('products.vname');
+
 
         if (strlen(trim($value)) > 0) {
-            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
+            $query->where('products.vname', 'like', '%' . $value . '%')->limit(10);
         }
         $results = $query->get();
 
@@ -91,6 +97,8 @@ class Lookup extends Component
         $this->search = $product->vname;
         $this->results = [];
         $this->showDropdown = false;
+
+        $this->dispatch('refresh-product', $product);
     }
 
     public function hideDropdown(): void
@@ -104,11 +112,15 @@ class Lookup extends Component
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-product')]
+    #[On('refresh-product-lookup')]
     public function refreshProduct($product): void
     {
-        $this->search = $product['vname'];
-        $this->showCreateModal = false;
+        if (!empty($product['vname'])) {
+            $this->search = $product['vname'];
+            $this->showCreateModal = false;
+        } else {
+            $this->search = '';
+        }
     }
 
 
