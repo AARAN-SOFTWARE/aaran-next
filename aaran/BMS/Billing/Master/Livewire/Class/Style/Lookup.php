@@ -2,88 +2,118 @@
 
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Style;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Lookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
-    public $style_name = '';
+    public $initId;
 
-    public $style_id = '';
-    public $styleCollection;
-    public $highlightStyle = 0;
-    public $styleTyped = false;
-
-    public function decrementStyle(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightStyle === 0) {
-            $this->highlightStyle = count($this->styleCollection) - 1;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('styles')
+                ->where('id', $initId)
+                ->value('vname');
+
+            if ($vname) {
+                $this->search = $vname;
+            }
+        } else {
+            $this->search = '';
+        }
+    }
+
+
+    public string $searchText = '';
+
+    public function updatedSearch($value): void
+    {
+        if (!$this->getTenantConnection()) {
             return;
         }
-        $this->highlightStyle--;
-    }
 
-    public function incrementStyle(): void
-    {
-        if ($this->highlightStyle === count($this->styleCollection) - 1) {
-            $this->highlightStyle = 0;
-            return;
+        $query = DB::connection($this->getTenantConnection())
+            ->table('styles')
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
         }
-        $this->highlightStyle++;
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
     }
 
-    public function setStyle($name, $id): void
+    public function incrementHighlight(): void
     {
-        $this->style_name = $name;
-        $this->style_id = $id;
-        $this->getStyleList();
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
     }
 
-    public function enterStyle(): void
+    public function decrementHighlight(): void
     {
-        $obj = $this->styleCollection[$this->highlightStyle] ?? null;
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
 
-        $this->style_name = '';
-        $this->styleCollection = Collection::empty();
-        $this->highlightStyle = 0;
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectStyle($selected);
+        }
+    }
 
-        $this->style_name = $obj->vname ?? '';
-        $this->style_id = $obj->id ?? '';
+    public function selectStyle($style): void
+    {
+        $style = (object)$style;
+
+        $this->search = $style->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-style-modal', name: $this->search);
+        $this->showCreateModal = true;
     }
 
     #[On('refresh-style')]
-    public function refreshStyle($v): void
+    public function refreshStyle($style): void
     {
-        $this->style_id = $v['id'];
-        $this->style_name = $v['vname'];
-        $this->styleTyped = false;
+        $this->search = $style['vname'];
+        $this->showCreateModal = false;
     }
 
-    public function getStyleList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->styleCollection = DB::connection($this->getTenantConnection())
-            ->table('styles')
-            ->when(trim($this->style_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->style_name) . '%'))
-            ->get();
-    }
 
     public function render()
     {
-        $this->getStyleList();
-
         return view('master::style.lookup');
     }
 }

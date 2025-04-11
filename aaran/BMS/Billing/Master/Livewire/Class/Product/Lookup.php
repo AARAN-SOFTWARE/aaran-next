@@ -2,88 +2,118 @@
 
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Product;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Lookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
-    public $product_name = '';
+    public $initId;
 
-    public $product_id = '';
-    public $productCollection;
-    public $highlightProduct = 0;
-    public $productTyped = false;
-
-    public function decrementProduct(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightProduct === 0) {
-            $this->highlightProduct = count($this->productCollection) - 1;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('products')
+                ->where('id', $initId)
+                ->value('vname'); // fetch only the name
+
+            if ($vname) {
+                $this->search = $vname; // triggers updatedSearch automatically
+            }
+        } else {
+            $this->search = ''; // triggers full preload
+        }
+    }
+
+
+    public string $searchText = '';
+
+    public function updatedSearch($value): void
+    {
+        if (!$this->getTenantConnection()) {
             return;
         }
-        $this->highlightProduct--;
-    }
 
-    public function incrementProduct(): void
-    {
-        if ($this->highlightProduct === count($this->productCollection) - 1) {
-            $this->highlightProduct = 0;
-            return;
+        $query = DB::connection($this->getTenantConnection())
+            ->table('products')
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
         }
-        $this->highlightProduct++;
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
     }
 
-    public function setProduct($name, $id): void
+    public function incrementHighlight(): void
     {
-        $this->product_name = $name;
-        $this->product_id = $id;
-        $this->getProductList();
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
     }
 
-    public function enterProduct(): void
+    public function decrementHighlight(): void
     {
-        $obj = $this->productCollection[$this->highlightProduct] ?? null;
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
 
-        $this->product_name = '';
-        $this->productCollection = Collection::empty();
-        $this->highlightProduct = 0;
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectProduct($selected);
+        }
+    }
 
-        $this->product_name = $obj->vname ?? '';
-        $this->product_id = $obj->id ?? '';
+    public function selectProduct($product): void
+    {
+        $product = (object)$product;
+
+        $this->search = $product->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-product-modal', name: $this->search);
+        $this->showCreateModal = true;
     }
 
     #[On('refresh-product')]
-    public function refreshProduct($v): void
+    public function refreshProduct($product): void
     {
-        $this->product_id = $v['id'];
-        $this->product_name = $v['vname'];
-        $this->productTyped = false;
+        $this->search = $product['vname'];
+        $this->showCreateModal = false;
     }
 
-    public function getProductList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->productCollection = DB::connection($this->getTenantConnection())
-            ->table('products')
-            ->when(trim($this->product_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->product_name) . '%'))
-            ->get();
-    }
 
     public function render()
     {
-        $this->getProductList();
-
         return view('master::product.lookup');
     }
 }

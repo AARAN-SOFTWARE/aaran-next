@@ -247,6 +247,5 @@
             </x-slot>
 
         </x-Ui::tabs.tab-panel>
-
     </x-Ui::lookup.modal-new>
 </div>

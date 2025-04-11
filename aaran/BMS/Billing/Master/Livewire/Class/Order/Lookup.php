@@ -2,89 +2,118 @@
 
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Order;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Lookup extends Component
 {
+    use TenantAwareTrait;
 
-    use ComponentStateTrait, TenantAwareTrait;
+    public $search = '';
+    public $results = [];
+    public $highlightIndex = 0;
+    public $showDropdown = false;
+    public $showCreateModal = false;
 
-    public bool $showModal = false;
+    public $initId;
 
-    public $order_name = '';
-
-    public $order_id = '';
-    public $orderCollection;
-    public $highlightOrder = 0;
-    public $orderTyped = false;
-
-    public function decrementOrder(): void
+    public function mount($initId = null): void
     {
-        if ($this->highlightOrder === 0) {
-            $this->highlightOrder = count($this->orderCollection) - 1;
+        $this->initId = $initId;
+
+        if ($initId && $this->getTenantConnection()) {
+
+            $vname = DB::connection($this->getTenantConnection())
+                ->table('orders')
+                ->where('id', $initId)
+                ->value('vname');
+
+            if ($vname) {
+                $this->search = $vname;
+            }
+        } else {
+            $this->search = '';
+        }
+    }
+
+
+    public string $searchText = '';
+
+    public function updatedSearch($value): void
+    {
+        if (!$this->getTenantConnection()) {
             return;
         }
-        $this->highlightOrder--;
-    }
 
-    public function incrementOrder(): void
-    {
-        if ($this->highlightOrder === count($this->orderCollection) - 1) {
-            $this->highlightOrder = 0;
-            return;
+        $query = DB::connection($this->getTenantConnection())
+            ->table('orders')
+            ->select('id', 'vname')
+            ->orderBy('vname');
+
+        if (strlen(trim($value)) > 0) {
+            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
         }
-        $this->highlightOrder++;
+        $results = $query->get();
+
+        $this->results = $results;
+        $this->highlightIndex = 0;
+        $this->showDropdown = true;
     }
 
-    public function setOrder($name, $id): void
+    public function incrementHighlight(): void
     {
-        $this->order_name = $name;
-        $this->order_id = $id;
-        $this->getOrderList();
+        if ($this->highlightIndex < count($this->results) - 1) {
+            $this->highlightIndex++;
+        }
     }
 
-    public function enterOrder(): void
+    public function decrementHighlight(): void
     {
-        $obj = $this->orderCollection[$this->highlightOrder] ?? null;
+        if ($this->highlightIndex > 0) {
+            $this->highlightIndex--;
+        }
+    }
 
-        $this->order_name = '';
-        $this->orderCollection = Collection::empty();
-        $this->highlightOrder = 0;
+    public function selectHighlighted(): void
+    {
+        $selected = $this->results[$this->highlightIndex] ?? null;
+        if ($selected) {
+            $this->selectOrder($selected);
+        }
+    }
 
-        $this->order_name = $obj->vname ?? '';
-        $this->order_id = $obj->id ?? '';
+    public function selectOrder($order): void
+    {
+        $order = (object)$order;
+
+        $this->search = $order->vname;
+        $this->results = [];
+        $this->showDropdown = false;
+    }
+
+    public function hideDropdown(): void
+    {
+        $this->showDropdown = false;
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-order-modal', name: $this->search);
+        $this->showCreateModal = true;
     }
 
     #[On('refresh-order')]
-    public function refreshOrder($v): void
+    public function refreshOrder($order): void
     {
-        $this->order_id = $v['id'];
-        $this->order_name = $v['vname'];
-        $this->orderTyped = false;
+        $this->search = $order['vname'];
+        $this->showCreateModal = false;
     }
 
-    public function getOrderList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->orderCollection = DB::connection($this->getTenantConnection())
-            ->table('orders')
-            ->when(trim($this->order_name), fn($query) => $query->where('vname', 'like', '%' . trim($this->order_name) . '%'))
-            ->get();
-    }
 
     public function render()
     {
-        $this->getOrderList();
-
         return view('master::order.lookup');
     }
 }
