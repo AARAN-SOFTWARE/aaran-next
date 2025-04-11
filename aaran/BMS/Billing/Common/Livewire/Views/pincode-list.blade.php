@@ -45,6 +45,7 @@
 
         <x-Ui::forms.create :id="$vid">
             <x-Ui::input.floating wire:model="vname" label="Pin Code" />
+            <x-Ui::input.error-text wire:model="vname"/>
         </x-Ui::forms.create>
 
 

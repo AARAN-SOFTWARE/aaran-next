@@ -92,6 +92,7 @@
 
                         </x-Ui::dropdown.select>
                     </div>
+                    <x-Ui::input.error-text wire:model="account_head_id"/>
                 </x-Ui::dropdown.wrapper>
 
                 <x-Ui::input.lookup-text wire:model="desc" label="Desc"/>

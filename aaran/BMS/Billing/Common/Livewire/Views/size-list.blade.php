@@ -20,6 +20,7 @@
                 <x-Ui::table.header-text wire:click.prevent="sortBy('id')" sortIcon="{{$sortAsc}}" :left="true">
                     Name
                 </x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="false" > Description </x-Ui::table.header-text>
                 <x-Ui::table.header-status/>
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
@@ -29,6 +30,7 @@
                     <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text center>{{$row->description}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
