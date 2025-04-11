@@ -40,9 +40,11 @@ class SizeLookup extends Component
     }
 
 
-    public string $searchText = '';
-
-    public function updatedSearch($value): void
+    public function updatedSearch(): void
+    {
+        $this->searchBy();
+    }
+    public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
             return;
@@ -53,8 +55,8 @@ class SizeLookup extends Component
             ->select('id', 'vname')
             ->orderBy('vname');
 
-        if (strlen(trim($value)) > 0) {
-            $query->where('vname', 'like', '%' . $value . '%')->limit(10);
+        if (strlen(trim($this->search)) > 0) {
+            $query->where('vname', 'like', '%' . $this->search . '%')->limit(10);
         }
         $results = $query->get();
 
