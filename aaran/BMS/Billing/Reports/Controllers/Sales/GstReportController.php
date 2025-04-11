@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Reports\Controllers\Sales;
+namespace Aaran\BMS\Billing\Reports\Controllers\Sales;
 
 use Aaran\Entries\Models\Purchase;
 use Aaran\Entries\Models\Sale;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Reports\Controllers;
+namespace Aaran\BMS\Billing\Reports\Controllers;
 
 use Aaran\Entries\Models\Purchase;
 use Aaran\BMS\Billing\Master\Models\Company;
@@ -20,8 +20,8 @@ class PayablesController extends Controller
 //        return pdf('pdf-view.report.payables', [
         Pdf::setOption(['dpi' => 150, 'defaultPaperSize' => 'a4', 'defaultFont' => 'sans-serif','fontDir']);
 
-        $pdf = PDF::loadView('aaran-ui::components.pdf-view.report.payables'
-            , [
+        $pdf = PDF::loadView('aaran-ui::components.pdf-view.report.payables',
+            [
             'list' => $purchase,
             'cmp' => Company::printDetails(session()->get('company_id')),
             'contact' => Contact::find($party),
