@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlogTag extends Model
 {
-
     protected $guarded = [];
+
 //    public static function blogTag($id)
 //    {
 //        $blogTag = BlogTag::find($id);

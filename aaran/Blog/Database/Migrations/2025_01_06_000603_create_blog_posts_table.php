@@ -16,7 +16,7 @@ return new class extends Migration {
                 $table->longText('image')->nullable();
                 $table->foreignId('blog_category_id')->references('id')->on('blog_categories');
                 $table->foreignId('blog_tag_id')->references('id')->on('blog_tags');
-                $table->foreignId('user_id')->references('id')->on('users');
+//                $table->foreignId('user_id')->references('id')->on('users');
                 $table->boolean('visibility')->nullable();
                 $table->tinyInteger('active_id')->nullable();
                 $table->timestamps();

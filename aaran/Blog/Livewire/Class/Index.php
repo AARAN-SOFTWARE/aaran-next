@@ -2,21 +2,25 @@
 
 namespace Aaran\Blog\Livewire\Class;
 
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\Blog\Models\BlogCategory;
 use Aaran\Blog\Models\BlogPost;
 use Aaran\Blog\Models\BlogTag;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class Index extends Component
 {
-    use CommonTraitNew;
+    use ComponentStateTrait, TenantAwareTrait;
 
     use WithFileUploads;
 
     #region[properties]
+    public string $vname = '';
     public string $body;
     public $users;
     public $image;
@@ -26,64 +30,49 @@ class Index extends Component
     public $tags;
     public $tagfilter = [];
     public $visibility = false;
+    public $active_id = true;
     #endregion
 
 
     public function mount()
     {
-        $this->BlogCategories = BlogCategory::get();
+        $this->BlogCategories = BlogCategory::on($this->getTenantConnection())->get();
     }
     #region[Get-Save]
     public function getSave(): void
     {
-        if ($this->common->vname != '') {
-            if ($this->common->vid == '') {
-                $Post = new BlogPost();
-                $extraFields = [
-                    'body' => $this->body,
-                    'blog_category_id' => $this->blog_category_id,
-                    'blog_tag_id' => $this->blog_tag_id,
-                    'image' => $this->saveImage(),
-                    'user_id' => auth()->id(),
-                    'visibility' => $this->visibility,
+        $connection = $this->getTenantConnection();
 
-                ];
-                $this->common->save($Post, $extraFields);
-                $message = "Saved";
-            } else {
-                $Post = BlogPost::find($this->common->vid);
-                $extraFields = [
-                    'body' => $this->body,
-                    'blog_category_id' => $this->blog_category_id,
-                    'blog_tag_id' => $this->blog_tag_id,
-                    'image' => $this->saveImage(),
-                    'user_id' => auth()->id(),
-                    'visibility' => $this->visibility,
-                ];
-                $this->common->edit($Post, $extraFields);
-                $message = "Updated";
-            }
-            $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
+        BlogPost::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+        [
+            'vname' => $this->vname,
+            'body' => $this->body,
+            'blog_category_id' => $this->blog_category_id,
+            'blog_tag_id' => $this->blog_tag_id,
+            'image' => $this->saveImage(),
+            'visibility' => $this->visibility,
+            'active_id' => $this->active_id,
+        ]);
         }
-    }
     #endregion
 
     #region[Get-Obj]
     public function getObj($id)
     {
         if ($id) {
-            $Post = BlogPost::find($id);
-            $this->common->vid = $Post->id;
-            $this->common->vname = $Post->vname;
-            $this->body = $Post->body;
-            $this->blog_category_id = $Post->blogcategory_id;
-            $this->blog_category_name = $Post->blogcategory_id?BlogCategory::find($Post->blogcategory_id)->vname:'';
-            $this->blog_tag_id = $Post->blogtag_id;
-            $this->blog_tag_name = $Post->blogtag_id?BlogTag::find($Post->blogtag_id)->vname:'';
-            $this->common->active_id = $Post->active_id;
-            $this->old_image = $Post->image;
-            $this->visibility = $Post->visibility;
-            return $Post;
+            $obj = BlogPost::on($this->getTenantConnection())->find($id);
+            $this->vid = $obj->id;
+            $this->vname = $obj->vname;
+            $this->body = $obj->body;
+            $this->blog_category_id = $obj->blogcategory_id;
+            $this->blog_category_name = $obj->blogcategory_id?BlogCategory::find($obj->blogcategory_id)->vname:'';
+            $this->blog_tag_id = $obj->blogtag_id;
+            $this->blog_tag_name = $obj->blogtag_id?BlogTag::find($obj->blogtag_id)->vname:'';
+            $this->active_id = $obj->active_id;
+            $this->old_image = $obj->image;
+            $this->visibility = $obj->visibility;
+            return $obj;
         }
         return null;
     }
@@ -92,9 +81,9 @@ class Index extends Component
     #region[Clear-Fields]
     public function clearFields(): void
     {
-        $this->common->vid = '';
-        $this->common->vname = '';
-        $this->common->active_id = '1';
+        $this->vid = null;
+        $this->vname = '';
+        $this->active_id = true;
         $this->body = '';
         $this->blog_category_id = '';
         $this->blog_category_name = '';
@@ -135,7 +124,7 @@ class Index extends Component
     #region[blogCategory]
     public $blog_category_id = '';
     public $blog_category_name = '';
-    public Collection $blogcategoryCollection;
+    public $blogcategoryCollection;
     public $highlightBlogCategory = 0;
     public $blogcategoryTyped = false;
 
@@ -185,7 +174,7 @@ class Index extends Component
 
     public function blogcategorySave($name)
     {
-        $obj = BlogCategory::create([
+        $obj = BlogCategory::on($this->getTenantConnection())->create([
             'vname' => $name,
             'active_id' => '1'
         ]);
@@ -195,9 +184,14 @@ class Index extends Component
 
     public function getBlogcategoryList(): void
     {
-        $this->blogcategoryCollection = $this->blog_category_name ?
-            BlogCategory::search(trim($this->blog_category_name))->get() :
-            BlogCategory::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->blogcategoryCollection = DB::connection($this->getTenantConnection())
+            ->table('blog_categories')
+            ->when($this->blog_category_name, fn($query) => $query->where('vname', 'like',  "%{$this->blog_category_name}%"))
+            ->get();
     }
 
     #endregion
@@ -205,7 +199,7 @@ class Index extends Component
     #region[blogTag]
     public $blog_tag_id = '';
     public $blog_tag_name = '';
-    public Collection $blogtagCollection;
+    public $blogtagCollection;
     public $highlightBlogtag = 0;
     public $blogtagTyped = false;
 
@@ -255,7 +249,7 @@ class Index extends Component
 
     public function blogtagSave($name)
     {
-        $obj = BlogTag::create([
+        $obj = BlogTag::on($this->getTenantConnection())->create([
             'blog_category_id' => $this->blog_category_id,
             'vname' => $name,
             'active_id' => '1'
@@ -266,9 +260,14 @@ class Index extends Component
 
     public function getBlogTagList(): void
     {
-        $this->blogtagCollection = $this->blog_tag_name ?
-            BlogTag::search(trim($this->blog_tag_name))->get() :
-            BlogTag::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->blogtagCollection = DB::connection($this->getTenantConnection())
+            ->table('blog_tags')
+            ->when($this->blog_tag_name, fn($query) => $query->where('vname', 'like', "%{$this->blog_tag_name}%"))
+            ->get();
     }
 
     #endregion
@@ -281,7 +280,7 @@ class Index extends Component
 
     public function gettags()
     {
-        $this->tags = BlogTag::where('blog_category_id', '=', $this->category_id)->get();
+        $this->tags = BlogTag::on($this->getTenantConnection())->where('blog_category_id', '=', $this->category_id)->get();
     }
 
     public function getFilter($id)
@@ -306,6 +305,17 @@ class Index extends Component
     {
         return route('posts');
     }
+
+    #region[getList]
+    public function getList()
+    {
+        return BlogPost::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
+    }
+    #endregion
     public function render()
     {
         $this->getBlogcategoryList();
