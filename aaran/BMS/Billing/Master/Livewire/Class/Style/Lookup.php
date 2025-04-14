@@ -93,6 +93,7 @@ class Lookup extends Component
         $this->search = $style->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-style', $style->id);
     }
 
     public function hideDropdown(): void
@@ -106,7 +107,7 @@ class Lookup extends Component
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-style')]
+    #[On('refresh-style-lookup')]
     public function refreshStyle($style): void
     {
         $this->search = $style['vname'];

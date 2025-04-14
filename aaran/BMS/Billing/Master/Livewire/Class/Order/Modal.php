@@ -58,7 +58,8 @@ class Modal extends Component
                 'active_id' => $this->active_id
             ],
         );
-        $this->dispatch('refresh-order',$order);
+        $this->dispatch('refresh-order',$order->id);
+        $this->dispatch('refresh-order-lookup',$order);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->closeModal();
     }
