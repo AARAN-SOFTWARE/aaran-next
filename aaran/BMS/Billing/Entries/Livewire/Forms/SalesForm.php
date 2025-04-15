@@ -25,22 +25,21 @@ class SalesForm extends Form
     public ?string $invoice_date = null;
     public ?string $sales_type = null;
     public ?string $order_id = null;
-    public ?string $billing_id = null;
-    public ?string $billing_address = null;
+
+    public string $billing_id = '';
     public ?string $shipping_id = null;
     public ?string $style_id = null;
     public ?string $job_no = null;
-    public ?string $destination = null;
-    public ?string $bundle = null;
 
-    public string $distance = '';
+    public ?string $bundle = null;
     public string $trans_mode = '';
-    public string $trans_id = '';
     public string $trans_name = '';
+    public string $trans_id = '';
     public string $trans_docs = '';
     public string $trans_docs_dt = '';
-    public string $veh_no = '';
+    public string $distance = '';
     public string $veh_type = '';
+    public string $veh_no = '';
     public string $term = '';
 
 

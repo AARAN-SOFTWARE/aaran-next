@@ -93,7 +93,11 @@ class Lookup extends Component
         $this->search = $contact->vname;
         $this->results = [];
         $this->showDropdown = false;
-        $this->dispatch('refresh-address-lookup', $contact);
+        $this->dispatch('refresh-contact', $contact->id);
+        $this->dispatch('refresh-billing-lookup', $contact);
+        $this->dispatch('refresh-shipping-lookup', $contact);
+        $this->dispatch('refresh-billing', $contact->id);
+        $this->dispatch('refresh-shipping', $contact->id);
     }
 
     public function hideDropdown(): void
@@ -106,14 +110,6 @@ class Lookup extends Component
         $this->dispatch('open-create-contact-modal', name: $this->search);
         $this->showCreateModal = true;
     }
-
-    #[On('refresh-contact')]
-    public function refreshContact($contact): void
-    {
-        $this->search = $contact['vname'];
-        $this->showCreateModal = false;
-    }
-
 
     public function render()
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
+namespace Aaran\BMS\Billing\Books\Livewire\Class\Lookup;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\Transport;
+use Aaran\BMS\Billing\Books\Models\Ledger;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class TransportLookup extends Component
+class LedgerLookup extends Component
 {
     use TenantAwareTrait;
 
@@ -27,7 +27,7 @@ class TransportLookup extends Component
         if ($initId && $this->getTenantConnection()) {
 
             $vname = DB::connection($this->getTenantConnection())
-                ->table('transports')
+                ->table('ledgers')
                 ->where('id', $initId)
                 ->value('vname');
 
@@ -51,7 +51,7 @@ class TransportLookup extends Component
         }
 
         $query = DB::connection($this->getTenantConnection())
-            ->table('transports')
+            ->table('ledgers')
             ->select('id', 'vname')
             ->orderBy('vname');
 
@@ -83,18 +83,18 @@ class TransportLookup extends Component
     {
         $selected = $this->results[$this->highlightIndex] ?? null;
         if ($selected) {
-            $this->selectTransport($selected);
+            $this->selectLedger($selected);
         }
     }
 
-    public function selectTransport($transport): void
+    public function selectLedger($ledger): void
     {
-        $transport = (object)$transport;
+        $ledger = (object)$ledger;
 
-        $this->search = $transport->vname;
+        $this->search = $ledger->vname;
         $this->results = [];
         $this->showDropdown = false;
-        $this->dispatch('refresh-transport', $transport);
+        $this->dispatch('refresh-ledger', $ledger);
     }
 
     public function hideDropdown(): void
@@ -104,20 +104,21 @@ class TransportLookup extends Component
 
     public function createNew(): void
     {
-        $transport = Transport::on($this->getTenantConnection())->create([
+        $ledger = Ledger::on($this->getTenantConnection())->create([
             'vname' => $this->search,
+            'ledger_group_id' => '1',
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-transport', $transport);
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Transport Saved Successfully']);
+        $this->dispatch('refresh-ledger', $ledger);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Ledger Saved Successfully']);
         $this->showDropdown = false;
     }
 
-    #[On('refresh-transport-lookup')]
-    public function refreshSize($transport): void
+    #[On('refresh-ledger-lookup')]
+    public function refreshLedger($ledger): void
     {
-        if (!empty($transport['vname'])) {
-            $this->search = $transport['vname'];
+        if (!empty($ledger['vname'])) {
+            $this->search = $ledger['vname'];
             $this->showCreateModal = false;
         } else {
             $this->search = '';
@@ -126,6 +127,6 @@ class TransportLookup extends Component
 
     public function render()
     {
-        return view('common::lookup.transport-lookup');
+        return view('books::lookup.ledger-lookup');
     }
 }

@@ -11,7 +11,6 @@
                         <x-Ui::tabs.tab>Details</x-Ui::tabs.tab>
                         <x-Ui::tabs.tab>Address</x-Ui::tabs.tab>
                         <x-Ui::tabs.tab>E-way Bill Details</x-Ui::tabs.tab>
-                        <x-Ui::tabs.tab>Destination</x-Ui::tabs.tab>
                         <x-Ui::tabs.tab>Additional Charges</x-Ui::tabs.tab>
                         <x-Ui::tabs.tab>Terms</x-Ui::tabs.tab>
                     </x-slot>
@@ -69,6 +68,11 @@
                                         <div>
                                             @if(\Aaran\Assets\Features\SaleEntry::hasJob_no())
                                                 <x-Ui::input.floating wire:model="form.job_no" label="Job No"/>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            @if(\Aaran\Assets\Features\SaleEntry::hasBundle())
+                                                <x-Ui::input.floating wire:model="form.bundle" label="Bundle"/>
                                             @endif
                                         </div>
                                     </div>
@@ -291,22 +295,20 @@
                             </div>
                         </x-Ui::tabs.content>
 
-
                         <!--  TAB 2 - Address ------------------------------------------------------------------------------------------------->
-
 
                         <x-Ui::tabs.content>
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasBillingAddress())
-                                        @livewire('master::contact.billing-address',['initId' => $form->contact_id],
+                                        @livewire('master::contact.billing-address',
                                                     key('contact-billing-address-' .$form->billing_id))
                                         <x-Ui::input.error-text wire:model="form.billing_id"/>
                                     @endif
                                 </div>
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasShippingAddress())
-                                        @livewire('master::contact.shipping-address',['initId' => $form->contact_id],
+                                        @livewire('master::contact.shipping-address',
                                                     key('contact-shipping-address-' .$form->shipping_id))
                                         <x-Ui::input.error-text wire:model="form.shipping_id"/>
                                     @endif
@@ -315,15 +317,18 @@
                             </div>
                         </x-Ui::tabs.content>
 
+                        <!--  TAB 3 - Eway details ------------------------------------------------------------------------------------------------->
+
                         <x-Ui::tabs.content>
                             <div class="flex justify-between gap-5 h-56 pt-3">
                                 <div class="w-full space-y-8 ">
 
                                     @if(\Aaran\Assets\Features\SaleEntry::hasTransport())
-
+                                        @livewire('common::lookup.transport',['initId' => $form->trans_id])
                                     @endif
 
                                     <x-Ui::input.model-date wire:model="TransdocDt" label="Transport Date"/>
+
                                     <x-Ui::input.model-select wire:model="TransMode" label="Transport Mode">
                                         <option value="">Choose..</option>
                                         <option value="1">Road</option>
@@ -354,20 +359,13 @@
                             </div>
                         </x-Ui::tabs.content>
 
-                        <x-Ui::tabs.content>
-                            <div class="w-1/2 space-y-8 gap-5 h-52 pt-3">
+                        <!--  TAB 4 - Additional ------------------------------------------------------------------------------------------------->
 
-                                @if(\Aaran\Assets\Features\SaleEntry::hasDestination())
-                                    <x-Ui::input.floating wire:model="destination" label="Destination"/>
-                                @endif
-                                @if(\Aaran\Assets\Features\SaleEntry::hasBundle())
-                                    <x-Ui::input.floating wire:model="bundle" label="Bundle"/>
-                                @endif
-                            </div>
-                        </x-Ui::tabs.content>
                         <x-Ui::tabs.content>
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <!-- Ledger ----------------------------------------------------------------------------------->
+
+                                @livewire('books::lookup.ledger',['initId' => $form->ledger_id])
 
                                 <x-Ui::input.floating wire:model="additional" wire:change.debounce="calculateTotal"
                                                       label="Addition"
@@ -377,6 +375,9 @@
                                                        focus:outline-none focus:ring-2 focus:ring-cyan-50 focus:border-blue-600 peer"/>
                             </div>
                         </x-Ui::tabs.content>
+
+                        <!--  TAB 5 - Terms ------------------------------------------------------------------------------------------------->
+
                         <x-Ui::tabs.content>
                             <div class="w-1/2">
                                 <x-Ui::input.rich-text wire:model="term" placeholder="Terms & Conditions"/>
@@ -398,13 +399,3 @@
     </div>
     {{--    </x-Ui::forms.m-panel>--}}
 </div>
-<script>
-    Livewire.on('triggerFocusNextTab', () => {
-        document.querySelector('[x-ref="nextInput"]')?.focus();
-    });
-
-    Livewire.on('triggerFocusOrder', () => {
-        document.querySelector('[x-ref="order_name"]')?.focus();
-    });
-
-</script>

@@ -19,12 +19,11 @@ class ShippingAddress extends Component
     public $showDropdown = false;
     public $showCreateModal = false;
 
-    public $initId;
+    public $initContactId;
 
-    public function mount($initId = null, $label = null): void
+    public function mount($initId = null): void
     {
-        $this->initId = $initId;
-        $this->label = $label ?? '';
+        $this->initContactId = $initId;
 
         if ($initId && $this->getTenantConnection()) {
 
@@ -61,7 +60,7 @@ class ShippingAddress extends Component
             ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
             ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_addresses.pincode_id')
             ->leftJoin('countries', 'countries.id', '=', 'contact_addresses.country_id')
-            ->where('contact_addresses.contact_id', $this->initId)
+            ->where('contact_addresses.contact_id', $this->initContactId)
             ->orderBy('contact_addresses.id');
 
         if (trim($this->search) !== '') {
@@ -104,22 +103,19 @@ class ShippingAddress extends Component
 
         $v = $contactAddress->address_type .
             '  (' .
-            $contactAddress->address_1 .', '.
-            $contactAddress->address_2 .', '.
-            $contactAddress->city->vname .', '.
-            $contactAddress->state->vname .'- '.
-            $contactAddress->pincode->vname .', '.
-            $contactAddress->country->vname .'. '.
+            $contactAddress->address_1 . ', ' .
+            $contactAddress->address_2 . ', ' .
+            $contactAddress->city->vname . ', ' .
+            $contactAddress->state->vname . '- ' .
+            $contactAddress->pincode->vname . ', ' .
+            $contactAddress->country->vname . '. ' .
             ')';
 
         $this->search = $v;
-        $this->dispatch('refresh-billing_address', $contactAddress->id);
-
         $this->results = [];
         $this->showDropdown = false;
         $this->showCreateModal = false;
-
-
+        $this->dispatch('refresh-shipping-selected',$contactAddress->id);
     }
 
     public function hideDropdown(): void
@@ -129,32 +125,32 @@ class ShippingAddress extends Component
 
     public function openCreateModal(): void
     {
-        $this->dispatch('open-create-address-modal', name: $this->initId);
+        $this->dispatch('open-create-address-modal', name: $this->initContactId);
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-address-lookup')]
-    public function refreshProduct($contact): void
+    #[On('refresh-shipping-lookup')]
+    public function refreshBilling($contact): void
     {
         if (!empty($contact['id'])) {
-            $this->initId = $contact['id'];
+            $this->initContactId = $contact['id'];
 
             $contactAddress = ContactAddress::on($this->getTenantConnection())
-                ->where('contact_id', $this->initId)
+                ->where('contact_id', $this->initContactId)
                 ->first();
 
             $v = $contactAddress->address_type .
                 '  (' .
-                $contactAddress->address_1 .', '.
-                $contactAddress->address_2 .', '.
-                $contactAddress->city->vname .', '.
-                $contactAddress->state->vname .'- '.
-                $contactAddress->pincode->vname .', '.
-                $contactAddress->country->vname .'. '.
+                $contactAddress->address_1 . ', ' .
+                $contactAddress->address_2 . ', ' .
+                $contactAddress->city->vname . ', ' .
+                $contactAddress->state->vname . '- ' .
+                $contactAddress->pincode->vname . ', ' .
+                $contactAddress->country->vname . '. ' .
                 ')';
 
-
             $this->search = $v;
+
         }
     }
 

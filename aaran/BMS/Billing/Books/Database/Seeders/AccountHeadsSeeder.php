@@ -5,7 +5,7 @@ namespace Aaran\Books\Database\Seeders;
 use Aaran\BMS\Billing\Books\Models\AccountHeads;
 use Illuminate\Database\Seeder;
 
-class S301_AccountHeadsSeeder extends Seeder
+class AccountHeadsSeeder extends Seeder
 {
     public static function run(): void
     {
