@@ -43,11 +43,11 @@
                             <div class="flex items-center justify-between ">
                                 <div class="inline-flex items-center gap-x-1">
                                     <span>Read More</span>
-                                    <span><x-aaran-ui::icons.icon :icon="'right-arrow'" class="w-5 h-auto mt-2" /></span>
+                                    <span><x-Ui::icons.icon :icon="'right-arrow'" class="w-5 h-auto mt-2" /></span>
                                 </div>
 
                                 <div class="text-gray-500 text-sm inline-flex gap-x-0.5">
-                                    <x-aaran-ui::icons.icon :icon="'clock'" class="w-5 h-5 text-gray-800" />
+                                    <x-Ui::icons.icon :icon="'clock'" class="w-5 h-5 text-gray-800" />
                                     <time>{{ $data->created_at->diffForHumans() }}</time>
                                 </div>
                             </div>
@@ -89,13 +89,13 @@
 
                                     <button wire:click="edit({{ $row->id }})" class="rounded-md ">
 
-                                        <x-aaran-ui::icons.icon :icon="'pencil'"
+                                        <x-Ui::icons.icon :icon="'pencil'"
                                             class="block w-auto h-5 text-cyan-700 hover:scale-110" />
                                     </button>
 
                                     <button wire:click="getDelete({{ $row->id }})" class="rounded-md ">
 
-                                        <x-aaran-ui::icons.icon :icon="'trash'"
+                                        <x-Ui::icons.icon :icon="'trash'"
                                             class="block w-auto h-5 text-cyan-700 hover:scale-110" />
                                     </button>
                                 </div>
@@ -109,8 +109,8 @@
             <div class="flex flex-col w-3/12 px-10 gap-y-10">
 
                 <div class="flex gap-3">
-                    <x-aaran-ui::icons.search-new />
-                    <x-aaran-ui::button.new-x />
+                    <x-Ui::icons.search-new />
+                    <x-Ui::button.new-x />
                 </div>
 
                 <div class="flex flex-col gap-10">
@@ -209,7 +209,7 @@
                                 {{ \Aaran\Blog\Models\BlogTag::find($i)->vname }}
 
                                 <button wire:click="removeFilter({{ $index }})">
-                                    <x-aaran-ui::icons.icon :icon="'x-mark'" class="w-5 h-auto" />
+                                    <x-Ui::icons.icon :icon="'x-mark'" class="w-5 h-auto" />
                                 </button>
 
                             </span>
@@ -221,12 +221,12 @@
                 </div>
             </div>
         </div>
-        <x-aaran-ui::modal.delete />
+        <x-Ui::modal.delete />
     </div>
 
     <!-- create record ------------------------------------------------------------------------------------------------>
 
-    <x-aaran-ui::forms.create :id="$common->vid" :max-width="'xl'">
+    <x-Ui::forms.create :id="$vid" :max-width="'xl'">
         <div class="flex flex-col gap-4">
 
 {{--                        <x-aaran-ui::inputmodel-text wire:model="common.vname" :label="'Name'"/> --}}
@@ -234,22 +234,22 @@
             <input type="checkbox" wire:model="visibility">
             <label for="">Public</label>
 
-            <x-aaran-ui::input.floating wire:model="common.vname" label="Name" />
+            <x-Ui::input.floating wire:model="vname" label="Name" />
 
-            <x-aaran-ui::input.textarea wire:model="body" label="Description" />
+            <x-Ui::input.textarea wire:model="body" label="Description" />
 
-            <x-aaran-ui::dropdown.wrapper label="Blog Category" type="blogcategoryTyped">
+            <x-Ui::dropdown.wrapper label="Blog Category" type="blogcategoryTyped">
                 <div class="relative ">
-                    <x-aaran-ui::dropdown.input label="Blog Category" id="blog_category_name" wire:model.live="blog_category_name"
+                    <x-Ui::dropdown.input label="Blog Category" id="blog_category_name" wire:model.live="blog_category_name"
                         wire:keydown.arrow-up="decrementBlogcategory" wire:keydown.arrow-down="incrementBlogcategory"
                         wire:keydown.enter="enterBlogcategory" />
-                    <x-aaran-ui::dropdown.select>
+                    <x-Ui::dropdown.select>
                         @if ($blogcategoryCollection)
                             @forelse ($blogcategoryCollection as $i => $blogcategory)
-                                <x-aaran-ui::dropdown.option highlight="{{ $highlightBlogCategory === $i }}"
+                                <x-Ui::dropdown.option highlight="{{ $highlightBlogCategory === $i }}"
                                     wire:click.prevent="setBlogcategory('{{ $blogcategory->vname }}','{{ $blogcategory->id }}')">
                                     {{ $blogcategory->vname }}
-                                </x-aaran-ui::dropdown.option>
+                                </x-Ui::dropdown.option>
                             @empty
                                 <button wire:click.prevent="blogcategorySave('{{ $blog_category_name }}')"
                                     class="w-full text-center text-white bg-green-500">
@@ -257,22 +257,22 @@
                                 </button>
                             @endforelse
                         @endif
-                    </x-aaran-ui::dropdown.select>
+                    </x-Ui::dropdown.select>
                 </div>
-            </x-aaran-ui::dropdown.wrapper>
+            </x-Ui::dropdown.wrapper>
 
-            <x-aaran-ui::dropdown.wrapper label="Blog Tag" type="blogtagTyped">
+            <x-Ui::dropdown.wrapper label="Blog Tag" type="blogtagTyped">
                 <div class="relative ">
-                    <x-aaran-ui::dropdown.input label="Blog Tag" id="blog_tag_name" wire:model.live="blog_tag_name"
+                    <x-Ui::dropdown.input label="Blog Tag" id="blog_tag_name" wire:model.live="blog_tag_name"
                         wire:keydown.arrow-up="decrementBlogtag" wire:keydown.arrow-down="incrementBlogtag"
                         wire:keydown.enter="enterBlogtag" />
-                    <x-aaran-ui::dropdown.select>
+                    <x-Ui::dropdown.select>
                         @if ($blogtagCollection)
                             @forelse ($blogtagCollection as $i => $blogtag)
-                                <x-aaran-ui::dropdown.option highlight="{{ $highlightBlogCategory === $i }}"
+                                <x-Ui::dropdown.option highlight="{{ $highlightBlogCategory === $i }}"
                                     wire:click.prevent="setBlogTag('{{ $blogtag->vname }}','{{ $blogtag->id }}')">
                                     {{ $blogtag->vname }}
-                                </x-aaran-ui::dropdown.option>
+                                </x-Ui::dropdown.option>
                             @empty
                                 <button wire:click.prevent="blogtagSave('{{ $blog_tag_name }}')"
                                     class="w-full text-center text-blue-600 bg-blue-100  hover:font-bold">
@@ -280,9 +280,9 @@
                                 </button>
                             @endforelse
                         @endif
-                    </x-aaran-ui::dropdown.select>
+                    </x-Ui::dropdown.select>
                 </div>
-            </x-aaran-ui::dropdown.wrapper>
+            </x-Ui::dropdown.wrapper>
 
             <!-- Image  ----------------------------------------------------------------------------------------------->
 
@@ -304,7 +304,7 @@
                                     src="{{ URL(\Illuminate\Support\Facades\Storage::url('images/' . $old_image)) }}"
                                     alt="">
                             @else
-                                <x-aaran-ui::icons.icon :icon="'logo'" class="block w-auto h-auto " />
+                                <x-Ui::icons.icon :icon="'logo'" class="block w-auto h-auto " />
                             @endif
                         </div>
                     </div>
@@ -314,7 +314,7 @@
                                 class="text-gray-500 font-semibold text-base rounded flex flex-col items-center
                                    justify-center cursor-pointer border-2 border-gray-300 border-dashed p-2
                                    mx-auto font-[sans-serif]">
-                                <x-aaran-ui::icons.icon icon="cloud-upload" class="block w-8 h-auto text-gray-400" />
+                                <x-Ui::icons.icon icon="cloud-upload" class="block w-8 h-auto text-gray-400" />
                                 Upload Photo
                                 <input type="file" id='bg_image' wire:model="image" class="hidden" />
                                 <p class="mt-2 text-xs font-light text-gray-400">PNG and JPG are
@@ -333,5 +333,5 @@
 
         </div>
 
-    </x-aaran-ui::forms.create>
+    </x-Ui::forms.create>
 </div>

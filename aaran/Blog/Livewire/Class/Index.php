@@ -321,16 +321,17 @@ class Index extends Component
         $this->getBlogcategoryList();
         $this->getBlogtagList();
 
-        return view('blog::blog.index')->with([
-            'list' => $this ->getListForm ->getList(BlogPost::class,function ($query){
-                return $query->latest()->when($this->tagfilter,function ($query,$tagfilter){
-                    return $query->whereIn('blog_tag_id',$tagfilter);
-                });
-            }),
-            'firstPost'=>BlogPost::on($this->getTenantConnection())->latest()->take(1)->when($this->tagfilter,function ($query,$tagfilter){
-                return $query->whereIn('blog_tag_id',$tagfilter);
-            })->get(),
+        return view('blog::index', [
+            'list' => $this->getList(),
+            'firstPost' => BlogPost::on($this->getTenantConnection())
+                ->latest()
+                ->take(5)
+                ->when($this->tagfilter, function ($query, $tagfilter) {
+                    return $query->whereIn('blog_tag_id', $tagfilter);
+                })
+                ->get(),
         ]);
     }
+
     #endregion
 }
