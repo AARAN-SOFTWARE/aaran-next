@@ -41,6 +41,7 @@ class AaranMigrateCommand extends Command
             'aaran/BMS/Billing/Books/Database/Migrations',
             'aaran/BMS/Billing/Master/Database/Migrations',
             'aaran/BMS/Billing/Entries/Database/Migrations',
+            'aaran/Blog/Database/Migrations',
         ];
 
         foreach ($paths as $row) {
