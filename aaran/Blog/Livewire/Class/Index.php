@@ -66,9 +66,9 @@ class Index extends Component
             $this->vname = $obj->vname;
             $this->body = $obj->body;
             $this->blog_category_id = $obj->blogcategory_id;
-            $this->blog_category_name = $obj->blogcategory_id?BlogCategory::find($obj->blogcategory_id)->vname:'';
+            $this->blog_category_name = $obj->blogcategory_id?BlogCategory::on($this->getTenantConnection())->find($obj->blogcategory_id)->vname:'';
             $this->blog_tag_id = $obj->blogtag_id;
-            $this->blog_tag_name = $obj->blogtag_id?BlogTag::find($obj->blogtag_id)->vname:'';
+            $this->blog_tag_name = $obj->blogtag_id?BlogTag::on($this->getTenantConnection())->find($obj->blogtag_id)->vname:'';
             $this->active_id = $obj->active_id;
             $this->old_image = $obj->image;
             $this->visibility = $obj->visibility;
@@ -327,7 +327,7 @@ class Index extends Component
                     return $query->whereIn('blog_tag_id',$tagfilter);
                 });
             }),
-            'firstPost'=>BlogPost::latest()->take(1)->when($this->tagfilter,function ($query,$tagfilter){
+            'firstPost'=>BlogPost::on($this->getTenantConnection())->latest()->take(1)->when($this->tagfilter,function ($query,$tagfilter){
                 return $query->whereIn('blog_tag_id',$tagfilter);
             })->get(),
         ]);

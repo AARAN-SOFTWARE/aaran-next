@@ -2,7 +2,8 @@
 
 namespace Aaran\Blog\Livewire\Class;
 
-use Aaran\Assets\Trait\CommonTrait;
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\Blog\Models\BlogCategory;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
@@ -10,7 +11,7 @@ use Livewire\Component;
 
 class Category extends Component
 {
-    use CommonTrait;
+    use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
@@ -20,7 +21,7 @@ class Category extends Component
     public function rules(): array
     {
         return [
-            'vname' => 'required|unique:blog_categories,vname',
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.blog_categories,vname"),
         ];
     }
 
@@ -35,7 +36,7 @@ class Category extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'category name',
+            'vname' => 'Category name',
         ];
     }
 
@@ -45,32 +46,27 @@ class Category extends Component
     public function getSave(): void
     {
         $this->validate();
+        $connection = $this->getTenantConnection();
 
-        if ($this->vid == "") {
-            BlogCategory::create([
-                'vname' => Str::ucfirst($this->vname),
-                'active_id' => $this->active_id,
-            ]);
-            $message = "Saved";
+        BlogCategory::on($connection)->updateOrCreate(
+        ['id' => $this->vid],
+        [
+            'vname' => Str::ucfirst($this->vname),
+            'active_id' => $this->active_id
+        ],
+    );
 
-        } else {
-            $obj = BlogCategory::find($this->vid);
-            $obj->vname = Str::ucfirst($this->vname);
-            $obj->active_id = $this->active_id;
-            $obj->save();
-            $message = "Updated";
-        }
-
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
     }
     #endregion
 
     #region[Clear Fields]
     public function clearFields(): void
     {
-        $this->vid = '';
+        $this->vid = null;
         $this->vname = '';
-        $this->active_id = '1';
+        $this->active_id = true;
         $this->searches = '';
     }
     #endregion[Clear Fields]
@@ -79,7 +75,7 @@ class Category extends Component
     public function getObj($id): void
     {
         if ($id) {
-            $obj = BlogCategory::find($id);
+            $obj = BlogCategory::on($this->getTenantConnection())->find($id);
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
             $this->active_id = $obj->active_id;
@@ -90,23 +86,22 @@ class Category extends Component
     #region[getList]
     public function getList()
     {
-        return BlogCategory::search($this->searches)
-            ->where('active_id', '=', $this->activeRecord)
+        return BlogCategory::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
     #endregion
 
     #region[delete]
-    public function deleteFunction($id): void
+    public function deleteFunction(): void
     {
-        if ($id) {
-            $obj = BlogCategory::find($id);
-            if ($obj) {
-                $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
-            }
+        if (!$this->deleteId) return;
+
+        $obj = BlogCategory::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
         }
     }
     #endregion
@@ -114,7 +109,7 @@ class Category extends Component
     #region[render]
     public function render()
     {
-        return view('blog::blog.Category')->with([
+        return view('blog::category')->with([
             'list' => $this->getList()
         ]);
     }

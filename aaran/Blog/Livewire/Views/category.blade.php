@@ -1,51 +1,51 @@
 <div>
     <x-slot name="header">Blog Category </x-slot>
-    <x-aaran-ui::forms.m-panel>
-        <x-aaran-ui::alerts.notification />
+    <x-Ui::forms.m-panel>
+        <x-Ui::alerts.notification />
 
         <!-- Top Controls --------------------------------------------------------------------------------------------->
-        <x-aaran-ui::forms.top-controls :show-filters="$showFilters"/>
+        <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
         <!-- Table Caption -------------------------------------------------------------------------------------------->
-        <x-aaran-ui::table.caption :caption="'Category'">
+        <x-Ui::table.caption :caption="'Category'">
             {{$list->count()}}
-        </x-aaran-ui::table.caption>
+        </x-Ui::table.caption>
 
         <!-- Table Data ----------------------------------------------------------------------------------------------->
 
-        <x-aaran-ui::table.form>
+        <x-Ui::table.form>
             <x-slot:table_header>
-                <x-aaran-ui::table.header-serial/>
-                <x-aaran-ui::table.header-text  wire:click.prevent="sortBy('id')"  sortIcon="{{$sortAsc}}" :left="true">
+                <x-Ui::table.header-serial/>
+                <x-Ui::table.header-text  wire:click.prevent="sortBy('id')"  sortIcon="{{$sortAsc}}" :left="true">
                     Name
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-status/>
-                <x-aaran-ui::table.header-serial/>
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-status/>
+                <x-Ui::table.header-serial/>
             </x-slot:table_header>
 
             <x-slot:table_body>
                 @foreach($list as $index=>$row)
-                    <x-aaran-ui::table.row>
-                        <x-aaran-ui::table.cell-text>{{$index+1}}</x-aaran-ui::table.cell-text>
-                        <x-aaran-ui::table.cell-text left>{{$row->vname}}</x-aaran-ui::table.cell-text>
-                        <x-aaran-ui::table.cell-status active="{{$row->active_id}}"/>
-                        <x-aaran-ui::table.cell-action id="{{$row->id}}"/>
-                    </x-aaran-ui::table.row>
+                    <x-Ui::table.row>
+                        <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-status active="{{$row->active_id}}"/>
+                        <x-Ui::table.cell-action id="{{$row->id}}"/>
+                    </x-Ui::table.row>
                 @endforeach
             </x-slot:table_body>
-        </x-aaran-ui::table.form>
+        </x-Ui::table.form>
 
         <!-- Delete Modal --------------------------------------------------------------------------------------------->
-        <x-aaran-ui::modal.delete/>
+        <x-Ui::modal.delete/>
 
         <div class="pt-5">{{ $list->links() }}</div>
 
         <!-- Create/ Edit Popup --------------------------------------------------------------------------------------->
 
-        <x-aaran-ui::forms.create :id="$vid">
-            <x-aaran-ui::input.floating wire:model="vname" label="Category Name" />
-            <x-aaran-ui::input.error-text wire:model="vname"/>
-        </x-aaran-ui::forms.create>
+        <x-Ui::forms.create :id="$vid">
+            <x-Ui::input.floating wire:model="vname" label="Category Name" />
+            <x-Ui::input.error-text wire:model="vname"/>
+        </x-Ui::forms.create>
 
-    </x-aaran-ui::forms.m-panel>
+    </x-Ui::forms.m-panel>
 </div>
