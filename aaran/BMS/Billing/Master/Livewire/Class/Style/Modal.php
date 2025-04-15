@@ -60,7 +60,8 @@ class Modal extends Component
                 'active_id' => $this->active_id
             ],
         );
-        $this->dispatch('refresh-style', $style);
+        $this->dispatch('refresh-style', $style->id);
+        $this->dispatch('refresh-style-lookup', $style);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->clearFields();
     }

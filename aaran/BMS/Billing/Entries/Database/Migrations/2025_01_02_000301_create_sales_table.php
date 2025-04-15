@@ -22,19 +22,17 @@ return new class extends Migration {
                 $table->foreignId('billing_id')->references('id')->on('contact_addresses');
                 $table->foreignId('shipping_id')->references('id')->on('contact_addresses');
                 $table->foreignId('style_id')->references('id')->on('styles');
-                $table->foreignId('despatch_id')->references('id')->on('despatches');
                 $table->string('job_no')->nullable();
-                $table->string('destination')->nullable();
                 $table->string('bundle')->nullable();
 
-                $table->string('distance')->nullable();
                 $table->string('trans_mode')->nullable();
-                $table->foreignId('trans_id')->references('id')->on('transports');
                 $table->string('trans_name')->nullable();
-                $table->string('trans_doc')->nullable();
-                $table->string('trans_doc_dt')->nullable();
-                $table->string('veh_no')->nullable();
+                $table->foreignId('trans_id')->references('id')->on('transports');
+                $table->string('trans_docs')->nullable();
+                $table->string('trans_docs_dt')->nullable();
+                $table->string('distance')->nullable();
                 $table->string('veh_type')->nullable();
+                $table->string('veh_no')->nullable();
                 $table->text('term')->nullable();
 
                 $table->decimal('total_qty', 13, 3)->nullable();

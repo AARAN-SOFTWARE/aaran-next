@@ -5,7 +5,7 @@ namespace Aaran\Books\Database\Seeders;
 use Aaran\BMS\Billing\Books\Models\Ledger;
 use Illuminate\Database\Seeder;
 
-class S303_LedgerSeeder extends Seeder
+class LedgerSeeder extends Seeder
 {
     public static function run(): void
     {

@@ -22,6 +22,9 @@ return [
     ],
 
     'SalesEntry' => [
+        SaleEntry::job_no(),
+        SaleEntry::bundle(),
+        SaleEntry::dc_no(),
         SaleEntry::dc_no(),
         SaleEntry::po_no(),
         SaleEntry::no_of_roll(),

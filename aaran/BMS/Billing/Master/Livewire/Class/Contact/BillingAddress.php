@@ -3,11 +3,12 @@
 namespace Aaran\BMS\Billing\Master\Livewire\Class\Contact;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class Address extends Component
+class BillingAddress extends Component
 {
     use TenantAwareTrait;
 
@@ -18,12 +19,11 @@ class Address extends Component
     public $showDropdown = false;
     public $showCreateModal = false;
 
-    public $initId;
+    public $initContactId;
 
-    public function mount($initId = null, $label = null): void
+    public function mount($initId = null): void
     {
-        $this->initId = $initId;
-        $this->label = $label ?? '';
+        $this->initContactId = $initId;
 
         if ($initId && $this->getTenantConnection()) {
 
@@ -40,6 +40,7 @@ class Address extends Component
     {
         $this->searchBy();
     }
+
     public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
@@ -50,15 +51,16 @@ class Address extends Component
             ->table('contact_addresses')
             ->select(
                 'contact_addresses.*',
-                        'cities.vname as city',
-                        'states.vname as state',
-                        'pincodes.vname as pincode',
-                        'countries.vname as country',
+                'cities.vname as city',
+                'states.vname as state',
+                'pincodes.vname as pincode',
+                'countries.vname as country',
             )
             ->leftJoin('cities', 'cities.id', '=', 'contact_addresses.city_id')
             ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
             ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_addresses.pincode_id')
             ->leftJoin('countries', 'countries.id', '=', 'contact_addresses.country_id')
+            ->where('contact_addresses.contact_id', $this->initContactId)
             ->orderBy('contact_addresses.id');
 
         if (trim($this->search) !== '') {
@@ -68,33 +70,6 @@ class Address extends Component
         $this->highlightIndex = 0;
         $this->showDropdown = true;
     }
-
-    public function onFocus(): void
-    {
-        if (!$this->getTenantConnection()) return;
-
-        $this->results = DB::connection($this->getTenantConnection())
-            ->table('contact_addresses')
-            ->select(
-                'contact_addresses.*',
-                'cities.vname as city',
-                'states.vname as state',
-                'pincodes.vname as pincode',
-                'countries.vname as country'
-            )
-            ->leftJoin('cities', 'cities.id', '=', 'contact_addresses.city_id')
-            ->leftJoin('states', 'states.id', '=', 'contact_addresses.state_id')
-            ->leftJoin('pincodes', 'pincodes.id', '=', 'contact_addresses.pincode_id')
-            ->leftJoin('countries', 'countries.id', '=', 'contact_addresses.country_id')
-            ->orderBy('contact_addresses.id')
-            ->limit(10)
-            ->get();
-
-        $this->highlightIndex = 0;
-        $this->showDropdown = true;
-        $this->showCreateModal = $this->results->isEmpty();
-    }
-
 
     public function incrementHighlight(): void
     {
@@ -118,14 +93,30 @@ class Address extends Component
         }
     }
 
-    public function selectContact($contact): void
+    public function selectContact($contactAddress): void
     {
-        $contact = (object)$contact;
+        $contactAddress = (object)$contactAddress;
 
-        $this->search = $contact->address_type ;
+        $contactAddress = ContactAddress::on($this->getTenantConnection())
+            ->where('id', $contactAddress->id)
+            ->first();
+
+        $v = $contactAddress->address_type .
+            '  (' .
+            $contactAddress->address_1 . ', ' .
+            $contactAddress->address_2 . ', ' .
+            $contactAddress->city->vname . ', ' .
+            $contactAddress->state->vname . '- ' .
+            $contactAddress->pincode->vname . ', ' .
+            $contactAddress->country->vname . '. ' .
+            ')';
+
+        $this->search = $v;
         $this->results = [];
         $this->showDropdown = false;
         $this->showCreateModal = false;
+
+        $this->dispatch('refresh-billing-selected',$contactAddress->id);
     }
 
     public function hideDropdown(): void
@@ -135,20 +126,45 @@ class Address extends Component
 
     public function openCreateModal(): void
     {
-        $this->dispatch('open-create-address-modal', name: $this->search);
+        $this->dispatch('open-create-address-modal', name: $this->initContactId);
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-address')]
+    #[On('refresh-billing-lookup')]
+    public function refreshBilling($contact): void
+    {
+        if (!empty($contact['id'])) {
+            $this->initContactId = $contact['id'];
+
+            $contactAddress = ContactAddress::on($this->getTenantConnection())
+                ->where('contact_id', $this->initContactId)
+                ->first();
+
+            $v = $contactAddress->address_type .
+                '  (' .
+                $contactAddress->address_1 . ', ' .
+                $contactAddress->address_2 . ', ' .
+                $contactAddress->city->vname . ', ' .
+                $contactAddress->state->vname . '- ' .
+                $contactAddress->pincode->vname . ', ' .
+                $contactAddress->country->vname . '. ' .
+                ')';
+
+            $this->search = $v;
+
+        }
+    }
+
+    #[On('refresh-address-model')]
     public function refreshContact($contact): void
     {
-        $this->search = $contact['address_type'];
+        $this->search = $contact['address_type'] . $contact['address_1'] . $contact['address_2'];
         $this->showCreateModal = false;
     }
 
 
     public function render()
     {
-        return view('master::contact.address');
+        return view('master::contact.billing-address');
     }
 }

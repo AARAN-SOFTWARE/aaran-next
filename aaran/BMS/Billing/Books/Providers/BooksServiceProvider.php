@@ -23,6 +23,8 @@ class BooksServiceProvider extends ServiceProvider
         Livewire::component('books::account-head', Class\AccountHeadList::class);
         Livewire::component('books::ledger-group', Class\LedgerGroupList::class);
         Livewire::component('books::ledger', Class\LedgerList::class);
+
+        Livewire::component('books::lookup.ledger', Class\Lookup\LedgerLookup::class);
     }
 
     protected function loadViews(): void

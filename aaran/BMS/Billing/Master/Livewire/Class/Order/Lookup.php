@@ -93,6 +93,7 @@ class Lookup extends Component
         $this->search = $order->vname;
         $this->results = [];
         $this->showDropdown = false;
+        $this->dispatch('refresh-order', $order->id);
     }
 
     public function hideDropdown(): void
@@ -106,7 +107,7 @@ class Lookup extends Component
         $this->showCreateModal = true;
     }
 
-    #[On('refresh-order')]
+    #[On('refresh-order-lookup')]
     public function refreshOrder($order): void
     {
         $this->search = $order['vname'];

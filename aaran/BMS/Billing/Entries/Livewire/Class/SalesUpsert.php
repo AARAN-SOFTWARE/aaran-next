@@ -7,6 +7,7 @@ use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesForm;
 use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
+use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Exception;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -18,7 +19,11 @@ class SalesUpsert extends Component
     public SalesForm $form;
     public SalesItemForm $itemForm;
 
+    public $billing_id;
+    public $shipping_id;
+
     public ?float $grandTotalBeforeRound = null;
+
 
     #[On('refresh-contact')]
     public function refreshContact($id): void
@@ -29,7 +34,45 @@ class SalesUpsert extends Component
     #[On('refresh-order')]
     public function refreshOrder($id): void
     {
-        $this->form->order_id_id = $id;
+        $this->form->order_id = $id;
+    }
+
+    #[On('refresh-style')]
+    public function refreshStyle($id): void
+    {
+        $this->form->style_id = $id;
+    }
+
+    #[On('refresh-billing')]
+    public function refreshBilling($v): void
+    {
+        $contactAddress = ContactAddress::on($this->getTenantConnection())
+            ->where('contact_id', $v)
+            ->first();
+
+        $this->billing_id = $contactAddress->id;
+    }
+
+    #[On('refresh-shipping')]
+    public function refreshShipping($v): void
+    {
+        $contactAddress = ContactAddress::on($this->getTenantConnection())
+            ->where('contact_id', $v)
+            ->first();
+
+        $this->shipping_id = $contactAddress->id;
+    }
+
+    #[On('refresh-billing-selected')]
+    public function refreshBillingSelected($v): void
+    {
+        $this->billing_id = $v;
+    }
+
+    #[On('refresh-shipping-selected')]
+    public function refreshShippingSelected($v): void
+    {
+        $this->shipping_id = $v;
     }
 
     #[On('refresh-product')]
@@ -56,6 +99,12 @@ class SalesUpsert extends Component
 
     public function getSave()
     {
+        $this->form->billing_id = $this->billing_id ?? '1';
+        $this->form->shipping_id = $this->shipping_id ?? '1';
+
+//        dd($this->form);
+        dd($this->itemForm->itemList);
+
         $message = $this->form->createOrUpdate();
         if ($message === 'success') {
             $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->form->vid ? 'Updated' : 'Saved') . ' Successfully']);

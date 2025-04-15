@@ -15,32 +15,31 @@ class SalesForm extends Form
 
     public ?string $vid = null;
 
-    public string $uniqueno = '';
-    public string $acyear = '';
-    public mixed $company_id;
-    public mixed $contact_id = '';
+    public ?string $uniqueno = null;
+    public ?string $acyear = null;
+    public ?string $company_id = null;
+    public ?string $contact_id = null;
 
     #[Validate]
-    public string $invoice_no = '';
-    public string $invoice_date = '';
-    public string $sales_type = '';
-    public string $order_id = '';
-    public string $billing_id = '';
-    public string $shipping_id = '';
-    public string $style_id = '';
-    public string $despatch_id = '';
-    public string $job_no = '';
-    public string $destination = '';
-    public string $bundle = '';
+    public ?string $invoice_no = null;
+    public ?string $invoice_date = null;
+    public ?string $sales_type = null;
+    public ?string $order_id = null;
 
-    public string $distance = '';
+    public string $billing_id = '';
+    public ?string $shipping_id = null;
+    public ?string $style_id = null;
+    public ?string $job_no = null;
+
+    public ?string $bundle = null;
     public string $trans_mode = '';
-    public string $trans_id = '';
     public string $trans_name = '';
+    public string $trans_id = '';
     public string $trans_docs = '';
     public string $trans_docs_dt = '';
-    public string $veh_no = '';
+    public string $distance = '';
     public string $veh_type = '';
+    public string $veh_no = '';
     public string $term = '';
 
 
@@ -68,8 +67,8 @@ class SalesForm extends Form
 
             'billing_id' => 'required',
             'shipping_id' => 'required',
-            'despatch_id' => 'required',
-            'trans_id' => 'required',
+//            'despatch_id' => 'required',
+//            'trans_id' => 'required',
         ];
     }
 
@@ -157,57 +156,61 @@ class SalesForm extends Form
 
     public function createOrUpdate(): string
     {
-        $this->validate();
+//        $this->validate();
 
-        try {
-            $sale = $this->vid
-                ? Sale::on($this->getTenantConnection())->findOrFail($this->vid)
-                : new Sale();
+//        try {
+        $sale = $this->vid
+            ? Sale::on($this->getTenantConnection())->findOrFail($this->vid)
+            : new Sale();
 
-            $sale->uniqueno = $this->uniqueno;
-            $sale->acyear = $this->acyear;
-            $sale->company_id = $this->company_id;
-            $sale->contact_id = $this->contact_id;
-            $sale->invoice_no = $this->invoice_no;
-            $sale->invoice_date = $this->invoice_date;
-            $sale->sales_type = $this->sales_type;
-            $sale->order_id = $this->order_id;
-            $sale->billing_id = $this->billing_id;
-            $sale->shipping_id = $this->shipping_id;
-            $sale->style_id = $this->style_id;
-            $sale->despatch_id = $this->despatch_id;
-            $sale->job_no = $this->job_no;
-            $sale->destination = $this->destination;
-            $sale->bundle = $this->bundle;
+        $sale->uniqueno = $this->uniqueno;
+        $sale->acyear = $this->acyear;
+        $sale->company_id = $this->company_id;
+        $sale->contact_id = $this->contact_id;
+        $sale->invoice_no = $this->invoice_no;
+        $sale->invoice_date = $this->invoice_date;
+        $sale->sales_type = $this->sales_type;
+        $sale->order_id = $this->order_id;
+        $sale->billing_id = $this->billing_id;
+        $sale->shipping_id = $this->shipping_id;
+        $sale->style_id = $this->style_id;
+//            $sale->despatch_id = $this->despatch_id;
+        $sale->job_no = $this->job_no;
+        $sale->destination = $this->destination;
+        $sale->bundle = $this->bundle;
 
-            $sale->distance = $this->distance;
-            $sale->trans_mode = $this->trans_mode;
-            $sale->trans_id = $this->trans_id;
-            $sale->trans_name = $this->trans_name;
-            $sale->trans_doc = $this->trans_doc;
-            $sale->trans_doc_dt = $this->trans_doc_dt;
-            $sale->veh_no = $this->veh_no;
-            $sale->veh_type = $this->veh_type;
-            $sale->term = $this->term;
+        $sale->distance = $this->distance;
+        $sale->trans_mode = $this->trans_mode;
+        $sale->trans_id = $this->trans_id;
+        $sale->trans_name = $this->trans_name;
+        $sale->trans_docs = $this->trans_docs;
+        $sale->trans_docs_dt = $this->trans_docs_dt;
+        $sale->veh_no = $this->veh_no;
+        $sale->veh_type = $this->veh_type;
+        $sale->term = $this->term;
 
-            $sale->total_qty = $this->total_qty;
-            $sale->total_taxable = $this->total_taxable;
-            $sale->total_gst = $this->total_gst;
-            $sale->ledger_id = $this->ledger_id;
-            $sale->additional = $this->additional;
-            $sale->round_off = $this->round_off;
-            $sale->grand_total = $this->grand_total;
-            $sale->received_by = $this->received_by;
-            $sale->active_id = $this->active_id;
+        $sale->total_qty = $this->total_qty;
+        $sale->total_taxable = $this->total_taxable;
+        $sale->total_gst = $this->total_gst;
+        $sale->ledger_id = $this->ledger_id;
+        $sale->additional = $this->additional;
+        $sale->round_off = $this->round_off;
+        $sale->grand_total = $this->grand_total;
+        $sale->received_by = $this->received_by;
+        $sale->active_id = $this->active_id;
 
-            $sale->save();
+//            $sale->save();
 
-            return 'success';
 
-        } catch (\Exception $e) {
-            logger()->error('Sale Save Error: ' . $e->getMessage());
-            return $e->getMessage();
-        }
+        dd($sale);
+
+
+//            return 'success';
+//
+//        } catch (\Exception $e) {
+//            logger()->error('Sale Save Error: ' . $e->getMessage());
+//            return $e->getMessage();
+//        }
     }
 
 
