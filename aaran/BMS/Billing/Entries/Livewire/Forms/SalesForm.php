@@ -5,6 +5,7 @@ namespace Aaran\BMS\Billing\Entries\Livewire\Forms;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -57,14 +58,16 @@ class SalesForm extends Form
     public function rules(): array
     {
         return [
-            'uniqueno' => 'required|string|max:255|unique:sales,uniqueno',
+            'uniqueno' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.sales,uniqueno"),
             'contact_id' => 'required',
-            'invoice_no' => 'required|integer|unique:sales,invoice_no',
-            'invoice_date' => 'required|date',
             'order_id' => 'required',
+            'style_id' => 'required',
+            'invoice_no' => 'required',
+            'invoice_date' => 'required|date',
+            'sales_type' => ['required', Rule::notIn(['0'])],
+
             'billing_id' => 'required',
             'shipping_id' => 'required',
-            'style_id' => 'required',
             'despatch_id' => 'required',
             'trans_id' => 'required',
         ];
@@ -73,20 +76,20 @@ class SalesForm extends Form
     public function messages()
     {
         return [
-            'contact_name.required' => 'The :attribute is required.',
-            'transport_name.required' => 'The :attribute is required.',
-            'distance.required' => 'The :attribute is required.',
-            'Vehno.required' => 'The :attribute is required.',
+            'contact_id.required' => ' :attribute is required.',
+            'order_id.required' => ' :attribute is required.',
+            'style_id.required' => ' :attribute is required.',
+            'sales_type.required' => ' :attribute is required.',
         ];
     }
 
     public function validationAttributes()
     {
         return [
-            'contact_name' => 'party name',
-            'transport_name' => 'transport name',
-            'distance' => 'distance ',
-            'Vehno' => 'Vechile no',
+            'contact_id' => 'party name',
+            'order_id' => 'Order no',
+            'style_id' => 'Style',
+            'sales_type' => 'Sales type',
         ];
     }
 

@@ -24,6 +24,7 @@ return [
     'SalesEntry' => [
         SaleEntry::dc_no(),
         SaleEntry::po_no(),
+        SaleEntry::no_of_roll(),
         SaleEntry::order(),
         SaleEntry::order(),
         SaleEntry::billingAddress(),
