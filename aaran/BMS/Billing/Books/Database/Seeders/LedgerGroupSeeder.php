@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Books\Database\Seeders;
+namespace Aaran\BMS\Billing\Books\Database\Seeders;
 
 use Aaran\BMS\Billing\Books\Models\LedgerGroup;
 use Illuminate\Database\Seeder;
