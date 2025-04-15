@@ -19,8 +19,7 @@ class LedgerSeeder extends Seeder
                 'opening' => '0',
                 'opening_date' => '2024-04-01',
                 'current' => '0',
-                'active_id' => '1',
-                'user_id' => '1',
+                'active_id' => '1'
             ]);
         }
     }

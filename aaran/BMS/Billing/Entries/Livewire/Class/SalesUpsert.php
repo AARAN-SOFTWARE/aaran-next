@@ -102,9 +102,6 @@ class SalesUpsert extends Component
         $this->form->billing_id = $this->billing_id ?? '1';
         $this->form->shipping_id = $this->shipping_id ?? '1';
 
-//        dd($this->form);
-        dd($this->itemForm->itemList);
-
         $message = $this->form->createOrUpdate();
         if ($message === 'success') {
             $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->form->vid ? 'Updated' : 'Saved') . ' Successfully']);
