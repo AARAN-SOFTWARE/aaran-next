@@ -1,18 +1,48 @@
-<div>
-    <x-Ui::lookup.modal-new>
+<div x-data="{ showCreateModal: @entangle('showCreateModal')}">
+    <div
+        x-show="showCreateModal"
+        @click.away="showCreateModal = false"
+        x-cloak
+        x-on:close.stop="showCreateModal = false"
+        x-on:keydown.escape.window="showCreateModal = false"
+        x-trap.inert.noscroll="showCreateModal"
+        class="absolute z-20">
 
-        <div class="flex flex-col gap-3">
+        <div class="relative" role="dialog">
 
-            <div>
-                <x-Ui::input.floating wire:model="vname" label="Style Name"/>
-                <x-Ui::input.error-text wire:model="vname"/>
+            <div class="fixed inset-0 bg-gray-800/75"></div>
+
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div
+                    class="flex min-h-full justify-center items-center">
+                    <div class="relative sm:w-full sm:max-w-4xl sm:mx-auto">
+
+                        <div class="bg-white rounded-t-lg px-4 pt-5 pb-2">
+
+                            <div class="flex flex-col gap-3">
+
+                                <div>
+                                    <x-Ui::input.floating wire:model="vname" label="Style Name"/>
+                                    <x-Ui::input.error-text wire:model="vname"/>
+                                </div>
+
+                                <x-Ui::input.floating wire:model="description" label="Description"/>
+                                <x-Ui::input.floating wire:model="image" label="Image"/>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bg-gray-100  rounded-b-lg px-4 py-3 flex gap-3 justify-end">
+
+                            <x-Ui::button.back-x @click="showCreateModal = false"/>
+
+                            <x-Ui::button.save-x wire:click.prevent="save"/>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <x-Ui::input.floating wire:model="description" label="Description"/>
-            <x-Ui::input.floating wire:model="image" label="Image"/>
-
         </div>
-
-    </x-Ui::lookup.modal-new>
+    </div>
 </div>
 
