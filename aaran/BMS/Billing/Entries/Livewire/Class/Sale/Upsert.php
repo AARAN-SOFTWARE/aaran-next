@@ -1,26 +1,24 @@
 <?php
 
-namespace Aaran\BMS\Billing\Entries\Livewire\Class;
+namespace Aaran\BMS\Billing\Entries\Livewire\Class\Sale;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Common\Models\GstPercent;
-use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesForm;
-use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
+use Aaran\BMS\Billing\Entries\Livewire\Forms\Sale\MainForm;
+use Aaran\BMS\Billing\Entries\Livewire\Forms\Sale\ItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class SalesUpsert extends Component
+class Upsert extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
-    public SalesForm $sale;
-    public SalesItemForm $saleItems;
+    public MainForm $sale;
+    public ItemForm $saleItems;
 
     public $billing_id;
     public $shipping_id;
@@ -312,6 +310,6 @@ class SalesUpsert extends Component
 
     public function render()
     {
-        return view('entries::sales-upsert');
+        return view('entries::sales.upsert');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Entries\Livewire\Class;
+namespace Aaran\BMS\Billing\Entries\Livewire\Class\Sale;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class SalesList extends Component
+class Index extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
@@ -97,7 +97,7 @@ class SalesList extends Component
     #region[render]
     public function render()
     {
-        return view('entries::sales-index')->with([
+        return view('entries::sales.index')->with([
             'list' => $this->getList()
         ]);
     }

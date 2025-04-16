@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Entries\Livewire\Forms;
+namespace Aaran\BMS\Billing\Entries\Livewire\Forms\Sale;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class SalesForm extends Form
+class MainForm extends Form
 {
     use TenantAwareTrait;
 
@@ -72,8 +72,6 @@ class SalesForm extends Form
 
             'billing_id' => 'required',
             'shipping_id' => 'required',
-//            'despatch_id' => 'required',
-//            'trans_id' => 'required',
         ];
     }
 
@@ -246,7 +244,6 @@ class SalesForm extends Form
         $sale->veh_type = $this->veh_type;
         $sale->veh_no = $this->veh_no;
 
-        // === Payment / Terms ===
         $sale->term = $this->term;
         $sale->ledger_id = $this->ledger_id;
         $sale->additional = $this->additional;
