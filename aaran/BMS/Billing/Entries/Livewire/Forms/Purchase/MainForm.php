@@ -1,10 +1,10 @@
 <?php
 
-namespace Aaran\BMS\Billing\Entries\Livewire\Forms\Sale;
+namespace Aaran\BMS\Billing\Entries\Livewire\Forms\Purchase;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Entries\Models\Sale;
-use Aaran\BMS\Billing\Entries\Models\SaleItem;
+use Aaran\BMS\Billing\Entries\Models\Purchase;
+use Aaran\BMS\Billing\Entries\Models\Purchaseitem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -24,9 +24,11 @@ class MainForm extends Form
     public ?string $contact_id = null;
 
     #[Validate]
-    public ?string $invoice_no = null;
-    public ?string $invoice_date = null;
-    public ?string $sales_type = null;
+    public ?string $purchase_no = null;
+    public ?string $purchase_date = null;
+    public ?string $entry_no = null;
+    public ?string $entry_date = null;
+    public ?string $purchase_type = null;
     public ?string $order_id = null;
 
     public string $billing_id = '';
@@ -62,13 +64,13 @@ class MainForm extends Form
     public function rules(): array
     {
         return [
-            'uniqueno' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.sales,uniqueno"),
+            'uniqueno' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.purchases,uniqueno"),
             'contact_id' => 'required',
             'order_id' => 'required',
             'style_id' => 'required',
-            'invoice_no' => 'required',
-            'invoice_date' => 'required|date',
-            'sales_type' => ['required', Rule::notIn(['0'])],
+            'entry_no' => 'required',
+            'entry_date' => 'required|date',
+            'purchase_type' => ['required', Rule::notIn(['0'])],
 
             'billing_id' => 'required',
             'shipping_id' => 'required',
@@ -81,7 +83,7 @@ class MainForm extends Form
             'contact_id.required' => ' :attribute is required.',
             'order_id.required' => ' :attribute is required.',
             'style_id.required' => ' :attribute is required.',
-            'sales_type.required' => ' :attribute is required.',
+            'purchase_type.required' => ' :attribute is required.',
         ];
     }
 
@@ -91,7 +93,7 @@ class MainForm extends Form
             'contact_id' => 'party name',
             'order_id' => 'Order no',
             'style_id' => 'Style',
-            'sales_type' => 'Sales type',
+            'purchase_type' => 'Purchases type',
         ];
     }
 
@@ -99,15 +101,15 @@ class MainForm extends Form
 
     public function setDefaultValues(): void
     {
-        $this->invoice_no = Sale::nextNo($this->getTenantConnection());
-        $this->invoice_date = Carbon::now()->format('Y-m-d');
+        $this->entry_no = Purchase::nextNo($this->getTenantConnection());
+        $this->entry_date = Carbon::now()->format('Y-m-d');
 
-        $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
-        $this->sales_type = '1';
+        $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->purchase_no;
+        $this->purchase_type = '1';
         $this->trans_mode = '1';
         $this->trans_id = 1;
-        $this->trans_docs = $this->invoice_no;
-        $this->trans_docs_dt = $this->invoice_date;;
+        $this->trans_docs = $this->purchase_no;
+        $this->trans_docs_dt = $this->purchase_date;;
         $this->veh_type = 'R';
         $this->veh_no = '-';
 
@@ -128,9 +130,11 @@ class MainForm extends Form
         $this->acyear = $obj->acyear;
         $this->company_id = $obj->company_id;
         $this->contact_id = $obj->contact_id;
-        $this->invoice_no = $obj->invoice_no;
-        $this->invoice_date = $obj->invoice_date;
-        $this->sales_type = $obj->sales_type;
+        $this->purchase_no = $obj->purchase_no;
+        $this->purchase_date = $obj->purchase_date;
+        $this->entry_no = $obj->entry_no;
+        $this->entry_date = $obj->entry_date;
+        $this->purchase_type = $obj->purchase_type;
         $this->order_id = $obj->order_id;
         $this->billing_id = $obj->billing_id;
         $this->shipping_id = $obj->shipping_id;
@@ -162,17 +166,17 @@ class MainForm extends Form
 
     public function loadItems($id): void
     {
-        $data = DB::connection($this->getTenantConnection())->table('sale_items')
+        $data = DB::connection($this->getTenantConnection())->table('purchase_items')
             ->select(
-                'sale_items.*',
+                'purchase_items.*',
                 'products.vname as product_name',
                 'colours.vname as colour_name',
                 'sizes.vname as size_name'
             )
-            ->join('products', 'products.id', '=', 'sale_items.product_id')
-            ->join('colours', 'colours.id', '=', 'sale_items.colour_id')
-            ->join('sizes', 'sizes.id', '=', 'sale_items.size_id')
-            ->where('sale_items.sale_id', $id)
+            ->join('products', 'products.id', '=', 'purchase_items.product_id')
+            ->join('colours', 'colours.id', '=', 'purchase_items.colour_id')
+            ->join('sizes', 'sizes.id', '=', 'purchase_items.size_id')
+            ->where('purchase_items.purchase_id', $id)
             ->get()
             ->transform(function ($item) {
                 $taxable = $item->qty * $item->price;
@@ -180,7 +184,7 @@ class MainForm extends Form
                 $subtotal = $taxable + $gstAmount;
 
                 return [
-                    'sale_item_id' => $item->id,
+                    'purchase_item_id' => $item->id,
                     'po_no' => $item->po_no,
                     'dc_no' => $item->dc_no,
                     'no_of_roll' => $item->no_of_roll,
@@ -208,77 +212,79 @@ class MainForm extends Form
     {
         $this->validate();
 
-        $sale = $this->vid
-            ? Sale::on($this->getTenantConnection())->findOrFail($this->vid)
-            : new Sale();
+        $purchase = $this->vid
+            ? Purchase::on($this->getTenantConnection())->findOrFail($this->vid)
+            : new Purchase();
 
         // Assign the tenant connection
-        $sale->setConnection($this->getTenantConnection());
+        $purchase->setConnection($this->getTenantConnection());
 
         // Assign ID only if updating
         if ($this->vid) {
-            $sale->id = $this->vid;
+            $purchase->id = $this->vid;
         }
 
         // === Basic Info ===
-        $sale->uniqueno = $this->uniqueno;
-        $sale->acyear = $this->acyear ?? '1';
-        $sale->company_id = $this->company_id ?? '1';
-        $sale->contact_id = $this->contact_id;
-        $sale->invoice_no = $this->invoice_no;
-        $sale->invoice_date = $this->invoice_date;
-        $sale->sales_type = $this->sales_type;
-        $sale->order_id = $this->order_id;
-        $sale->billing_id = $this->billing_id;
-        $sale->shipping_id = $this->shipping_id;
-        $sale->style_id = $this->style_id;
-        $sale->job_no = $this->job_no;
-        $sale->bundle = $this->bundle;
+        $purchase->uniqueno = $this->uniqueno;
+        $purchase->acyear = $this->acyear ?? '1';
+        $purchase->company_id = $this->company_id ?? '1';
+        $purchase->contact_id = $this->contact_id;
+        $purchase->purchase_no = $this->purchase_no;
+        $purchase->purchase_date = $this->purchase_date;
+        $purchase->entry_no = $this->entry_no;
+        $purchase->entry_date = $this->entry_date;
+        $purchase->purchase_type = $this->purchase_type;
+        $purchase->order_id = $this->order_id;
+        $purchase->billing_id = $this->billing_id;
+        $purchase->shipping_id = $this->shipping_id;
+        $purchase->style_id = $this->style_id;
+        $purchase->job_no = $this->job_no;
+        $purchase->bundle = $this->bundle;
 
         // === Transport Info ===
-        $sale->trans_mode = $this->trans_mode;
-        $sale->trans_id = $this->trans_id ?? '1';
-        $sale->trans_docs = $this->trans_docs;
-        $sale->trans_docs_dt = $this->trans_docs_dt;
-        $sale->distance = $this->distance;
-        $sale->veh_type = $this->veh_type;
-        $sale->veh_no = $this->veh_no;
+        $purchase->trans_mode = $this->trans_mode;
+        $purchase->trans_id = $this->trans_id ?? '1';
+        $purchase->trans_docs = $this->trans_docs;
+        $purchase->trans_docs_dt = $this->trans_docs_dt;
+        $purchase->distance = $this->distance;
+        $purchase->veh_type = $this->veh_type;
+        $purchase->veh_no = $this->veh_no;
 
-        $sale->term = $this->term;
-        $sale->ledger_id = $this->ledger_id;
-        $sale->additional = $this->additional;
-        $sale->round_off = $this->round_off;
-        $sale->grand_total = $this->grand_total;
-        $sale->received_by = $this->received_by;
-        $sale->active_id = $this->active_id;
+        $purchase->term = $this->term;
+        $purchase->ledger_id = $this->ledger_id;
+        $purchase->additional = $this->additional;
+        $purchase->round_off = $this->round_off;
+        $purchase->grand_total = $this->grand_total;
+        $purchase->received_by = $this->received_by;
+        $purchase->active_id = $this->active_id;
 
         // === Totals ===
-        $sale->total_qty = $this->total_qty;
-        $sale->total_taxable = $this->total_taxable;
-        $sale->total_gst = $this->total_gst;
+        $purchase->total_qty = $this->total_qty;
+        $purchase->total_taxable = $this->total_taxable;
+        $purchase->total_gst = $this->total_gst;
 
         // Save with tenant connection
-        $sale->save();
+        $purchase->save();
 
         // Use the correct ID after save
-        return $this->createOrUpdateItem($sale->id);
+        return $this->createOrUpdateItem($purchase->id);
     }
 
-    public function createOrUpdateItem($saleId): string
+    public function createOrUpdateItem($purchaseId): string
     {
         try {
             DB::connection($this->getTenantConnection())
-                ->table('sale_items')
-                ->where('sale_id', $saleId)
+                ->table('purchase_items')
+                ->where('purchase_id', $purchaseId)
                 ->delete();
         } catch (\Exception $e) {
-            Log::error("Failed to delete sale items for sale_id {$saleId}: " . $e->getMessage());
+            Log::error("Failed to delete purchase items for purchase_id {$purchaseId}: " . $e->getMessage());
             throw $e;
         }
 
         foreach ($this->itemList as $item) {
-            SaleItem::on($this->getTenantConnection())->create([
-                'sale_id' => $saleId,
+            PurchaseItem::on($this->getTenantConnection())->create([
+                'purchase_id' => $purchaseId,
                 'po_no' => $item['po_no'],
                 'dc_no' => $item['dc_no'],
                 'no_of_roll' => $item['no_of_roll'],

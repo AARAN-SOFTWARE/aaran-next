@@ -15,22 +15,36 @@ return new class extends Migration {
                 $table->string('acyear')->nullable();
                 $table->foreignId('company_id')->references('id')->on('companies');
                 $table->foreignId('contact_id')->references('id')->on('contacts');
-                $table->foreignId('order_id')->references('id')->on('orders');
-                $table->string('purchase_no')->nullable();
+                $table->integer('purchase_no');
                 $table->date('purchase_date');
-                $table->integer('Entry_no')->nullable();
-                $table->string('sales_type')->nullable();
-                $table->foreignId('transport_id')->references('id')->on('transports');
+                $table->string('entry_no')->nullable();
+                $table->date('entry_date');
+                $table->string('purchase_type')->nullable();
+                $table->foreignId('order_id')->references('id')->on('orders');
+                $table->foreignId('billing_id')->references('id')->on('contact_addresses');
+                $table->foreignId('shipping_id')->references('id')->on('contact_addresses');
+                $table->foreignId('style_id')->references('id')->on('styles');
+                $table->string('job_no')->nullable();
                 $table->string('bundle')->nullable();
+
+                $table->string('trans_mode')->nullable();
+                $table->foreignId('trans_id')->references('id')->on('transports');
+                $table->string('trans_docs')->nullable();
+                $table->string('trans_docs_dt')->nullable();
+                $table->string('distance')->nullable();
+                $table->string('veh_type')->nullable();
+                $table->string('veh_no')->nullable();
                 $table->text('term')->nullable();
-                $table->decimal('total_qty', 11, 3)->nullable();
-                $table->decimal('total_taxable', 11, 2)->nullable();
-                $table->decimal('total_gst', 11, 2)->nullable();
+
+                $table->decimal('total_qty', 13, 3)->nullable();
+                $table->decimal('total_taxable', 13, 2)->nullable();
+                $table->decimal('total_gst', 13, 2)->nullable();
                 $table->foreignId('ledger_id')->nullable();
-                $table->decimal('additional', 11, 2)->nullable();
+                $table->decimal('additional', 13, 2)->nullable();
                 $table->decimal('round_off')->nullable();
-                $table->decimal('grand_total', 11, 2)->nullable();
-                $table->string('active_id', 10)->nullable();
+                $table->decimal('grand_total', 13, 2)->nullable();
+                $table->string('received_by')->nullable();
+                $table->smallInteger('active_id')->nullable();
                 $table->timestamps();
             });
 

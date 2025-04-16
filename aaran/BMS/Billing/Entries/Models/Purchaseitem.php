@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Entries\Models;
+namespace Aaran\BMS\Billing\Entries\Models;
 
 use Aaran\BMS\Billing\Entries\Database\Factories\PurchaseitemFactory;
 use Aaran\BMS\Billing\Master\Models\Product;

@@ -1,9 +1,7 @@
 <?php
 
-namespace Aaran\Entries\Models;
+namespace Aaran\BMS\Billing\Entries\Models;
 
-use Aaran\Common\Models\Common;
-use Aaran\BMS\Billing\Entries\Database\Factories\PurchaseFactory;
 use Aaran\BMS\Billing\Master\Models\Company;
 use Aaran\BMS\Billing\Master\Models\Contact;
 use Aaran\BMS\Billing\Master\Models\Order;
@@ -11,7 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Purchase extends Model
 {
@@ -25,9 +22,24 @@ class Purchase extends Model
             : static::where('purchase_no', 'like', '%' . $searches . '%');
     }
 
-    public static function nextNo()
+    public function scopeActive(Builder $query, $status = '1'): Builder
     {
-        return static::where('company_id','=',session()->get('company_id'))->max('Entry_no') + 1;
+        return $query->where('active_id', $status);
+    }
+
+    public function scopeSearchByName(Builder $query, string $search): Builder
+    {
+        return $query->where('vname', 'like', "%$search%");
+    }
+
+
+    public static function nextNo($connection = null)
+    {
+        $model = new static;
+        $model->setConnection($connection);
+
+        return $model->newQuery()
+                ->max('entry_no') + 1;
     }
 
     public function contact(): BelongsTo
@@ -44,21 +56,4 @@ class Purchase extends Model
     {
         return $this->belongsTo(Order::class);
     }
-
-    public function common(): BelongsTo
-    {
-        return $this->belongsTo(Common::class);
-    }
-
-    protected static function newFactory(): PurchaseFactory
-    {
-        return new PurchaseFactory();
-    }
-
-    public function purchaseItems():HasMany
-    {
-        return $this->hasMany(Purchaseitem::class);
-    }
-
-
 }

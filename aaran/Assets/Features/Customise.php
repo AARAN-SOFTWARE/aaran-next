@@ -190,4 +190,16 @@ class Customise
     }
     #endregion
 
+    #region[Sales]
+    public static function hasSales(): bool
+    {
+        return static::enabled(static::sales());
+    }
+
+    public static function sales(): string
+    {
+        return 'sales';
+    }
+    #endregion
+
 }
