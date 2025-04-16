@@ -285,11 +285,11 @@
                                         <div>:</div>
                                     </div>
                                     <div class="w-1/4 text-end space-y-4 tracking-wider font-lex">
-                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_taxable)}}</div>
-                                        <div>{{\Aaran\Assets\Helper\Format::Decimal($sale->total_gst)}}</div>
-                                        <div>{{$sale->round_off}}</div>
+                                        <div>{{$sale->total_taxable ? \Aaran\Assets\Helper\Format::Decimal($sale->total_taxable):'-'}}</div>
+                                        <div>{{$sale->total_gst ? \Aaran\Assets\Helper\Format::Decimal($sale->total_gst):'-'}}</div>
+                                        <div>{{ ($sale->round_off == 0 || is_null($sale->round_off)) ? '-' : $sale->round_off }}</div>
                                         <div
-                                            class="font-semibold">{{\Aaran\Assets\Helper\Format::Decimal($sale->grand_total)}}</div>
+                                            class="font-semibold">{{$sale->grand_total ? \Aaran\Assets\Helper\Format::Decimal($sale->grand_total):''}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -301,15 +301,13 @@
                             <div class="w-1/2 space-y-8 h-52 pt-3">
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasBillingAddress())
-                                        @livewire('master::contact.billing-address',
-                                                    key('contact-billing-address-' .$sale->billing_id))
+                                        @livewire('master::contact.billing-address', ['initId' => $sale->billing_id])
                                         <x-Ui::input.error-text wire:model="sale.billing_id"/>
                                     @endif
                                 </div>
                                 <div>
                                     @if(\Aaran\Assets\Features\SaleEntry::hasShippingAddress())
-                                        @livewire('master::contact.shipping-address',
-                                                    key('contact-shipping-address-' .$sale->shipping_id))
+                                        @livewire('master::contact.shipping-address', ['initId' => $sale->shipping_id])
                                         <x-Ui::input.error-text wire:model="sale.shipping_id"/>
                                     @endif
                                 </div>
@@ -320,40 +318,54 @@
                         <!--  TAB 3 - Eway details ------------------------------------------------------------------------------------------------->
 
                         <x-Ui::tabs.content>
-                            <div class="flex justify-between gap-5 h-56 pt-3">
-                                <div class="w-full space-y-8 ">
+                            <div>
+                                <div class="flex justify-between gap-5 pt-3">
 
-                                    @if(\Aaran\Assets\Features\SaleEntry::hasTransport())
-                                        @livewire('common::lookup.transport',['initId' => $sale->trans_id])
-                                    @endif
+                                    <div class="w-full space-y-8 ">
 
-                                    <x-Ui::input.model-date wire:model="TransdocDt" label="Transport Date"/>
+                                        @if(\Aaran\Assets\Features\SaleEntry::hasTransport())
+                                            @livewire('common::lookup.transport',['initId' => $sale->trans_id])
+                                        @endif
 
-                                    <x-Ui::input.model-select wire:model="TransMode" label="Transport Mode">
-                                        <option value="">Choose..</option>
-                                        <option value="1">Road</option>
-                                        <option value="2">Rail</option>
-                                        <option value="3">Air</option>
-                                        <option value="4">ship</option>
-                                    </x-Ui::input.model-select>
+                                        <x-Ui::input.floating wire:model.live="sale.trans_docs" label="Doc No"/>
+                                        <x-Ui::input.error-text wire:model="sale.trans_docs"/>
 
-                                </div>
-                                <div class="w-full space-y-8">
-                                    <div>
-                                        <x-Ui::input.floating wire:model.live="distance" label="Distance"/>
-                                        @error('distance')
-                                        <span class="text-red-400">{{$message}}</span>@enderror
+                                        <x-Ui::input.model-date wire:model="sale.trans_docs_dt" label="Transport Date"/>
+                                        <x-Ui::input.error-text wire:model="sale.trans_docs_dt"/>
+
+                                        <x-Ui::input.model-select wire:model="sale.trans_mode" label="Transport Mode">
+                                            <option value="">Choose..</option>
+                                            <option value="1">Road</option>
+                                            <option value="2">Rail</option>
+                                            <option value="3">Air</option>
+                                            <option value="4">ship</option>
+                                        </x-Ui::input.model-select>
+                                        <x-Ui::input.error-text wire:model="sale.trans_mode"/>
+
                                     </div>
-                                    <div>
-                                        <x-Ui::input.floating wire:model.live="Vehno" label="Vehicle No"/>
-                                        @error('Vehno')
-                                        <span class="text-red-400">{{$message}}</span>@enderror
+
+                                    <div class="w-full space-y-8">
+                                        <div>
+                                            <x-Ui::input.floating wire:model.live="sale.distance" label="Distance"/>
+                                            <x-Ui::input.error-text wire:model="sale.distance"/>
+                                        </div>
+
+                                        <x-Ui::input.model-select wire:model="sale.veh_type" label="Vechile Type">
+                                            <option value="">Choose..</option>
+                                            <option value="R">Regular</option>
+                                            <option value="O">ODC</option>
+                                        </x-Ui::input.model-select>
+                                        <x-Ui::input.error-text wire:model="sale.veh_type"/>
+
+                                        <div>
+                                            <x-Ui::input.floating wire:model.live="sale.veh_no" label="Vehicle No"/>
+                                            <x-Ui::input.error-text wire:model="sale.veh_no"/>
+                                        </div>
+
+                                        <div>&nbsp;</div>
+
+
                                     </div>
-                                    <x-Ui::input.model-select wire:model="Vehtype" label="Vechile Type">
-                                        <option value="">Choose..</option>
-                                        <option value="R">Regular</option>
-                                        <option value="O">ODC</option>
-                                    </x-Ui::input.model-select>
 
                                 </div>
                             </div>
@@ -367,7 +379,7 @@
 
                                 @livewire('books::lookup.ledger',['initId' => $sale->ledger_id])
 
-                                <x-Ui::input.floating wire:model="additional" wire:change.debounce="calculateTotal"
+                                <x-Ui::input.floating wire:model="sale.additional" wire:change.debounce="calculateTotal"
                                                       label="Addition"
                                                       class="text-right block px-2.5 pb-2.5 pt-4 w-full text-sm
                                                       text-gray-900 bg-transparent rounded-lg border-1
@@ -380,7 +392,7 @@
 
                         <x-Ui::tabs.content>
                             <div class="w-1/2">
-                                <x-Ui::input.rich-text wire:model="term" placeholder="Terms & Conditions"/>
+                                <x-Ui::input.rich-text wire:model="sale.term" placeholder="Terms & Conditions"/>
                             </div>
                         </x-Ui::tabs.content>
 

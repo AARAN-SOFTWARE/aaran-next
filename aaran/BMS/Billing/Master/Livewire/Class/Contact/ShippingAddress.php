@@ -27,12 +27,21 @@ class ShippingAddress extends Component
 
         if ($initId && $this->getTenantConnection()) {
 
-            $addressType = DB::connection($this->getTenantConnection())
-                ->table('contact_addresses')
-                ->where('contact_id', $initId)
-                ->value('address_type');
+            $contactAddress = ContactAddress::on($this->getTenantConnection())
+                ->where('contact_id', $this->initContactId)
+                ->first();
 
-            $this->search = $addressType ?: '';
+            $v = $contactAddress->address_type .
+                '  (' .
+                $contactAddress->address_1 . ', ' .
+                $contactAddress->address_2 . ', ' .
+                $contactAddress->city->vname . ', ' .
+                $contactAddress->state->vname . '- ' .
+                $contactAddress->pincode->vname . ', ' .
+                $contactAddress->country->vname . '. ' .
+                ')';
+
+            $this->search = $v;
         }
     }
 
