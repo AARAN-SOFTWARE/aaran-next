@@ -43,6 +43,7 @@ class Lookup extends Component
     {
         $this->searchBy();
     }
+
     public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
@@ -108,7 +109,12 @@ class Lookup extends Component
     public function openCreateModal(): void
     {
         $this->dispatch('open-create-contact-modal', name: $this->search);
-        $this->showCreateModal = true;
+    }
+
+    #[On('refresh-contact-lookup')]
+    public function refreshContactLookup($v): void
+    {
+        $this->search = $v;
     }
 
     public function render()

@@ -13,7 +13,7 @@ class Modal extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
-    public bool $showModal = false;
+    public bool $showCreateModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -61,16 +61,16 @@ class Modal extends Component
             ],
         );
         $this->dispatch('refresh-style', $style->id);
-        $this->dispatch('refresh-style-lookup', $style);
+        $this->dispatch('refresh-style-lookup', $style->vname);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
-        $this->clearFields();
+        $this->closeModal();
     }
 
     #endregion
 
     public function closeModal(): void
     {
-        $this->showModal = false;
+        $this->showCreateModal = false;
         $this->clearFields();
     }
 
@@ -103,6 +103,7 @@ class Modal extends Component
     public function setInitialName($name): void
     {
         $this->vname = $name;
+        $this->showCreateModal = true;
     }
 
 

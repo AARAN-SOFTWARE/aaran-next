@@ -56,5 +56,7 @@
         </div>
     @endif
     <!-- Modal -------------------------------------------------------------------------------------------------------->
-    <livewire:master::contact.modal wire:key="create-contact-modal"/>
+    <livewire:master::contact.modal
+        :showCreateModal="$showCreateModal"
+        wire:key="create-contact-modal" />
 </div>

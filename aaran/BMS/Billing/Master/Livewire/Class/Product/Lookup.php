@@ -43,6 +43,7 @@ class Lookup extends Component
     {
         $this->searchBy();
     }
+
     public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
@@ -111,20 +112,13 @@ class Lookup extends Component
     public function openCreateModal(): void
     {
         $this->dispatch('open-create-product-modal', name: $this->search);
-        $this->showCreateModal = true;
     }
 
     #[On('refresh-product-lookup')]
-    public function refreshProduct($product): void
+    public function refreshProductLookup($v): void
     {
-        if (!empty($product['vname'])) {
-            $this->search = $product['vname'];
-            $this->showCreateModal = false;
-        } else {
-            $this->search = '';
-        }
+        $this->search = $v;
     }
-
 
     public function render()
     {
