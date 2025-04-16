@@ -38,6 +38,7 @@ class Index extends Component
     {
         $this->BlogCategories = BlogCategory::on($this->getTenantConnection())->get();
     }
+
     #region[Get-Save]
     public function getSave(): void
     {
@@ -54,6 +55,8 @@ class Index extends Component
             'visibility' => $this->visibility,
             'active_id' => $this->active_id,
         ]);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
         }
     #endregion
 

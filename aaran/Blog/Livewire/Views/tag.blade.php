@@ -1,29 +1,29 @@
 <div>
     <x-slot name="header">Blog Tag</x-slot>
 
-    <x-aaran-ui::forms.m-panel>
-        <x-aaran-ui::alerts.notification />
+    <x-Ui::forms.m-panel>
+        <x-Ui::alerts.notification />
 
 
-        <x-aaran-ui::forms.top-controls :show-filters="$showFilters"/>
+        <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
-        <x-aaran-ui::table.caption :caption="'Blog Tag'">
+        <x-Ui::table.caption :caption="'Blog Tag'">
             {{$list->count()}}
-        </x-aaran-ui::caption>
+        </x-Ui::caption>
 
-         <x-aaran-ui::table.form>
+         <x-Ui::table.form>
             <x-slot:table_header name="table_header">
 
-                <x-aaran-ui::table.header-serial width="20%"/>
+                <x-Ui::table.header-serial width="20%"/>
 
-                <x-aaran-ui::table.header-text wire:click.prevent="sortBy('vname')">
-                    vname
-                </x-aaran-ui::table.header-text>
+                <x-Ui::table.header-text wire:click.prevent="sortBy('id')" sortIcon="{{$sortAsc}}">
+                    Name
+                </x-Ui::table.header-text>
 
-                <x-aaran-ui::table.header-text wire:click.prevent="sortBy('blog_category_id')" sortIcon="{{$getListForm->sortAsc}}">Blog
+                <x-Ui::table.header-text wire:click.prevent="sortBy('blog_category_id')" sortIcon=false>Blog
                     Category
-                </x-aaran-ui::table.header-text>
-                <x-aaran-ui::table.header-action/>
+                </x-Ui::table.header-text>
+                <x-Ui::table.header-action/>
 
             </x-slot:table_header>
 
@@ -31,43 +31,46 @@
 
                 @foreach($list as $index=>$row)
 
-                   <x-aaran-ui::table.row>
-                        <x-aaran-ui::table.cell-text>{{$index+1}}</x-aaran-ui::table.cell-text>
-                        <x-aaran-ui::table.cell-text>{{$row->vname}}</x-aaran-ui::table.cell-text>
-                        <x-aaran-ui::table.cell-text>
+                   <x-Ui::table.row>
+                        <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text>{{$row->vname}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text>
 {{--                            {{\Aaran\Blog\Models\BlogTag::common($row->blogcategory_id)}}--}}
                             {{ optional($row->blogCategory)->vname ?? '-' }}
-
-                        </x-aaran-ui::table.cell-text>
-                        <x-aaran-ui::table.cell-action id="{{$row->id}}"/>
-                    </x-aaran-ui::table.row>
+                        </x-Ui::table.cell-text>
+                        <x-Ui::table.cell-action id="{{$row->id}}"/>
+                    </x-Ui::table.row>
 
                 @endforeach
             </x-slot:table_body>
 
-        </x-aaran-ui::table.form>
-        <x-aaran-ui::modal.delete/>
+        </x-Ui::table.form>
+        <x-Ui::modal.delete/>
 
-        <x-aaran-ui::forms.create :id="$common->vid">
+        <x-Ui::forms.create :id="$vid">
 
             <div class="flex flex-col  gap-3">
 
-                <x-aaran-ui::input.floating wire:model="common.vname" label="Tag Name"/>
+                <div>
+                    <x-Ui::input.floating wire:model="vname" label="Tag Name"/>
+                    <x-Ui::input.error-text wire:model="vname" />
+                </div>
 
-                <x-aaran-ui::dropdown.wrapper label="Blog Category" type="blogcategoryTyped">
+
+                <x-Ui::dropdown.wrapper label="Blog Category" type="blogcategoryTyped">
                     <div class="relative ">
-                        <x-aaran-ui::dropdown.input label="Blog Category" id="blog_category_name"
+                        <x-Ui::dropdown.input label="Blog Category" id="blog_category_name"
                                           wire:model.live="blog_category_name"
                                           wire:keydown.arrow-up="decrementBlogcategory"
                                           wire:keydown.arrow-down="incrementBlogcategory"
                                           wire:keydown.enter="enterBlogcategory"/>
-                        <x-aaran-ui::dropdown.select>
+                        <x-Ui::dropdown.select>
                             @if($blogcategoryCollection)
                                 @forelse ($blogcategoryCollection as $i => $blogcategory)
-                                    <x-aaran-ui::dropdown.option highlight="{{$highlightBlogCategory === $i  }}"
+                                    <x-Ui::dropdown.option highlight="{{$highlightBlogCategory === $i  }}"
                                                        wire:click.prevent="setBlogcategory('{{$blogcategory->vname}}','{{$blogcategory->id}}')">
                                         {{ $blogcategory->vname }}
-                                    </x-aaran-ui::dropdown.option>
+                                    </x-Ui::dropdown.option>
                                 @empty
                                     <button
                                         wire:click.prevent="blogcategorySave('{{$blog_category_name}}')"
@@ -76,9 +79,13 @@
                                     </button>
                                 @endforelse
                             @endif
-                        </x-aaran-ui::dropdown.select>
+                        </x-Ui::dropdown.select>
                     </div>
-                </x-aaran-ui::dropdown.wrapper>
+                    <div>
+                        <x-Ui::input.error-text wire:model="blog_category_id" />
+                    </div>
+                </x-Ui::dropdown.wrapper>
+
 
                 {{--                <div class="flex flex-row py-3 gap-3">--}}
                 {{--                    <div class="xl:flex w-full gap-2">--}}
@@ -138,6 +145,6 @@
                 {{--                </div>--}}
 
             </div>
-        </x-aaran-ui::forms.create>
-     </x-aaran-ui::forms.m-panel>
+        </x-Ui::forms.create>
+     </x-Ui::forms.m-panel>
 </div>
