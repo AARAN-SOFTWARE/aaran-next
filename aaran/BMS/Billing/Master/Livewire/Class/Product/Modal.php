@@ -74,15 +74,15 @@ class Modal extends Component
             [
                 'vname' => $this->vname,
                 'product_type_id' => $this->product_type_id ?: ProductType::GOODS,
-                'hsncode_id' => $this->hsncode_id ?: Hsncode::value('id'),
-                'unit_id' => $this->unit_id ?: Unit::value('id'),
-                'gst_percent_id' => $this->gst_percent_id ?: GstPercent::value('id'),
+                'hsncode_id' => $this->hsncode_id ?: '1',
+                'unit_id' => $this->unit_id ?: '1',
+                'gst_percent_id' => $this->gst_percent_id ?: '1',
                 'initial_quantity' => $this->quantity ?: '0',
                 'initial_price' => $this->price ?: '0',
                 'active_id' => $this->active_id,
             ],
         );
-        $this->dispatch('refresh-product',$product);
+        $this->dispatch('refresh-product-from-model',$product);
         $this->dispatch('refresh-product-lookup',$product->vname);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->closeModal();

@@ -4,6 +4,7 @@ namespace Aaran\BMS\Billing\Entries\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\BMS\Billing\Common\Models\GstPercent;
 use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesForm;
 use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
@@ -87,6 +88,17 @@ class SalesUpsert extends Component
         $this->saleItems->product_id = $v['id'];
         $this->saleItems->product_name = $v['vname'];
         $this->saleItems->gst_percent = $v['gst_percent'];
+    }
+
+    #[On('refresh-product-from-model')]
+    public function refreshProductModal($v): void
+    {
+        $this->saleItems->product_id = $v['id'];
+        $this->saleItems->product_name = $v['vname'];
+
+        $this->saleItems->gst_percent = !empty($v['gst_percent_id'])
+            ? GstPercent::on($this->getTenantConnection())->findOrFail($v['gst_percent_id'])
+            : '0';
     }
 
     #[On('refresh-colour')]

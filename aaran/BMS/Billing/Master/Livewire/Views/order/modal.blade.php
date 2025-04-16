@@ -17,7 +17,9 @@
                     class="flex min-h-full justify-center items-center">
                     <div class="relative sm:w-full sm:max-w-4xl sm:mx-auto">
 
-                        <div class="bg-white rounded-t-lg px-4 pt-5 pb-2">
+                        <div class="bg-white rounded-t-lg px-4 pb-4">
+
+                            <div class="text-lg text-neutral-300 py-3 left-2">Create New</div>
 
                             <div class="flex flex-col gap-3">
                                 <div>
