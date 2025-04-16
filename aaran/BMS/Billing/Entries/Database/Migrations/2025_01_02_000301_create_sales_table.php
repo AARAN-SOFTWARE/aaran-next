@@ -26,7 +26,6 @@ return new class extends Migration {
                 $table->string('bundle')->nullable();
 
                 $table->string('trans_mode')->nullable();
-                $table->string('trans_name')->nullable();
                 $table->foreignId('trans_id')->references('id')->on('transports');
                 $table->string('trans_docs')->nullable();
                 $table->string('trans_docs_dt')->nullable();

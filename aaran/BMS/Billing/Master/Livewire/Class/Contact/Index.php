@@ -35,8 +35,8 @@ class Index extends Component
     public mixed $contact_type_id = '';
     #[Validate]
     public string $gstin = '';
-    public string $email = '';
-    public string $msme_no = '';
+    public ?string $email = '';
+    public ?string $msme_no = '';
     public string $msme_type_id = '';
     public mixed $opening_balance = 0;
     public mixed $outstanding = 0;
@@ -752,7 +752,6 @@ class Index extends Component
             if ($obj) {
                 $obj->delete();
                 $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
             }
         }
     }

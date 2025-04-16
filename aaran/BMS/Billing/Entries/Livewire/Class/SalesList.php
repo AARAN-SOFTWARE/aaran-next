@@ -6,6 +6,7 @@ use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class SalesList extends Component
@@ -64,6 +65,34 @@ class SalesList extends Component
             ->paginate($this->perPage);
     }
     #endregion
+
+    #region[Delete]
+    public function deleteFunction(): void
+    {
+        if (!$this->deleteId) {
+            return;
+        }
+
+        try {
+            $connection = $this->getTenantConnection();
+
+            // Delete related sale items
+            DB::connection($connection)
+                ->table('sale_items')
+                ->where('sale_id', $this->deleteId)
+                ->delete();
+
+            // Delete the main sale record if it exists
+            Sale::on($connection)->find($this->deleteId)?->delete();
+
+        } catch (\Exception $e) {
+            Log::error("Failed to delete sale_id {$this->deleteId}: " . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    #endregion
+
 
     #region[render]
     public function render()

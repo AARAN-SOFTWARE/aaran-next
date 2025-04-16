@@ -36,7 +36,6 @@ class SalesForm extends Form
 
     public ?string $bundle = null;
     public string $trans_mode = '';
-    public string $trans_name = '';
     public string $trans_id = '';
     public string $trans_docs = '';
     public string $trans_docs_dt = '';
@@ -116,7 +115,6 @@ class SalesForm extends Form
         $this->veh_type = 'R';
         $this->trans_docs = $this->invoice_no;
         $this->trans_docs_dt = Carbon::now()->format('Y-m-d');
-        $this->trans_name = '-';
         $this->veh_no = '-';
     }
 
@@ -138,11 +136,10 @@ class SalesForm extends Form
         $this->bundle = $obj->bundle;
 
         $this->trans_mode = $obj->trans_mode;
-        $this->trans_name = $obj->trans_name;
-        $this->trans_id = $obj->trans_id;
+        $this->trans_id = $obj->trans_id ?: '1';
         $this->trans_docs = $obj->trans_docs;
         $this->trans_docs_dt = $obj->trans_docs_dt;
-        $this->distance = $obj->distance;
+        $this->distance = $obj->distance ?: '0';
         $this->veh_type = $obj->veh_type;
         $this->veh_no = $obj->veh_no;
         $this->term = $obj->term;
@@ -150,7 +147,7 @@ class SalesForm extends Form
         $this->total_qty = $obj->total_qty;
         $this->total_taxable = $obj->total_taxable;
         $this->total_gst = $obj->total_gst;
-        $this->ledger_id = $obj->ledger_id;
+        $this->ledger_id = $obj->ledger_id ?: '1';
         $this->additional = $obj->additional;
         $this->round_off = $obj->round_off;
         $this->grand_total = $obj->grand_total;
@@ -237,7 +234,6 @@ class SalesForm extends Form
 
         // === Transport Info ===
         $sale->trans_mode = $this->trans_mode;
-        $sale->trans_name = $this->trans_name;
         $sale->trans_id = $this->trans_id ?? '1';
         $sale->trans_docs = $this->trans_docs;
         $sale->trans_docs_dt = $this->trans_docs_dt;

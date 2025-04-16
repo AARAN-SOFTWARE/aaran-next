@@ -10,6 +10,8 @@ use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -124,6 +126,9 @@ class SalesUpsert extends Component
         if ($message === 'success') {
             $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->sale->vid ? 'Updated' : 'Saved') . ' Successfully']);
             $this->sale->setDefaultValues();
+
+            $this->redirect(route('sales'));
+
         } else {
             $this->dispatch('notify', ...['type' => 'error', 'content' => $message]);
         }
@@ -131,7 +136,7 @@ class SalesUpsert extends Component
 
     public function clearFields(): void
     {
-        return;
+        $this->sale->setDefaultValues();
     }
 
     public function mount($id = null): void
@@ -299,7 +304,6 @@ class SalesUpsert extends Component
     }
 
     #endregion
-
 
     public function render()
     {

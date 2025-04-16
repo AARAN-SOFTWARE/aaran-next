@@ -148,7 +148,7 @@
                                 <a href="{{route('sales.upsert',[$row->id])}}" class="pt-1 px-1.5">
                                     <x-Ui::button.edit/>
                                 </a>
-                                <x-Ui::button.delete wire:click="getDelete({{$row->id}})"/>
+                                <x-Ui::button.delete wire:click="confirmDelete({{$row->id}})"/>
 
                             </div>
                         </td>
