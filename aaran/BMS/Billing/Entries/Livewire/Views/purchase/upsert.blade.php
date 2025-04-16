@@ -44,6 +44,16 @@
                                                 <x-Ui::input.error-text wire:model="purchase.style_id"/>
                                             @endif
                                         </div>
+
+                                        <div>
+                                            <x-Ui::input.floating wire:model="purchase.purchase_no" label="Purchase No"/>
+                                            <x-Ui::input.error-text wire:model="purchase.purchase_no"/>
+                                        </div>
+                                        <div>
+                                            <x-Ui::input.model-date wire:model="purchase.purchase_date"
+                                                                    label="Purchase Date"/>
+                                            <x-Ui::input.error-text wire:model="purchase.purchase_date"/>
+                                        </div>
                                     </div>
 
                                     <div class="w-full space-y-5 ">

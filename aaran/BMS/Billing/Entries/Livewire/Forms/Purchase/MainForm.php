@@ -104,12 +104,12 @@ class MainForm extends Form
         $this->entry_no = Purchase::nextNo($this->getTenantConnection());
         $this->entry_date = Carbon::now()->format('Y-m-d');
 
-        $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->purchase_no;
+        $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->entry_no;
         $this->purchase_type = '1';
         $this->trans_mode = '1';
         $this->trans_id = 1;
-        $this->trans_docs = $this->purchase_no;
-        $this->trans_docs_dt = $this->purchase_date;;
+        $this->trans_docs = $this->entry_no;
+        $this->trans_docs_dt = $this->entry_date;;
         $this->veh_type = 'R';
         $this->veh_no = '-';
 

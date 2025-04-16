@@ -26,7 +26,7 @@ class Index extends Component
 
     public function getList()
     {
-        $this->sortField = 'invoice_no';
+        $this->sortField = 'entry_no';
 
         return Purchase::on($this->getTenantConnection())
             ->active($this->activeRecord)
