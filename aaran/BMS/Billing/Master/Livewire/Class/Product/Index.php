@@ -387,7 +387,7 @@ class Index extends Component
             $this->unit_id = $obj->unit_id;
             $this->unit_name = $obj->unit->vname;
             $this->gst_percent_id = $obj->gst_percent_id;
-            $this->gst_percent_name = $obj->gstPercent->vname;
+            $this->gst_percent_name = $obj->gst_percent->vname;
             $this->quantity = $obj->initial_quantity;
             $this->price = $obj->initial_price;
             $this->active_id = $obj->active_id;

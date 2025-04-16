@@ -10,6 +10,8 @@ use Aaran\BMS\Billing\Entries\Livewire\Forms\SalesItemForm;
 use Aaran\BMS\Billing\Entries\Models\Sale;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -302,7 +304,6 @@ class SalesUpsert extends Component
     }
 
     #endregion
-
 
     public function render()
     {

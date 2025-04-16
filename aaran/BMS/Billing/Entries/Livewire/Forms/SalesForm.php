@@ -115,7 +115,6 @@ class SalesForm extends Form
         $this->veh_type = 'R';
         $this->trans_docs = $this->invoice_no;
         $this->trans_docs_dt = Carbon::now()->format('Y-m-d');
-        $this->trans_name = '-';
         $this->veh_no = '-';
     }
 
