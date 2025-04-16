@@ -94,7 +94,7 @@ class TransportLookup extends Component
         $this->search = $transport->vname;
         $this->results = [];
         $this->showDropdown = false;
-        $this->dispatch('refresh-transport', $transport);
+        $this->dispatch('refresh-transport', $transport->id);
     }
 
     public function hideDropdown(): void

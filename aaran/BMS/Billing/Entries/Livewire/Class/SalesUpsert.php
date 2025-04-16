@@ -16,8 +16,8 @@ class SalesUpsert extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
-    public SalesForm $form;
-    public SalesItemForm $itemForm;
+    public SalesForm $sale;
+    public SalesItemForm $saleItems;
 
     public $billing_id;
     public $shipping_id;
@@ -28,19 +28,19 @@ class SalesUpsert extends Component
     #[On('refresh-contact')]
     public function refreshContact($id): void
     {
-        $this->form->contact_id = $id;
+        $this->sale->contact_id = $id;
     }
 
     #[On('refresh-order')]
     public function refreshOrder($id): void
     {
-        $this->form->order_id = $id;
+        $this->sale->order_id = $id;
     }
 
     #[On('refresh-style')]
     public function refreshStyle($id): void
     {
-        $this->form->style_id = $id;
+        $this->sale->style_id = $id;
     }
 
     #[On('refresh-billing')]
@@ -75,40 +75,51 @@ class SalesUpsert extends Component
         $this->shipping_id = $v;
     }
 
+    #[On('refresh-transport')]
+    public function refreshTransport($v): void
+    {
+        $this->sale->trans_id = $v;
+    }
+
     #[On('refresh-product')]
     public function refreshProduct($v): void
     {
-        $this->itemForm->product_id = $v['id'];
-        $this->itemForm->product_name = $v['vname'];
-        $this->itemForm->gst_percent = $v['gst_percent'];
+        $this->saleItems->product_id = $v['id'];
+        $this->saleItems->product_name = $v['vname'];
+        $this->saleItems->gst_percent = $v['gst_percent'];
     }
 
     #[On('refresh-colour')]
     public function refreshColour($v): void
     {
-        $this->itemForm->colour_id = $v['id'];
-        $this->itemForm->colour_name = $v['vname'];
+        $this->saleItems->colour_id = $v['id'];
+        $this->saleItems->colour_name = $v['vname'];
     }
 
     #[On('refresh-size')]
     public function refreshSize($v): void
     {
-        $this->itemForm->size_id = $v['id'];
-        $this->itemForm->size_name = $v['vname'];
+        $this->saleItems->size_id = $v['id'];
+        $this->saleItems->size_name = $v['vname'];
     }
 
     public function getSave()
     {
-        $this->form->billing_id = $this->billing_id ?? '1';
-        $this->form->shipping_id = $this->shipping_id ?? '1';
+        $this->sale->billing_id = $this->billing_id ?? '1';
+        $this->sale->shipping_id = $this->shipping_id ?? '1';
 
-        $message = $this->form->createOrUpdate();
+        $message = $this->sale->createOrUpdate();
         if ($message === 'success') {
-            $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->form->vid ? 'Updated' : 'Saved') . ' Successfully']);
-            $this->form->setDefaultValues();
+            $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->sale->vid ? 'Updated' : 'Saved') . ' Successfully']);
+            $this->sale->setDefaultValues();
         } else {
             $this->dispatch('notify', ...['type' => 'error', 'content' => $message]);
         }
+    }
+
+    public function clearFields(): void
+    {
+        return;
     }
 
     public function mount($id = null): void
@@ -117,12 +128,12 @@ class SalesUpsert extends Component
             $obj = Sale::on($this->getTenantConnection())->find($id);
 
             if ($obj) {
-                $this->form->loadValues($obj);
+                $this->sale->loadValues($obj);
             } else {
-                $this->form->setDefaultValues();
+                $this->sale->setDefaultValues();
             }
         } else {
-            $this->form->setDefaultValues();
+            $this->sale->setDefaultValues();
         }
     }
 
@@ -130,19 +141,19 @@ class SalesUpsert extends Component
 
     public function addItems(): void
     {
-        $qty = (float)$this->itemForm->qty;
-        $price = (float)$this->itemForm->price;
-        $gstPercent = (float)$this->itemForm->gst_percent;
+        $qty = (float)$this->saleItems->qty;
+        $price = (float)$this->saleItems->price;
+        $gstPercent = (float)$this->saleItems->gst_percent;
 
-        if ($this->itemForm->itemIndex === '') {
+        if ($this->saleItems->itemIndex === '') {
             // Add new item
-            if ($this->itemForm->product_name && $price && $qty) {
-                $this->itemForm->itemList[] = $this->buildItemArray($qty, $price, $gstPercent);
+            if ($this->saleItems->product_name && $price && $qty) {
+                $this->sale->itemList[] = $this->buildItemArray($qty, $price, $gstPercent);
             }
         } else {
             // Update existing item
-            $index = $this->itemForm->itemIndex;
-            $this->itemForm->itemList[$index] = $this->buildItemArray($qty, $price, $gstPercent);
+            $index = $this->saleItems->itemIndex;
+            $this->sale->itemList[$index] = $this->buildItemArray($qty, $price, $gstPercent);
         }
 
         $this->calculateTotal();
@@ -156,19 +167,19 @@ class SalesUpsert extends Component
         $gstAmount = $taxable * $gstPercent / 100;
 
         return [
-            'po_no' => $this->itemForm->po_no,
-            'dc_no' => $this->itemForm->dc_no,
-            'no_of_roll' => $this->itemForm->no_of_roll,
-            'product_name' => $this->itemForm->product_name,
-            'product_id' => $this->itemForm->product_id,
-            'colour_id' => $this->itemForm->colour_id,
-            'colour_name' => $this->itemForm->colour_name,
-            'size_id' => $this->itemForm->size_id,
-            'size_name' => $this->itemForm->size_name,
+            'po_no' => $this->saleItems->po_no,
+            'dc_no' => $this->saleItems->dc_no,
+            'no_of_roll' => $this->saleItems->no_of_roll,
+            'product_name' => $this->saleItems->product_name,
+            'product_id' => $this->saleItems->product_id,
+            'colour_id' => $this->saleItems->colour_id,
+            'colour_name' => $this->saleItems->colour_name,
+            'size_id' => $this->saleItems->size_id,
+            'size_name' => $this->saleItems->size_name,
             'qty' => $qty,
             'price' => $price,
             'gst_percent' => $gstPercent,
-            'description' => $this->itemForm->description,
+            'description' => $this->saleItems->description,
             'taxable' => $taxable,
             'gst_amount' => $gstAmount,
             'subtotal' => $taxable + $gstAmount,
@@ -187,7 +198,7 @@ class SalesUpsert extends Component
         ];
 
         foreach ($fields as $field) {
-            $this->itemForm->{$field} = '';
+            $this->saleItems->{$field} = '';
         }
 
         $this->calculateTotal();
@@ -195,38 +206,38 @@ class SalesUpsert extends Component
 
     public function changeItems($index): void
     {
-        if (!isset($this->itemForm->itemList[$index])) return;
+        if (!isset($this->sale->itemList[$index])) return;
 
-        $item = $this->itemForm->itemList[$index];
+        $item = $this->sale->itemList[$index];
 
-        $this->itemForm->itemIndex = $index;
+        $this->saleItems->itemIndex = $index;
 
         foreach ($item as $key => $value) {
-            $this->itemForm->{$key} = $value;
+            $this->saleItems->{$key} = $value;
         }
 
-        $this->dispatch('refresh-product-lookup', ['vname' => $this->itemForm->product_name]);
-        $this->dispatch('refresh-colour-lookup', ['vname' => $this->itemForm->colour_name]);
-        $this->dispatch('refresh-size-lookup', ['vname' => $this->itemForm->size_name]);
+        $this->dispatch('refresh-product-lookup', ['vname' => $this->saleItems->product_name]);
+        $this->dispatch('refresh-colour-lookup', ['vname' => $this->saleItems->colour_name]);
+        $this->dispatch('refresh-size-lookup', ['vname' => $this->saleItems->size_name]);
 
         $this->calculateTotal();
     }
 
     public function deleteItem($index): void
     {
-        if (!isset($this->itemForm->itemList[$index])) {
+        if (!isset($this->sale->itemList[$index])) {
             throw new Exception("Item at index {$index} does not exist.");
         }
 
-        unset($this->itemForm->itemList[$index]);
-        $this->itemForm->itemList = array_values($this->itemForm->itemList);
+        unset($this->sale->itemList[$index]);
+        $this->sale->itemList = array_values($this->sale->itemList);
         $this->calculateTotal();
     }
 
     public function removeItems($index): void
     {
-        unset($this->itemForm->itemList[$index]);
-        $this->itemForm->itemList = array_values($this->itemForm->itemList);
+        unset($this->sale->itemList[$index]);
+        $this->sale->itemList = array_values($this->sale->itemList);
         $this->calculateTotal();
     }
 
@@ -237,7 +248,7 @@ class SalesUpsert extends Component
 
     public function calculateTotal(): void
     {
-        if (!empty($this->itemForm->itemList)) {
+        if (!empty($this->sale->itemList)) {
 
             // Reset all totals
             $totalQty = 0;
@@ -246,7 +257,7 @@ class SalesUpsert extends Component
             $grandTotalBeforeRound = 0;
 
             // Loop through item list and accumulate values
-            foreach ($this->itemForm->itemList as $row) {
+            foreach ($this->sale->itemList as $row) {
                 $totalQty += round((float)$row['qty'], 3);
                 $totalTaxable += round((float)$row['taxable'], 2);
                 $totalGst += round((float)$row['gst_amount'], 2);
@@ -254,24 +265,24 @@ class SalesUpsert extends Component
             }
 
             // Assign accumulated values
-            $this->form->total_qty = $totalQty;
-            $this->form->total_taxable = $totalTaxable;
-            $this->form->total_gst = $totalGst;
+            $this->sale->total_qty = $totalQty;
+            $this->sale->total_taxable = $totalTaxable;
+            $this->sale->total_gst = $totalGst;
             $this->grandTotalBeforeRound = $grandTotalBeforeRound;
 
             // Grand total rounding
-            $this->form->grand_total = round($grandTotalBeforeRound);
-            $this->form->round_off = $this->form->grand_total - $grandTotalBeforeRound;
+            $this->sale->grand_total = round($grandTotalBeforeRound);
+            $this->sale->round_off = $this->sale->grand_total - $grandTotalBeforeRound;
 
             // Round-off fix (adjust negative if needed)
-            if ($this->form->round_off > 0) {
-                $this->form->round_off = -1 * round(abs($this->form->round_off), 2);
+            if ($this->sale->round_off > 0) {
+                $this->sale->round_off = -1 * round(abs($this->sale->round_off), 2);
             } else {
-                $this->form->round_off = round($this->form->round_off, 2);
+                $this->sale->round_off = round($this->sale->round_off, 2);
             }
 
             // Final grand total after adjustments
-            $this->form->grand_total = round($this->form->grand_total + (float)($this->form->additional ?? 0), 2);
+            $this->sale->grand_total = round($this->sale->grand_total + (float)($this->sale->additional ?? 0), 2);
         }
     }
 

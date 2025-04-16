@@ -4,7 +4,10 @@ namespace Aaran\BMS\Billing\Entries\Livewire\Forms;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
+use Aaran\BMS\Billing\Entries\Models\SaleItem;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
@@ -52,6 +55,9 @@ class SalesForm extends Form
     public ?float $grand_total = null;
     public mixed $received_by = '';
     public bool $active_id = true;
+
+
+    public $itemList = [];
 
     #region[rules]
     public function rules(): array
@@ -128,18 +134,17 @@ class SalesForm extends Form
         $this->billing_id = $obj->billing_id;
         $this->shipping_id = $obj->shipping_id;
         $this->style_id = $obj->style_id;
-        $this->despatch_id = $obj->despatch_id;
         $this->job_no = $obj->job_no;
-        $this->destination = $obj->destination;
         $this->bundle = $obj->bundle;
-        $this->distance = $obj->distance;
+
         $this->trans_mode = $obj->trans_mode;
-        $this->trans_id = $obj->trans_id;
         $this->trans_name = $obj->trans_name;
+        $this->trans_id = $obj->trans_id;
         $this->trans_docs = $obj->trans_docs;
         $this->trans_docs_dt = $obj->trans_docs_dt;
-        $this->veh_no = $obj->veh_no;
+        $this->distance = $obj->distance;
         $this->veh_type = $obj->veh_type;
+        $this->veh_no = $obj->veh_no;
         $this->term = $obj->term;
 
         $this->total_qty = $obj->total_qty;
@@ -156,16 +161,24 @@ class SalesForm extends Form
 
     public function createOrUpdate(): string
     {
-//        $this->validate();
+        $this->validate();
 
-//        try {
         $sale = $this->vid
             ? Sale::on($this->getTenantConnection())->findOrFail($this->vid)
             : new Sale();
 
+        // Assign the tenant connection
+        $sale->setConnection($this->getTenantConnection());
+
+        // Assign ID only if updating
+        if ($this->vid) {
+            $sale->id = $this->vid;
+        }
+
+        // === Basic Info ===
         $sale->uniqueno = $this->uniqueno;
-        $sale->acyear = $this->acyear;
-        $sale->company_id = $this->company_id;
+        $sale->acyear = $this->acyear ?? '1';
+        $sale->company_id = $this->company_id ?? '1';
         $sale->contact_id = $this->contact_id;
         $sale->invoice_no = $this->invoice_no;
         $sale->invoice_date = $this->invoice_date;
@@ -174,24 +187,21 @@ class SalesForm extends Form
         $sale->billing_id = $this->billing_id;
         $sale->shipping_id = $this->shipping_id;
         $sale->style_id = $this->style_id;
-//            $sale->despatch_id = $this->despatch_id;
         $sale->job_no = $this->job_no;
-        $sale->destination = $this->destination;
         $sale->bundle = $this->bundle;
 
-        $sale->distance = $this->distance;
+        // === Transport Info ===
         $sale->trans_mode = $this->trans_mode;
-        $sale->trans_id = $this->trans_id;
         $sale->trans_name = $this->trans_name;
+        $sale->trans_id = $this->trans_id ?? '1';
         $sale->trans_docs = $this->trans_docs;
         $sale->trans_docs_dt = $this->trans_docs_dt;
-        $sale->veh_no = $this->veh_no;
+        $sale->distance = $this->distance;
         $sale->veh_type = $this->veh_type;
-        $sale->term = $this->term;
+        $sale->veh_no = $this->veh_no;
 
-        $sale->total_qty = $this->total_qty;
-        $sale->total_taxable = $this->total_taxable;
-        $sale->total_gst = $this->total_gst;
+        // === Payment / Terms ===
+        $sale->term = $this->term;
         $sale->ledger_id = $this->ledger_id;
         $sale->additional = $this->additional;
         $sale->round_off = $this->round_off;
@@ -199,19 +209,46 @@ class SalesForm extends Form
         $sale->received_by = $this->received_by;
         $sale->active_id = $this->active_id;
 
-//            $sale->save();
+        // === Totals ===
+        $sale->total_qty = $this->total_qty;
+        $sale->total_taxable = $this->total_taxable;
+        $sale->total_gst = $this->total_gst;
 
+        // Save with tenant connection
+        $sale->save();
 
-        dd($sale);
-
-
-//            return 'success';
-//
-//        } catch (\Exception $e) {
-//            logger()->error('Sale Save Error: ' . $e->getMessage());
-//            return $e->getMessage();
-//        }
+        // Use the correct ID after save
+        return $this->createOrUpdateItem($sale->id);
     }
 
+    public function createOrUpdateItem($saleId): string
+    {
+        try {
+            DB::connection($this->getTenantConnection())
+                ->table('sale_items')
+                ->where('sale_id', $saleId)
+                ->delete();
+        } catch (\Exception $e) {
+            Log::error("Failed to delete sale items for sale_id {$saleId}: " . $e->getMessage());
+            throw $e;
+        }
 
+        foreach ($this->itemList as $item) {
+            SaleItem::on($this->getTenantConnection())->create([
+                'sale_id' => $saleId,
+                'po_no' => $item['po_no'],
+                'dc_no' => $item['dc_no'],
+                'no_of_roll' => $item['no_of_roll'],
+                'product_id' => $item['product_id'],
+                'colour_id' => $item['colour_id'] ?? '1',
+                'size_id' => $item['size_id'] ?? '1',
+                'qty' => $item['qty'],
+                'price' => $item['price'],
+                'gst_percent' => $item['gst_percent'],
+                'description' => $item['description'],
+            ]);
+        }
+
+        return 'success';
+    }
 }
