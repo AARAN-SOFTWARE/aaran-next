@@ -56,5 +56,7 @@
         </div>
     @endif
     <!-- Modal -------------------------------------------------------------------------------------------------------->
-    <livewire:master::style.modal wire:key="create-style-modal"/>
+    <livewire:master::style.modal
+        :showCreateModal="$showCreateModal"
+        wire:key="create-style-modal"/>
 </div>
