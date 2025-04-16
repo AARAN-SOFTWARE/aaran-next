@@ -10,6 +10,7 @@ class StateSeeder extends Seeder
     public static function run(): void
     {
         $states = [
+            ['Tamil Nadu', '33'],
             ['-', '-'],
             ['Andhra Pradesh', '28'],
             ['Arunachal Pradesh', '12'],
@@ -33,7 +34,6 @@ class StateSeeder extends Seeder
             ['Punjab', '03'],
             ['Rajasthan', '08'],
             ['Sikkim', '11'],
-            ['Tamil Nadu', '33'],
             ['Telangana', '36'],
             ['Tripura', '16'],
             ['Uttar Pradesh', '09'],
