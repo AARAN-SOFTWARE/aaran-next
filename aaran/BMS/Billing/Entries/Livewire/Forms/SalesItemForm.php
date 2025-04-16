@@ -7,7 +7,7 @@ use Livewire\Form;
 
 class SalesItemForm extends Form
 {
-    public $itemList = [];
+
     public string $itemIndex = '';
     public string $po_no = '';
     public string $dc_no = '';
@@ -19,9 +19,9 @@ class SalesItemForm extends Form
     public string $colour_name = '';
     public ?string $size_id = null;
     public string $size_name = '';
-    public mixed $qty;
-    public mixed $price;
-    public mixed $gst_percent;
+    public mixed $qty = '';
+    public mixed $price = '';
+    public mixed $gst_percent = '';
 
     #region[rules]
     public function rules(): array

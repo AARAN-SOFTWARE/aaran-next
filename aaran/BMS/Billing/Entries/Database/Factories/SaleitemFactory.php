@@ -3,12 +3,12 @@
 namespace Aaran\BMS\Billing\Entries\Database\Factories;
 
 use Aaran\BMS\Billing\Entries\Models\Sale;
-use Aaran\BMS\Billing\Entries\Models\Saleitem;
+use Aaran\BMS\Billing\Entries\Models\SaleItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SaleitemFactory extends Factory
 {
-    protected $model = Saleitem::class;
+    protected $model = SaleItem::class;
 
     public function definition(): array
     {

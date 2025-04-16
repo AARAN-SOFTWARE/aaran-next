@@ -2,9 +2,9 @@
 
 namespace Aaran\BMS\Billing\Books\Database\Seeders;
 
-use Aaran\Books\Database\Seeders\AccountHeadsSeeder;
-use Aaran\Books\Database\Seeders\LedgerGroupSeeder;
-use Aaran\Books\Database\Seeders\LedgerSeeder;
+use Aaran\BMS\Billing\Books\Database\Seeders\AccountHeadsSeeder;
+use Aaran\BMS\Billing\Books\Database\Seeders\LedgerGroupSeeder;
+use Aaran\BMS\Billing\Books\Database\Seeders\LedgerSeeder;
 use Illuminate\Database\Seeder;
 
 class BooksSeeder extends Seeder

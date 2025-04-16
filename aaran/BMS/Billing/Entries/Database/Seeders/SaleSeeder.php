@@ -3,7 +3,7 @@
 namespace Aaran\BMS\Billing\Entries\Database\Seeders;
 
 use Aaran\BMS\Billing\Entries\Models\Sale;
-use Aaran\BMS\Billing\Entries\Models\Saleitem;
+use Aaran\BMS\Billing\Entries\Models\SaleItem;
 use Illuminate\Database\Seeder;
 
 class SaleSeeder extends Seeder
@@ -33,7 +33,7 @@ class SaleSeeder extends Seeder
             'active_id' => '1'
 
         ]);
-        Saleitem::create([
+        SaleItem::create([
             'sale_id' => '1',
             'product_id' => '1',
             'colour_id' => '1',
