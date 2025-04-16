@@ -26,7 +26,7 @@ class Modal extends Component
     use ComponentStateTrait, TenantAwareTrait;
 
     #region[properties]
-    public bool $showModal = false;
+    public bool $showCreateModal = false;
 
     #[Validate]
     public string $vname = '';
@@ -66,12 +66,12 @@ class Modal extends Component
         return [
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.companies,vname"),
             'gstin' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.companies,vname"),
-            'address_1' => 'required',
-            'address_2' => 'required',
-            'city_name' => 'required',
-            'state_name' => 'required',
-            'pincode_name' => 'required',
-            'country_name' => 'required',
+//            'address_1' => 'required',
+//            'address_2' => 'required',
+//            'city_name' => 'required',
+//            'state_name' => 'required',
+//            'pincode_name' => 'required',
+//            'country_name' => 'required',
         ];
     }
 
@@ -82,12 +82,12 @@ class Modal extends Component
             'gstin.required' => ' :attribute is required.',
             'vname.unique' => ' :attribute is already taken.',
             'gstin.unique' => ' :attribute is already taken.',
-            'address_1.required' => ' :attribute  is required.',
-            'address_2.required' => ' :attribute  is required.',
-            'city_name.required' => ' :attribute  is required.',
-            'state_name.required' => ' :attribute  is required.',
-            'pincode_name.required' => ' :attribute  is required.',
-            'country_name.required' => ' :attribute  is required.',
+//            'address_1.required' => ' :attribute  is required.',
+//            'address_2.required' => ' :attribute  is required.',
+//            'city_name.required' => ' :attribute  is required.',
+//            'state_name.required' => ' :attribute  is required.',
+//            'pincode_name.required' => ' :attribute  is required.',
+//            'country_name.required' => ' :attribute  is required.',
         ];
     }
 
@@ -96,12 +96,12 @@ class Modal extends Component
         return [
             'vname' => 'Contact name',
             'gstin' => 'GST No',
-            'address_1' => 'Address',
-            'address_2' => 'Area Road',
-            'city_name' => 'City',
-            'state_name' => 'State',
-            'pincode_name' => 'Pincode',
-            'country_name' => 'Country',
+//            'address_1' => 'Address',
+//            'address_2' => 'Area Road',
+//            'city_name' => 'City',
+//            'state_name' => 'State',
+//            'pincode_name' => 'Pincode',
+//            'country_name' => 'Country',
         ];
     }
     #endregion
@@ -585,12 +585,12 @@ class Modal extends Component
             [
                 'contact_id' => $contact->id,
                 'address_type' => 'primary',
-                'address_1' => $this->address_1,
-                'address_2' => $this->address_2,
-                'city_id' => $this->city_id,
-                'state_id' => $this->state_id,
-                'pincode_id' => $this->pincode_id,
-                'country_id' => $this->country_id,
+                'address_1' => $this->address_1 ?: '-',
+                'address_2' => $this->address_2 ?: '-',
+                'city_id' => $this->city_id ?: '1',
+                'state_id' => $this->state_id ?: '1',
+                'pincode_id' => $this->pincode_id ?: '1',
+                'country_id' => $this->country_id ?: '1',
             ]
         );
 
@@ -615,7 +615,8 @@ class Modal extends Component
             ]
         );
 
-        $this->dispatch('refresh-contact',$contact);
+        $this->dispatch('refresh-contact', $contact->id);
+        $this->dispatch('refresh-contact-lookup', $contact->vname);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->closeModal();
     }
@@ -624,8 +625,9 @@ class Modal extends Component
 
     #region[clear fields]
 
-    public function closeModal(): void{
-        $this->showModal = false;
+    public function closeModal(): void
+    {
+        $this->showCreateModal = false;
         $this->clearFields();
     }
 
@@ -656,7 +658,7 @@ class Modal extends Component
         $this->pincode_id = '';
         $this->country_id = '';
 
-        $this->city_name =  '';
+        $this->city_name = '';
         $this->state_name = '';
         $this->pincode_name = '';
         $this->country_name = '';
@@ -738,6 +740,7 @@ class Modal extends Component
     public function setInitialName($name): void
     {
         $this->vname = $name;
+        $this->showCreateModal = true;
     }
 
     #region[render]

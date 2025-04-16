@@ -19,7 +19,7 @@ class Modal extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
-    public bool $showModal = false;
+    public bool $showCreateModal = false;
 
     #region[Properties]
     public string $vname = '';
@@ -33,8 +33,8 @@ class Modal extends Component
     {
         return [
             'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.products,vname"),
-            'hsncode_name' => 'required',
-            'unit_name' => 'required',
+//            'hsncode_name' => 'required',
+//            'unit_name' => 'required',
             'gst_percent_name' => 'required',
         ];
     }
@@ -44,8 +44,8 @@ class Modal extends Component
         return [
             'vname.required' => ' :attribute are missing.',
             'vname.unique' => ' :attribute is already created.',
-            'hsncode_name.required' => ' :attribute is required.',
-            'unit_name.required' => ' :attribute is required.',
+//            'hsncode_name.required' => ' :attribute is required.',
+//            'unit_name.required' => ' :attribute is required.',
             'gst_percent_name.required' => ' :attribute is required.',
         ];
     }
@@ -54,8 +54,8 @@ class Modal extends Component
     {
         return [
             'vname' => 'Name',
-            'hsncode_name' => 'Hsncode',
-            'unit_name' => 'Unit',
+//            'hsncode_name' => 'Hsncode',
+//            'unit_name' => 'Unit',
             'gst_percent_name' => 'Gst percent',
         ];
     }
@@ -83,7 +83,7 @@ class Modal extends Component
             ],
         );
         $this->dispatch('refresh-product',$product);
-        $this->dispatch('refresh-product-lookup',$product);
+        $this->dispatch('refresh-product-lookup',$product->vname);
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->closeModal();
     }
@@ -400,7 +400,7 @@ class Modal extends Component
     #region[Clear-Fields]
 
     public function closeModal(): void{
-        $this->showModal = false;
+        $this->showCreateModal = false;
         $this->clearFields();
     }
 
@@ -428,6 +428,7 @@ class Modal extends Component
     public function setInitialName($name): void
     {
         $this->vname = $name;
+        $this->showCreateModal = true;
     }
 
     public function render()
