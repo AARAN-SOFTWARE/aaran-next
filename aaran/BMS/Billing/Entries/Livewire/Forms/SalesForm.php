@@ -129,7 +129,7 @@ class SalesForm extends Form
         $this->contact_id = $obj->contact_id;
         $this->invoice_no = $obj->invoice_no;
         $this->invoice_date = $obj->invoice_date;
-        $this->sales_type = optional($obj->sales_type)->id;
+        $this->sales_type = $obj->sales_type;
         $this->order_id = $obj->order_id;
         $this->billing_id = $obj->billing_id;
         $this->shipping_id = $obj->shipping_id;
@@ -156,6 +156,51 @@ class SalesForm extends Form
         $this->grand_total = $obj->grand_total;
         $this->received_by = $obj->received_by;
         $this->active_id = $obj->active_id;
+
+        $this->loadItems($obj->id);
+    }
+
+    public function loadItems($id): void
+    {
+        $data = DB::connection($this->getTenantConnection())->table('sale_items')
+            ->select(
+                'sale_items.*',
+                'products.vname as product_name',
+                'colours.vname as colour_name',
+                'sizes.vname as size_name'
+            )
+            ->join('products', 'products.id', '=', 'sale_items.product_id')
+            ->join('colours', 'colours.id', '=', 'sale_items.colour_id')
+            ->join('sizes', 'sizes.id', '=', 'sale_items.size_id')
+            ->where('sale_items.sale_id', $id)
+            ->get()
+            ->transform(function ($item) {
+                $taxable = $item->qty * $item->price;
+                $gstAmount = $taxable * ($item->gst_percent / 100);
+                $subtotal = $taxable + $gstAmount;
+
+                return [
+                    'saleitem_id' => $item->id,
+                    'po_no' => $item->po_no,
+                    'dc_no' => $item->dc_no,
+                    'no_of_roll' => $item->no_of_roll,
+                    'product_name' => $item->product_name,
+                    'product_id' => $item->product_id,
+                    'colour_name' => $item->colour_name,
+                    'colour_id' => $item->colour_id,
+                    'size_name' => $item->size_name,
+                    'size_id' => $item->size_id,
+                    'qty' => $item->qty,
+                    'price' => $item->price,
+                    'description' => $item->description,
+                    'gst_percent' => $item->gst_percent,
+                    'taxable' => $taxable,
+                    'gst_amount' => $gstAmount,
+                    'subtotal' => $subtotal,
+                ];
+            });
+
+        $this->itemList = $data;
     }
 
 

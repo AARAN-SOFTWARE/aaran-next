@@ -51,12 +51,14 @@
 
             <x-slot:table_body name="table_body">
                 @foreach($list as $index=>$row)
+
                         <?php
                         $qty += $row->total_qty;
                         $taxable += $row->total_taxable;
                         $gst += $row->total_gst;
                         $grand_total += $row->grand_total;
                         ?>
+
                     <x-Ui::table.row>
 
                         <x-Ui::table.cell-text>
@@ -86,6 +88,7 @@
                         <x-Ui::table.cell-text right>
                             <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->grand_total}}</a>
                         </x-Ui::table.cell-text>
+
                         @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
                             <x-Ui::table.cell-text>
 {{--                                <a href="{{route('sales.upsert',[$row->id])}}">--}}
