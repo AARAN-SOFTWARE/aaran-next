@@ -104,16 +104,13 @@ class Lookup extends Component
     public function openCreateModal(): void
     {
         $this->dispatch('open-create-style-modal', name: $this->search);
-        $this->showCreateModal = true;
     }
 
     #[On('refresh-style-lookup')]
-    public function refreshStyle($style): void
+    public function refreshStyleLookup($v): void
     {
-        $this->search = $style['vname'];
-        $this->showCreateModal = false;
+        $this->search = $v;
     }
-
 
     public function render()
     {
