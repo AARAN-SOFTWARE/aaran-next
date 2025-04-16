@@ -74,8 +74,5 @@ trait ComponentStateTrait
         $this->showDeleteModal = false;
         $this->deleteFunction($this->deleteId);
         $this->deleteId = null;
-        $this->dispatch('notify', ...['type' => 'warning', 'content' => 'Deleted Successfully']);
     }
-
 }
-
