@@ -41,16 +41,16 @@
 
 ## Sales
 [Contact Pop-up (PartyName)]
-- We should write validation for contact_type.
+- We should write validation for contact_type.  ✅ fixed -no validation - set default value
 
 [Style Pop-up (StyleName)]
-- The image input is a text field right now. We need to change it to an image upload field.
+- The image input is a text field right now. We need to change it to an image upload field. 
 
 [E-way Bill Details (Tab)]
-- We should write validation for Transport Name.
-- After I create a new transport, it shows an error (Cannot assign array to property) , but that transport successfully saved in the database.
+- We should write validation for Transport Name. ✅ fixed - no validation - set default value
+- After I create a new transport, it shows an error (Cannot assign array to property) , but that transport successfully saved in the database.✅ fixed
 
 //
-- 'Back' button is not working.
-- While editing, a random address is automatically filled in the address tab'.( 7th block, kuvempu layout, Chennai, Andhra Pradesh- 641601, -. )
+- 'Back' button is not working.✅ fixed
+- While editing, a random address is automatically filled in the address tab'.( 7th block, kuvempu layout, Chennai, Andhra Pradesh- 641601, -. )✅ fixed
 

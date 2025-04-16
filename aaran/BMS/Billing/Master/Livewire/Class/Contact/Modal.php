@@ -560,7 +560,7 @@ class Modal extends Component
                 'mobile' => $this->mobile,
                 'whatsapp' => $this->whatsapp,
                 'contact_person' => $this->contact_person,
-                'contact_type_id' => $this->contact_type_id,
+                'contact_type_id' => $this->contact_type_id ?: '3',
                 'gstin' => Str::upper($this->gstin),
                 'email' => $this->email,
                 'msme_no' => $this->msme_no ?: '-',

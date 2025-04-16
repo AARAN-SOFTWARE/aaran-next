@@ -305,6 +305,11 @@ class SalesUpsert extends Component
 
     #endregion
 
+    public function getRoute()
+    {
+        $this->redirect(route('sales'));
+    }
+
     public function render()
     {
         return view('entries::sales-upsert');

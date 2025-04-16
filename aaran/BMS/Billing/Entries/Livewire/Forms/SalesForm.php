@@ -103,19 +103,24 @@ class SalesForm extends Form
     {
         $this->invoice_no = Sale::nextNo($this->getTenantConnection());
         $this->invoice_date = Carbon::now()->format('Y-m-d');
+
         $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
-        $this->active_id = true;
         $this->sales_type = '1';
-        $this->additional = 0;
-        $this->grand_total = 0;
-        $this->total_taxable = 0;
-        $this->round_off = 0;
-        $this->total_gst = 0;
-        $this->trans_mode = 1;
-        $this->veh_type = 'R';
+        $this->trans_mode = '1';
+        $this->trans_id = 1;
         $this->trans_docs = $this->invoice_no;
-        $this->trans_docs_dt = Carbon::now()->format('Y-m-d');
+        $this->trans_docs_dt = $this->invoice_date;;
+        $this->veh_type = 'R';
         $this->veh_no = '-';
+
+        $this->additional = 0;
+
+        $this->total_taxable = 0;
+        $this->total_gst = 0;
+        $this->round_off = 0;
+        $this->grand_total = 0;
+
+        $this->active_id = true;
     }
 
     public function loadValues($obj): void
