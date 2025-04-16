@@ -124,6 +124,9 @@ class SalesUpsert extends Component
         if ($message === 'success') {
             $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->sale->vid ? 'Updated' : 'Saved') . ' Successfully']);
             $this->sale->setDefaultValues();
+
+            $this->redirect(route('sales'));
+
         } else {
             $this->dispatch('notify', ...['type' => 'error', 'content' => $message]);
         }
@@ -131,7 +134,7 @@ class SalesUpsert extends Component
 
     public function clearFields(): void
     {
-        return;
+        $this->sale->setDefaultValues();
     }
 
     public function mount($id = null): void
