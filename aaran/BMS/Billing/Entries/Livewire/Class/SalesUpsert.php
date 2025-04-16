@@ -95,10 +95,10 @@ class SalesUpsert extends Component
     {
         $this->saleItems->product_id = $v['id'];
         $this->saleItems->product_name = $v['vname'];
-
         $this->saleItems->gst_percent = !empty($v['gst_percent_id'])
-            ? GstPercent::on($this->getTenantConnection())->findOrFail($v['gst_percent_id'])
+            ? GstPercent::on($this->getTenantConnection())->findOrFail($v['gst_percent_id'])->vname
             : '0';
+
     }
 
     #[On('refresh-colour')]
