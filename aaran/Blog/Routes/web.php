@@ -8,7 +8,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/posts', Class\Index::class)->name('posts');
     Route::get('blogCategory', Class\Category::class)->name('blogCategory');
-//    Route::get('/posts/{id}/show', \Aaran\Blog\Livewire\Class\Show::class)->name('posts.show');
+    Route::get('/posts/{id}/show', Class\Show::class)->name('posts.show');
     Route::get('blogTags', Class\Tag::class)->name('blogTags');
 
 });
