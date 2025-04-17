@@ -10,6 +10,7 @@ class AccountTypeSeeder extends Seeder
     public static function run(): void
     {
         $accountTypes = [
+            '-',
             'Savings',
             'Current',
             'Fixed Deposit',

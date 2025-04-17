@@ -10,9 +10,9 @@ class CompanySeeder extends Seeder
     public static function run(): void
     {
         Company::create([
-            'vname' => 'CODEXSUN SOFTWARES PVT LTD',
-            'display_name' => 'CODEXSUN SOFTWARES PVT LTD',
-            'address_1' => '1,44-1, Venkatappa Gounder Layout Main Road',
+            'vname' => 'AARAN SOFTWARE PVT LTD',
+            'display_name' => 'AARAN SOFTWARE PVT LTD',
+            'address_1' => '7, Anjal Nagar 3rd street',
             'address_2' => 'Postal Colony',
             'mobile' => '9655227738',
             'landline' => '-',

@@ -29,6 +29,7 @@
 
 
             <x-Ui::menu.app.sub.entries/>
+            <x-Ui::menu.app.sub.transaction/>
             <x-Ui::menu.app.sub.books/>
             <x-Ui::menu.app.sub.master/>
             <x-Ui::menu.app.sub.common/>

@@ -10,10 +10,15 @@ class OrderSeeder extends Seeder
     public static function run(): void
     {
         Order::create([
-            'vname' => 'Demo Order',
+            'vname' => '-',
             'order_name' => '-',
             'active_id' => true,
         ]);
 
+        Order::create([
+            'vname' => 'Sample Order',
+            'order_name' => 'Sample Order',
+            'active_id' => true,
+        ]);
     }
 }

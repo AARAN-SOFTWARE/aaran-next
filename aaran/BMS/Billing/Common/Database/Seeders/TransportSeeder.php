@@ -18,7 +18,7 @@ class TransportSeeder extends Seeder
         ]);
 
         Transport::create([
-            'vname' => 'transport',
+            'vname' => 'Transport',
             'vehicle_no' => '1',
             'active_id' => '1',
         ]);

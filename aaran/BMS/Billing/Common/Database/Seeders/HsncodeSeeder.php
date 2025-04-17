@@ -10,6 +10,7 @@ class HsncodeSeeder extends Seeder
     public static function run(): void
     {
         $hsnCodes = [
+            ['-', '-'],
             ['610910', 'T-shirts, singlets, and vests (cotton)'],
             ['610990', 'T-shirts, singlets, and vests (other textiles)'],
             ['610821', 'Women’s briefs and panties (cotton)'],

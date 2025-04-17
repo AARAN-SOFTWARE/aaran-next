@@ -11,6 +11,7 @@ class BankSeeder extends Seeder
     {
         $banks = [
             // Public Sector Banks (PSBs)
+            '-',
             'State Bank of India',
             'Punjab National Bank',
             'Bank of Baroda',

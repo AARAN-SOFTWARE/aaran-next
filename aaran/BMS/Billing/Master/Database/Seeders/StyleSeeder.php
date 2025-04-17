@@ -10,7 +10,13 @@ class StyleSeeder extends Seeder
     public static function run(): void
     {
         Style::create([
-            'vname' => 'Demo Style',
+            'vname' => '-',
+            'description' => '-',
+            'active_id' => true,
+        ]);
+
+        Style::create([
+            'vname' => 'Sample Style',
             'description' => '-',
             'active_id' => true,
         ]);

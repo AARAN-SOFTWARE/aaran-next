@@ -10,6 +10,7 @@ class SizeSeeder extends Seeder
     public static function run(): void
     {
         $sizes = [
+            ['-', '-'],
             ['XS', 'Extra Small'],
             ['S', 'Small'],
             ['M', 'Medium'],
@@ -19,6 +20,7 @@ class SizeSeeder extends Seeder
             ['XXXL', 'Triple Extra Large'],
             ['4XL', 'Four Extra Large'],
             ['5XL', 'Five Extra Large'],
+            ['All', 'All Size'],
 
             // Kids' Sizes
             ['0-3M', '0-3 Months'],
