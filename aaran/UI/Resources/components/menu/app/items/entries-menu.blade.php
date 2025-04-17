@@ -1,4 +1,4 @@
-@if(Aaran\Assets\Features\Customise::hasCommon())
+@if(Aaran\Assets\Features\Customise::hasEntries())
     <x-Ui::menu.app.base.li-menuitem :routes="'sales'" :label="'Sales'"/>
 @endif
 
@@ -6,9 +6,9 @@
 {{--<x-Ui::menu.app.base.li-menuitem :routes="'exportsales'" :label="'Export Sales'"/>--}}
 {{--@endif--}}
 
-{{--@if(Aaran\Assets\Features\Customise::hasEntries())--}}
-{{--<x-Ui::menu.app.base.li-menuitem :routes="'purchase'" :label="'Purchase'"/>--}}
-{{--@endif--}}
+@if(Aaran\Assets\Features\Customise::hasEntries())
+    <x-Ui::menu.app.base.li-menuitem :routes="'purchases'" :label="'Purchase'"/>
+@endif
 
 {{--<x-Ui::menu.app.base.route-menuitem  href="{{route('transactions',[1])}}" :label="'Payment'"/>--}}
 

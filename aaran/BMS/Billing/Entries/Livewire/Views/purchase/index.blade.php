@@ -1,12 +1,12 @@
 <div>
-    <x-slot name="header">Sales</x-slot>
+    <x-slot name="header">Purchase</x-slot>
 
     <x-Ui::forms.m-panel>
         <x-Ui::alerts.notification/>
 
         <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
-        <x-Ui::table.caption :caption="'Sales'">
+        <x-Ui::table.caption :caption="'Purchase'">
             {{$list->count()}}
         </x-Ui::table.caption>
 
@@ -19,33 +19,34 @@
 
         <x-Ui::table.form>
 
-            <x-slot:table_header name="table_header" class="bg-green-600">
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$sortAsc}}">
-                    Invoice No
+            <x-slot:table_header name="table_header">
+                <x-Ui::table.header-text wire:click="sortBy('purchase_no')" sortIcon="{{$sortAsc}}">
+                    Entry No
                 </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="{{$sortAsc}}">
-                    Invoice Date
+
+                <x-Ui::table.header-text wire:click="sortBy('purchase_no')" sortIcon="{{$sortAsc}}">
+                    Purchase No
                 </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none"> Party Name
+                <x-Ui::table.header-text wire:click="sortBy('purchase_no')" sortIcon="{{$sortAsc}}">
+                    Purchase Date
                 </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Qty
-                </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Taxable
-                </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Total Gst
-                </x-Ui::table.header-text>
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Grand Total
-                </x-Ui::table.header-text>
-                {{--                @if(\Aaran\Aadmin\Src\SaleEntry::hasEinvoice())--}}
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">E-Invoice
-                </x-Ui::table.header-text>
-                {{--                @endif--}}
-                {{--                @if(\Aaran\Aadmin\Src\SaleEntry::hasEway()||\Aaran\Aadmin\Src\SaleEntry::hasEinvoice())--}}
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none" class="w-28">E-Generate
-                </x-Ui::table.header-text>
-                {{--                @endif--}}
-                <x-Ui::table.header-text wire:click="sortBy('invoice_no')" sortIcon="none">Print
-                </x-Ui::table.header-text>
+
+                <x-Ui::table.header-text sortIcon="none"> Party Name</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Total Qty</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Total Taxable</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Total Gst</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Grand Total</x-Ui::table.header-text>
+
+
+                @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
+                    <x-Ui::table.header-text sortIcon="none">E-Invoice</x-Ui::table.header-text>
+                @endif
+
+                @if(\Aaran\Assets\Features\SaleEntry::hasEway()||\Aaran\Assets\Features\SaleEntry::hasEinvoice())
+                    <x-Ui::table.header-text sortIcon="none" class="w-28">E-Generate</x-Ui::table.header-text>
+                @endif
+
+                <x-Ui::table.header-text sortIcon="none">Print</x-Ui::table.header-text>
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
 
@@ -62,66 +63,73 @@
                     <x-Ui::table.row>
 
                         <x-Ui::table.cell-text>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->invoice_no}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}">
+                                {{$row->entry_no}}
+                            </a>
+                        </x-Ui::table.cell-text>
+
+
+                        <x-Ui::table.cell-text>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->purchase_no}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{ date('d-m-Y', strtotime( $row->invoice_date))}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{ date('d-m-Y', strtotime( $row->purchase_date))}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text left>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->contact->vname}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->contact->vname}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_qty+0}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->total_qty+0}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text right>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_taxable}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->total_taxable}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text right>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->total_gst}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->total_gst}}</a>
                         </x-Ui::table.cell-text>
 
                         <x-Ui::table.cell-text right>
-                            <a href="{{route('sales.upsert',[$row->id])}}"> {{$row->grand_total}}</a>
+                            <a href="{{route('purchases.upsert',[$row->id])}}"> {{$row->grand_total}}</a>
                         </x-Ui::table.cell-text>
 
                         @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
                             <x-Ui::table.cell-text>
-{{--                                <a href="{{route('sales.upsert',[$row->id])}}">--}}
-{{--                                        <?php--}}
-{{--                                        $obj = \Aaran\BMS\Billing\Entries\Models\Sale::Irn($row->id);--}}
-{{--                                        ?>--}}
-{{--                                    @if(isset($obj))--}}
-{{--                                        @if($obj->status=='Generated')--}}
-{{--                                            <div--}}
-{{--                                                class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-emerald-100/60 ">--}}
-{{--                                                <span class="h-1.5 w-1.5  rounded-full bg-emerald-500 "></span>--}}
-{{--                                                <h2 class="font-normal text-emerald-500">{{$obj->status}}--}}
-{{--                                                </h2>--}}
-{{--                                            </div>--}}
-{{--                                        @elseif($obj->status=='Canceled')--}}
-{{--                                            <div--}}
-{{--                                                class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-red-100/60 ">--}}
-{{--                                                <span class="h-1.5 w-1.5  rounded-full bg-red-500 "></span>--}}
-{{--                                                <h2 class="font-normal text-red-500 ">{{$obj->status}}--}}
-{{--                                                </h2>--}}
-{{--                                            </div>--}}
-{{--                                        @endif--}}
-{{--                                    @else--}}
-{{--                                        <div--}}
-{{--                                            class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-purple-100/60 ">--}}
-{{--                                        <span--}}
-{{--                                            class="h-1.5 w-1.5  rounded-full bg-purple-500 "></span>--}}
-{{--                                            <h2 class="font-normal text-purple-500 ">--}}
-{{--                                                Not-Generated--}}
-{{--                                            </h2>--}}
-{{--                                        </div>--}}
-{{--                                    @endif--}}
-{{--                                </a>--}}
+                                {{--                                <a href="{{route('purchase.upsert',[$row->id])}}">--}}
+                                {{--                                        <?php--}}
+                                {{--                                        $obj = \Aaran\BMS\Billing\Entries\Models\Sale::Irn($row->id);--}}
+                                {{--                                        ?>--}}
+                                {{--                                    @if(isset($obj))--}}
+                                {{--                                        @if($obj->status=='Generated')--}}
+                                {{--                                            <div--}}
+                                {{--                                                class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-emerald-100/60 ">--}}
+                                {{--                                                <span class="h-1.5 w-1.5  rounded-full bg-emerald-500 "></span>--}}
+                                {{--                                                <h2 class="font-normal text-emerald-500">{{$obj->status}}--}}
+                                {{--                                                </h2>--}}
+                                {{--                                            </div>--}}
+                                {{--                                        @elseif($obj->status=='Canceled')--}}
+                                {{--                                            <div--}}
+                                {{--                                                class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-red-100/60 ">--}}
+                                {{--                                                <span class="h-1.5 w-1.5  rounded-full bg-red-500 "></span>--}}
+                                {{--                                                <h2 class="font-normal text-red-500 ">{{$obj->status}}--}}
+                                {{--                                                </h2>--}}
+                                {{--                                            </div>--}}
+                                {{--                                        @endif--}}
+                                {{--                                    @else--}}
+                                {{--                                        <div--}}
+                                {{--                                            class="inline-flex items-center px-3 py-1 rounded-xl gap-x-2 bg-purple-100/60 ">--}}
+                                {{--                                        <span--}}
+                                {{--                                            class="h-1.5 w-1.5  rounded-full bg-purple-500 "></span>--}}
+                                {{--                                            <h2 class="font-normal text-purple-500 ">--}}
+                                {{--                                                Not-Generated--}}
+                                {{--                                            </h2>--}}
+                                {{--                                        </div>--}}
+                                {{--                                    @endif--}}
+                                {{--                                </a>--}}
                             </x-Ui::table.cell-text>
                         @endif
 
@@ -129,23 +137,23 @@
                             <x-Ui::table.cell-text>
                                 <div class="inline-flex items-center gap-x-4">
                                     @if(\Aaran\Assets\Features\SaleEntry::hasEinvoice())
-{{--                                        <x-Ui::button.e-inv routes="{{route('sales.einvoice',[$row->id]) }}"/>--}}
-{{--                                        <x-Ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>--}}
+                                        {{--                                        <x-Ui::button.e-inv routes="{{route('purchase.einvoice',[$row->id]) }}"/>--}}
+                                        {{--                                        <x-Ui::button.e-way routes="{{ route('purchase.eway',[$row->id]) }}"/>--}}
                                     @endif
                                     @if(\Aaran\Assets\Features\SaleEntry::hasEway())
-{{--                                        <x-Ui::button.e-way routes="{{ route('sales.eway',[$row->id]) }}"/>--}}
+                                        {{--                                        <x-Ui::button.e-way routes="{{ route('purchase.eway',[$row->id]) }}"/>--}}
                                     @endif
                                 </div>
                             </x-Ui::table.cell-text>
                         @endif
 
                         <x-Ui::table.cell-text>
-{{--                            <x-Ui::button.print-pdf routes="{{route('sales.print', [$row->id])}}"/>--}}
+                            {{--                            <x-Ui::button.print-pdf routes="{{route('purchase.print', [$row->id])}}"/>--}}
                         </x-Ui::table.cell-text>
 
                         <td class="max-w-max print:hidden">
                             <div class="flex justify-center items-center">
-                                <a href="{{route('sales.upsert',[$row->id])}}" class="pt-1 px-1.5">
+                                <a href="{{route('purchases.upsert',[$row->id])}}" class="pt-1 px-1.5">
                                     <x-Ui::button.edit/>
                                 </a>
                                 <x-Ui::button.delete wire:click="confirmDelete({{$row->id}})"/>
@@ -156,7 +164,7 @@
                         {{--                        <x-table.cell-text>--}}
                         {{--                            <div class="flex items-center justify-center w-full print:hidden">--}}
                         {{--                                <div class="relative inline-block cursor-pointer group max-w-fit min-w-fit">--}}
-                        {{--                                    <a href="{{route('sales.upsert',[$row->id])}}"--}}
+                        {{--                                    <a href="{{route('purchase.upsert',[$row->id])}}"--}}
                         {{--                                       class="flex text-xl text-center text-gray-600 truncate">--}}
                         {{--                                        <div--}}
                         {{--                                            class="absolute hidden group-hover:block pr-0.5 whitespace-nowrap top-1 w-full">--}}
@@ -202,10 +210,10 @@
                         {{--                                <div>--}}
                         {{--                                    <x-dropdown.icon>--}}
                         {{--                                        <div class="hover:bg-gray-100 hover:text-violet-600 hover:font-bold">--}}
-                        {{--                                            <a href="{{ route('sales.einvoice',[$row->id]) }}">E-Incoice</a>--}}
+                        {{--                                            <a href="{{ route('purchase.einvoice',[$row->id]) }}">E-Incoice</a>--}}
                         {{--                                        </div>--}}
                         {{--                                        <div class="hover:bg-gray-100 hover:text-rose-600 hover:font-bold">--}}
-                        {{--                                            <a href="{{ route('sales.eway',[$row->id]) }}">E-Way Bill</a>--}}
+                        {{--                                            <a href="{{ route('purchase.eway',[$row->id]) }}">E-Way Bill</a>--}}
                         {{--                                        </div>--}}
                         {{--                                    </x-dropdown.icon>--}}
                         {{--                                </div>--}}

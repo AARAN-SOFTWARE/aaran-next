@@ -2,11 +2,9 @@
 
 namespace Aaran\BMS\Billing\Entries\Providers;
 
-use Aaran\BMS\Billing\Entries\Providers\EntriesRouteProvider;
+use Aaran\BMS\Billing\Entries\Livewire\Class;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-
-use Aaran\BMS\Billing\Entries\Livewire\Class;
 
 class EntriesServiceProvider extends ServiceProvider
 {
@@ -27,8 +25,11 @@ class EntriesServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        Livewire::component('entries::sales-list', Class\SalesList::class);
-        Livewire::component('entries::sales-upsert', Class\SalesUpsert::class);
+        Livewire::component('entries::sales-list', Class\Sale\Index::class);
+        Livewire::component('entries::sales-upsert', Class\Sale\Upsert::class);
+
+        Livewire::component('entries::purchase-list', Class\Purchase\Index::class);
+        Livewire::component('entries::purchase-upsert', Class\Purchase\Upsert::class);
 
 //        Livewire::component('sales.eway-bill', Sales\EwayBill::class);
 //        Livewire::component('sales.einvoice', Sales\Einvoice::class);

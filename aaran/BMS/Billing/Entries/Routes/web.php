@@ -1,14 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Aaran\BMS\Billing\Entries\Livewire\Class;
+use Illuminate\Support\Facades\Route;
 
 //Entries
 Route::middleware(['auth', 'tenant'])->group(function () {
 
     // Sales
-    Route::get('/sales', Class\SalesList::class)->name('sales');
-    Route::get('/sales/{id}/upsert', Class\SalesUpsert::class)->name('sales.upsert');
+    Route::get('/sales', Class\Sale\Index::class)->name('sales');
+    Route::get('/sales/{id}/upsert', Class\Sale\Upsert::class)->name('sales.upsert');
+
+    Route::get('/purchases', Class\Purchase\Index::class)->name('purchases');
+    Route::get('/purchases/{id}/upsert', Class\Purchase\Upsert::class)->name('purchases.upsert');
 
 //    Route::get('/sales/{id}/print', Aaran\Entries\Controllers\Sales\SalesInvoiceController::class)->name('sales.print');
 //    Route::get('/sales/{id}/invoice', Aaran\Entries\Controllers\Sales\InvController::class)->name('sales.invoice');

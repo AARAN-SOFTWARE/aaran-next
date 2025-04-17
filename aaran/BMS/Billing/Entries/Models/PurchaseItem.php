@@ -1,16 +1,14 @@
 <?php
 
-namespace Aaran\Entries\Models;
+namespace Aaran\BMS\Billing\Entries\Models;
 
-use Aaran\BMS\Billing\Entries\Database\Factories\PurchaseitemFactory;
 use Aaran\BMS\Billing\Master\Models\Product;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Purchaseitem extends Model
+class PurchaseItem extends Model
 {
-    use HasFactory;
+//    use HasFactory;
 
     protected $guarded = [];
 
@@ -24,11 +22,6 @@ class Purchaseitem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-    }
-
-    protected static function newFactory(): PurchaseitemFactory
-    {
-        return new PurchaseitemFactory();
     }
 
     public function purchase():BelongsTo

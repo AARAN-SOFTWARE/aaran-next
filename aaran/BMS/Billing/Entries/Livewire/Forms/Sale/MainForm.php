@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\BMS\Billing\Entries\Livewire\Forms;
+namespace Aaran\BMS\Billing\Entries\Livewire\Forms\Sale;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Entries\Models\Sale;
@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class SalesForm extends Form
+class MainForm extends Form
 {
     use TenantAwareTrait;
 
@@ -35,10 +35,10 @@ class SalesForm extends Form
     public ?string $job_no = null;
 
     public ?string $bundle = null;
-    public string $trans_mode = '';
+    public ?string $trans_mode = '';
     public string $trans_id = '';
-    public string $trans_docs = '';
-    public string $trans_docs_dt = '';
+    public ?string $trans_docs = '';
+    public ?string $trans_docs_dt = '';
     public string $distance = '';
     public string $veh_type = '';
     public string $veh_no = '';
@@ -72,8 +72,6 @@ class SalesForm extends Form
 
             'billing_id' => 'required',
             'shipping_id' => 'required',
-//            'despatch_id' => 'required',
-//            'trans_id' => 'required',
         ];
     }
 
@@ -103,19 +101,24 @@ class SalesForm extends Form
     {
         $this->invoice_no = Sale::nextNo($this->getTenantConnection());
         $this->invoice_date = Carbon::now()->format('Y-m-d');
+
         $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
-        $this->active_id = true;
         $this->sales_type = '1';
-        $this->additional = 0;
-        $this->grand_total = 0;
-        $this->total_taxable = 0;
-        $this->round_off = 0;
-        $this->total_gst = 0;
-        $this->trans_mode = 1;
-        $this->veh_type = 'R';
+        $this->trans_mode = '1';
+        $this->trans_id = 1;
         $this->trans_docs = $this->invoice_no;
-        $this->trans_docs_dt = Carbon::now()->format('Y-m-d');
+        $this->trans_docs_dt = $this->invoice_date;;
+        $this->veh_type = 'R';
         $this->veh_no = '-';
+
+        $this->additional = 0;
+
+        $this->total_taxable = 0;
+        $this->total_gst = 0;
+        $this->round_off = 0;
+        $this->grand_total = 0;
+
+        $this->active_id = true;
     }
 
     public function loadValues($obj): void
@@ -177,7 +180,7 @@ class SalesForm extends Form
                 $subtotal = $taxable + $gstAmount;
 
                 return [
-                    'saleitem_id' => $item->id,
+                    'sale_item_id' => $item->id,
                     'po_no' => $item->po_no,
                     'dc_no' => $item->dc_no,
                     'no_of_roll' => $item->no_of_roll,
@@ -241,7 +244,6 @@ class SalesForm extends Form
         $sale->veh_type = $this->veh_type;
         $sale->veh_no = $this->veh_no;
 
-        // === Payment / Terms ===
         $sale->term = $this->term;
         $sale->ledger_id = $this->ledger_id;
         $sale->additional = $this->additional;

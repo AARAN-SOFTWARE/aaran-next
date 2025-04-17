@@ -28,7 +28,7 @@ class ShippingAddress extends Component
         if ($initId && $this->getTenantConnection()) {
 
             $contactAddress = ContactAddress::on($this->getTenantConnection())
-                ->where('contact_id', $this->initContactId)
+                ->where('id', $this->initContactId)
                 ->first();
 
             $v = $contactAddress->address_type .

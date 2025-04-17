@@ -108,7 +108,7 @@ class TransportLookup extends Component
             'vname' => $this->search,
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-transport', $transport);
+        $this->dispatch('refresh-transport', $transport->id);
         $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Transport Saved Successfully']);
         $this->showDropdown = false;
     }
