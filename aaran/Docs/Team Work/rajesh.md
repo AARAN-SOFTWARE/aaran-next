@@ -59,7 +59,7 @@
 ## // 17-04-2025 //
 
 ## Purchase
-- 1. We should write validation for Purchase No. 
-- 2. We should write validation for Purchase date (or) set default date value.
-- 3. While editing, a random address is automatically filled in the 'Address tab'. (3rd street, Postal Colony, Chennai, -- 641601, India. )
+- 1. We should write validation for Purchase No. ✅ fixed
+- 2. We should write validation for Purchase date (or) set default date value.✅ fixed
+- 3. While editing, a random address is automatically filled in the 'Address tab'. (3rd street, Postal Colony, Chennai, -- 641601, India. ) ✅ fixed
 - 4. In the Product modal, when I press the Tab key to move between fields, it only works for the first three input fields. 

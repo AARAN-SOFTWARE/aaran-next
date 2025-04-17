@@ -70,8 +70,9 @@ class MainForm extends Form
             'style_id' => 'required',
             'entry_no' => 'required',
             'entry_date' => 'required|date',
+            'purchase_no' => 'required',
+            'purchase_date' => 'required|date',
             'purchase_type' => ['required', Rule::notIn(['0'])],
-
             'billing_id' => 'required',
             'shipping_id' => 'required',
         ];
@@ -84,6 +85,8 @@ class MainForm extends Form
             'order_id.required' => ' :attribute is required.',
             'style_id.required' => ' :attribute is required.',
             'purchase_type.required' => ' :attribute is required.',
+            'purchase_no.required' => ' :attribute is required.',
+            'purchase_date.required' => ' :attribute is required.',
         ];
     }
 
@@ -94,6 +97,8 @@ class MainForm extends Form
             'order_id' => 'Order no',
             'style_id' => 'Style',
             'purchase_type' => 'Purchases type',
+            'purchase_no' => 'Purchases bill No',
+            'purchase_date' => 'Purchases bill Date',
         ];
     }
 
