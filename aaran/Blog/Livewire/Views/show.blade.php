@@ -32,14 +32,14 @@
 
             <div class="text-gray-500 inline-flex">
                 <time>{{ $posts->created_at->diffForHumans() }} /</time>
-                <span>&nbsp;By,{{ $posts->user->name }}</span>
+{{--                <span>&nbsp;By,{{ $posts->user->name }}</span>--}}
             </div>
         </div>
 
         <div class="w-2/12 pl-16 flex flex-col justify-center gap-y-7">
 
             <div class="w-full">
-                <x-aaran-ui::icons.search-new/>
+                <x-Ui::icons.search-new/>
             </div>
 
 
@@ -103,7 +103,7 @@
                 <span>Post Comments</span>
 
                 <div class="inline-flex gap-1.5">
-                    <x-aaran-ui::icons.icon :icon="'annotation'"
+                    <x-Ui::icons.icon :icon="'annotation'"
                                   class="w-6 h-5"/>
                     <span class="text-md">({{$commentsCount}})</span>
                 </div>
@@ -127,14 +127,14 @@
 
 
                     <div class="flex">
-                        <x-aaran-ui::icons.icon :icon="'pencil'" wire:click="editComment({{ $row->id }})"
+                        <x-Ui::icons.icon :icon="'pencil'" wire:click="editComment({{ $row->id }})"
                                       class="text-gray-400 h-5 hover:cursor-pointer hover:text-black px-0.5 py-0.5 hover:rounded-sm inline-flex invisible group-hover:visible "/>
-                        <x-aaran-ui::icons.icon :icon="'trash'" wire:click="getDelete({{ $row->id }})"
+                        <x-Ui::icons.icon :icon="'trash'" wire:click="deleteFunction({{ $row->id }})"
                                       class="text-gray-400 h-5 hover:cursor-pointer hover:text-black px-0.5 py-0.5 hover:rounded-sm inline-flex invisible group-hover:visible"/>
 
                     </div>
                 </div>
-                <x-aaran-ui::modal.delete/>
+                <x-Ui::modal.delete/>
             @endforeach
         </div>
 
