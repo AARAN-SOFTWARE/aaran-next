@@ -74,13 +74,15 @@
 
                 <x-Ui::input.floating wire:model="ifsc_code" label="IFSC Code"/>
 
-                <x-Ui::input.floating wire:model="bank_id" label="Bank"/>
+                @livewire('common::lookup.bank',['initId' => $bank_id])
+
+                @livewire('common::lookup.account-type',['initId' => $account_type_id])
 
                 <x-Ui::input.floating wire:model="branch" label="Branch"/>
 
                 <x-Ui::input.floating wire:model="opening_balance" label="Opening Balance"/>
 
-                <x-Ui::input.floating wire:model="opening_balance_date" label="Opening Date"/>
+                <x-Ui::input.model-date wire:model="opening_balance_date" label="Opening Date"/>
 
                 <x-Ui::input.floating wire:model="notes" label="notes"/>
 

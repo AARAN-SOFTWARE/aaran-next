@@ -3,12 +3,12 @@
 namespace Aaran\BMS\Billing\Common\Livewire\Class\Lookup;
 
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\TransactionType;
+use Aaran\BMS\Billing\Common\Models\Bank;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class TransactionTypeLookup extends Component
+class BankLookup extends Component
 {
     use TenantAwareTrait;
 
@@ -27,7 +27,7 @@ class TransactionTypeLookup extends Component
         if ($initId && $this->getTenantConnection()) {
 
             $vname = DB::connection($this->getTenantConnection())
-                ->table('transaction_types')
+                ->table('banks')
                 ->where('id', $initId)
                 ->value('vname');
 
@@ -43,7 +43,6 @@ class TransactionTypeLookup extends Component
     {
         $this->searchBy();
     }
-
     public function searchBy(): void
     {
         if (!$this->getTenantConnection()) {
@@ -51,7 +50,7 @@ class TransactionTypeLookup extends Component
         }
 
         $query = DB::connection($this->getTenantConnection())
-            ->table('transaction_types')
+            ->table('banks')
             ->select('id', 'vname')
             ->orderBy('vname');
 
@@ -94,7 +93,7 @@ class TransactionTypeLookup extends Component
         $this->search = $obj->vname;
         $this->results = [];
         $this->showDropdown = false;
-        $this->dispatch('refresh-transaction-type', $obj->id);
+        $this->dispatch('refresh-bank', $obj->id);
     }
 
     public function hideDropdown(): void
@@ -104,16 +103,16 @@ class TransactionTypeLookup extends Component
 
     public function createNew(): void
     {
-        $obj = TransactionType::on($this->getTenantConnection())->create([
+        $obj = Bank::on($this->getTenantConnection())->create([
             'vname' => $this->search,
             'active_id' => 1
         ]);
-        $this->dispatch('refresh-transaction-type', $obj->id);
-        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search . '- Transaction Type Saved Successfully']);
+        $this->dispatch('refresh-bank', $obj->id);
+        $this->dispatch('notify', ...['type' => 'success', 'content' => $this->search. '- Transaction Type Saved Successfully']);
         $this->showDropdown = false;
     }
 
-    #[On('refresh-transaction-type-lookup')]
+    #[On('refresh-bank-lookup')]
     public function refreshItem($obj): void
     {
         if (!empty($obj)) {
@@ -126,6 +125,6 @@ class TransactionTypeLookup extends Component
 
     public function render()
     {
-        return view('common::lookup.transaction-type-lookup');
+        return view('common::lookup.bank-lookup');
     }
 }
