@@ -9,7 +9,7 @@
         <x-Ui::jet.modal wire:model.defer="showEditModal" maxWidth="{{{$maxWidth}}}" >
             <div class="sm:px-6 px-2 pt-4">
                 <div class="text-lg">
-                    {{$id === "" ? 'New Entry' : 'Edit Entry'}}
+                    {{$id === null ? 'New Entry' : 'Edit Entry'}}
                 </div>
                 <x-Ui::forms.section-border class="py-2"/>
                 <div class="mt-5">
