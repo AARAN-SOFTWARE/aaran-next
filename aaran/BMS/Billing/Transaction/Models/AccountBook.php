@@ -2,6 +2,9 @@
 
 namespace Aaran\BMS\Billing\Transaction\Models;
 
+use Aaran\BMS\Billing\Common\Models\AccountType;
+use Aaran\BMS\Billing\Common\Models\Bank;
+use Aaran\BMS\Billing\Common\Models\TransactionType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,14 +24,20 @@ class AccountBook extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-    public function transaction(): BelongsTo
+    public function transaction_type(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class,'account_book_id','id');
-
+        return $this->belongsTo(TransactionType::class,'transaction_type_id','id');
     }
 
-    public function accountBook(): BelongsTo
+    public function bank(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class,'account_book_id','id');
+        return $this->belongsTo(Bank::class,'bank_id','id');
     }
+
+
+    public function account_type(): BelongsTo
+    {
+        return $this->belongsTo(AccountType::class,'account_type_id','id');
+    }
+
 }
