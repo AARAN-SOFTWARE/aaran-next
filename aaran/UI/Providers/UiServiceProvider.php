@@ -16,5 +16,7 @@ class UiServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../Resources', 'Ui'); // Important: Load views from module
 
+        $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', 'templates');
+
     }
 }

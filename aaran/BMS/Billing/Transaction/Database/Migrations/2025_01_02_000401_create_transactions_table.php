@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->string('purpose')->nullable();
             $table->foreignId('order_id')->references('id')->on('orders');
 
-            $table->foreignId('transaction_type_id')->references('id')->on('transaction_types');
             $table->foreignId('payment_mode_id')->references('id')->on('payment_modes');
 
             $table->string('vch_no')->nullable();
