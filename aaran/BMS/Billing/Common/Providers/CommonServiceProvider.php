@@ -40,6 +40,7 @@ class CommonServiceProvider extends ServiceProvider
         Livewire::component('common::lookup.transaction-type', Class\Lookup\TransactionTypeLookup::class);
         Livewire::component('common::lookup.bank', Class\Lookup\BankLookup::class);
         Livewire::component('common::lookup.account-type', Class\Lookup\AccountTypeLookup::class);
+        Livewire::component('common::lookup.payment-method', Class\Lookup\PaymentMethodLookup::class);
     }
 
     protected function loadViews(): void
