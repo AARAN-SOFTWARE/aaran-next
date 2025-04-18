@@ -2,9 +2,7 @@
 
 namespace Aaran\BMS\Billing\Reports\Livewire\Class\Sales;
 
-use Aaran\Assets\Trait\CommonTraitNew;
-use Aaran\Entries\Models\Purchase;
-use Aaran\Entries\Models\Sale;
+use Aaran\BMS\Billing\Entries\Models\Sale;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 
