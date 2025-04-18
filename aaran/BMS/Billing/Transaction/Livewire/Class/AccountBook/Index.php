@@ -61,6 +61,15 @@ class Index extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
+
+        if ($this->transaction_type_id == 1) {
+            $this->account_no = '-';
+            $this->ifsc_code = '-';
+            $this->bank_id = '1';
+            $this->account_type_id = '1';
+            $this->branch = '-';
+        }
+
         AccountBook::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [

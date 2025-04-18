@@ -24,11 +24,11 @@
                 <x-Ui::table.header-text sortIcon="none">Type</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Account No</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Bank</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Opening</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Date</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Current</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Date</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Last Entry</x-Ui::table.header-text>
+{{--                <x-Ui::table.header-text sortIcon="none">Opening</x-Ui::table.header-text>--}}
+{{--                <x-Ui::table.header-text sortIcon="none">Date</x-Ui::table.header-text>--}}
+                <x-Ui::table.header-text sortIcon="none">Balance</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">As on Date</x-Ui::table.header-text>
+{{--                <x-Ui::table.header-text sortIcon="none">Last Entry</x-Ui::table.header-text>--}}
                 <x-Ui::table.header-status/>
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
@@ -38,14 +38,14 @@
                     <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->transaction_type_id}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->transaction_type->vname}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->account_no}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->bank_id}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->opening_balance}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->opening_balance_date}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->current_balance}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->bank->vname}}</x-Ui::table.cell-text>
+{{--                        <x-Ui::table.cell-text left>{{$row->opening_balance}}</x-Ui::table.cell-text>--}}
+{{--                        <x-Ui::table.cell-text left>{{$row->opening_balance_date}}</x-Ui::table.cell-text>--}}
+                        <x-Ui::table.cell-text right>{{$row->current_balance}}</x-Ui::table.cell-text>
                         <x-Ui::table.cell-text left>{{$row->current_balance_date}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->current_entry_id}}</x-Ui::table.cell-text>
+{{--                        <x-Ui::table.cell-text left>{{$row->current_entry_id}}</x-Ui::table.cell-text>--}}
                         <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
@@ -70,15 +70,18 @@
 
                 @livewire('common::lookup.transaction-type',['initId' => $transaction_type_id])
 
-                <x-Ui::input.floating wire:model="account_no" label="Account No"/>
+                @if (!empty($transaction_type_id) && $transaction_type_id != 1)
 
-                <x-Ui::input.floating wire:model="ifsc_code" label="IFSC Code"/>
+                    <x-Ui::input.floating wire:model="account_no" label="Account No"/>
 
-                @livewire('common::lookup.bank',['initId' => $bank_id])
+                    <x-Ui::input.floating wire:model="ifsc_code" label="IFSC Code"/>
 
-                @livewire('common::lookup.account-type',['initId' => $account_type_id])
+                    @livewire('common::lookup.bank',['initId' => $bank_id])
 
-                <x-Ui::input.floating wire:model="branch" label="Branch"/>
+                    @livewire('common::lookup.account-type',['initId' => $account_type_id])
+
+                    <x-Ui::input.floating wire:model="branch" label="Branch"/>
+                @endif
 
                 <x-Ui::input.floating wire:model="opening_balance" label="Opening Balance"/>
 
