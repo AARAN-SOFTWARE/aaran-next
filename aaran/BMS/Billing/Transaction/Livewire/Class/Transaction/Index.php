@@ -59,11 +59,11 @@ class Index extends Component
     public function validationAttributes(): array
     {
         return [
-            'contact_id' => 'Account Book Name',
-            'transaction_mode' => 'Account Book Name',
-            'payment_method' => 'Payment Method',
+            'contact_id' => 'Party Name',
+            'transaction_mode' => 'Receipt / Payment',
+            'payment_method' => 'Payment Mode',
             'amount' => 'Amount',
-            'vch_no' => 'Amount',
+            'vch_no' => 'vch_no',
         ];
     }
 

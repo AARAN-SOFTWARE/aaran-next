@@ -165,7 +165,7 @@
                                 <div class="flex justify-between flex-row gap-4">
                                     <div class="w-1/2">
                                         <x-Ui::input.floating wire:model="vch_no" label="Voucher No"/>
-                                        <x-Ui::input.error-text wire:model="transaction_mode"/>
+                                        <x-Ui::input.error-text wire:model="vch_no"/>
                                     </div>
 
                                     <div class="w-1/2">
@@ -173,10 +173,17 @@
                                     </div>
                                 </div>
 
-                                @livewire('master::contact.lookup',['initId' => $contact_id])
+                                <div>
+                                    @livewire('master::contact.lookup',['initId' => $contact_id])
+                                    <x-Ui::input.error-text wire:model="contact_id"/>
+                                </div>
 
-                                <x-Ui::input.floating-text class="text-3xl font-semibold" wire:model="amount"
-                                                           label="Amount"/>
+                                <div>
+                                    <x-Ui::input.floating-text class="text-3xl font-semibold" wire:model="amount"
+                                                               label="Amount"/>
+                                    <x-Ui::input.error-text wire:model="amount"/>
+                                </div>
+
 
                                 <x-Ui::input.floating-textarea wire:model="Remarks" label="Remarks"/>
                             </div>
@@ -188,6 +195,7 @@
                             <div class="flex flex-col gap-3">
 
                                 @livewire('common::lookup.payment-method')
+                                <x-Ui::input.error-text wire:model="payment_method"/>
 
                                 {{-- CHEQUE & DD --}}
                                 @if (
