@@ -13,7 +13,7 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/purchases', Class\Purchase\Index::class)->name('purchases');
     Route::get('/purchases/{id}/upsert', Class\Purchase\Upsert::class)->name('purchases.upsert');
 
-//    Route::get('/sales/{id}/print', Aaran\Entries\Controllers\Sales\SalesInvoiceController::class)->name('sales.print');
+    Route::get('/sales/{id}/print', Aaran\BMS\Billing\Entries\Controllers\Sales\SalesInvoiceController::class)->name('sales.print');
 //    Route::get('/sales/{id}/invoice', Aaran\Entries\Controllers\Sales\InvController::class)->name('sales.invoice');
 //    Route::get('/sales/{id}/eway', Aaran\Entries\Livewire\Sales\EwayBill::class)->name('sales.eway');
 //    Route::get('/sales/{id}/einvoice', Aaran\Entries\Livewire\Sales\Einvoice::class)->name('sales.einvoice');
@@ -35,8 +35,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
 //    Route::get('/exportsales/{id}/print', Aaran\Entries\Controllers\ExportSales\ExportInvoiceController::class)->name('exportsales.print');
 //    Route::get('/exportsales/{id}/packingListPrint', Aaran\Entries\Controllers\ExportSales\ExportPackingListController::class)->name('exportsales.packingListPrint');
 //
-//    //Reports
-//    Route::get('/contactReport/{id}/{month?}/{year?}', Aaran\Reports\Livewire\Contact\PartyReport::class)->name('contactReport');
+
+    //Reports
+    Route::get('/contactReport/{id}/{month?}/{year?}', Aaran\BMS\Billing\Reports\Controllers\Contact\PartyReportController::class)->name('contactReport');
 //    Route::get('/invReport/{id}/{month?}/{year?}', Aaran\Reports\Livewire\Contact\ContactReport::class)->name('invReport');
 //    Route::get('/receivables', Aaran\Reports\Livewire\Statement\Receivable::class)->name('receivables');
 //    Route::get('/payables', Aaran\Reports\Livewire\Statement\Payable::class)->name('payables');
