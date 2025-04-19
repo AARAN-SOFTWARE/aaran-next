@@ -8,7 +8,7 @@
         <x-Ui::forms.top-controls :show-filters="$showFilters"/>
 
         <!-- Table Caption -------------------------------------------------------------------------------------------->
-        <x-Ui::table.caption :caption="'Transactions'">
+        <x-Ui::table.caption :caption="$accountBookName">
             {{$list->count()}}
         </x-Ui::table.caption>
 
@@ -17,39 +17,119 @@
         <x-Ui::table.form>
             <x-slot:table_header>
                 <x-Ui::table.header-serial/>
-                <x-Ui::table.header-text wire:click.prevent="sortBy('id')" sortIcon="{{$sortAsc}}" :left="true">
+                <x-Ui::table.header-text class="w-[7rem]" wire:click.prevent="sortBy('id')" sortIcon="{{$sortAsc}}"
+                                         :left="true">
                     Date
                 </x-Ui::table.header-text>
 
                 <x-Ui::table.header-text sortIcon="none">Ac Book</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Mode</x-Ui::table.header-text>
+                <x-Ui::table.header-text class="w-[7rem]" sortIcon="none">Mode</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Party</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Credit</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Debit</x-Ui::table.header-text>
+                <x-Ui::table.header-text class="w-[12rem]" sortIcon="none">Payment Method</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Receipt</x-Ui::table.header-text>
+                <x-Ui::table.header-text sortIcon="none">Payment</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Balance</x-Ui::table.header-text>
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
 
+
             <x-slot:table_body>
+
+                @php
+                    $current_balance = $openingBalance;
+                    $total_debit = 0;
+                    $total_credit = 0;
+                @endphp
+
+
+                    <!-- Opening Balance Row  ----------------------------------------------------------------------------->
+                <x-Ui::table.row>
+                    @if($openingBalance != null)
+                        <x-Ui::table.cell-text :colspan="4" right class="bg-gray-50">
+                            &nbsp;
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text left>
+                            <strong> Opening Balance</strong>
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text class="bg-gray-50">&nbsp;</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text class="bg-gray-50">&nbsp;</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text class="bg-gray-50">&nbsp;</x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text right>
+                            {{ \Aaran\Assets\Helper\Format::Decimal($openingBalance) }}
+                        </x-Ui::table.cell-text>
+                    @endif
+                </x-Ui::table.row>
+
+
                 @foreach($list as $index=>$row)
                     <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$row->vch_no}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->vdate}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->account_book_id}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->transaction_mode}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->contact_id}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->payment_method}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text right>{{$row->amount}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->amount}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->amount}}</x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text left>
+                            {{ date('d-m-Y', strtotime( $row->vdate))}}
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text left>{{$row->account_book->vname}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>
+                            {{\Aaran\Assets\Enums\TransactionMode::tryFrom($row->transaction_mode)->getName()}}
+                        </x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>{{$row->contact->vname}}</x-Ui::table.cell-text>
+                        <x-Ui::table.cell-text left>
+                            {{\Aaran\Assets\Enums\PaymentMethod::tryFrom($row->payment_method)->getName()}}
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text right>
+                            @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
+                                {{\Aaran\Assets\Helper\Format::Decimal($row->amount)}}
+                                @php
+                                    $current_balance += ($row->amount + 0);
+                                    $total_debit += ($row->amount + 0);
+                                @endphp
+                            @endif
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text right>
+                            @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
+                                {{\Aaran\Assets\Helper\Format::Decimal($row->amount)}}
+                                @php
+                                    $current_balance -= ($row->amount + 0);
+                                    $total_credit += ($row->amount + 0);
+                                @endphp
+                            @endif
+                        </x-Ui::table.cell-text>
+
+                        <x-Ui::table.cell-text right>
+                            {{ \Aaran\Assets\Helper\Format::Decimal($current_balance) }}
+                        </x-Ui::table.cell-text>
+
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
                 @endforeach
+
+                <!-- Totals Row -->
+                <x-Ui::table.row>
+                    <x-Ui::table.cell-text colspan="6" class="text-md text-right text-gray-400 ">
+                        TOTALS
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text class="text-right text-lg ">
+                        {{ $total_debit != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_debit) :'' }}
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text class="text-right text-lg ">
+                        {{ $total_credit  != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_credit) :'' }}
+                    </x-Ui::table.cell-text>
+                    <x-Ui::table.cell-text class="text-right text-lg text-orange-500 ">
+                        {{ $current_balance != 0 ? \Aaran\Assets\Helper\Format::Decimal($current_balance) :'' }}
+                    </x-Ui::table.cell-text>
+                </x-Ui::table.row>
+
             </x-slot:table_body>
         </x-Ui::table.form>
 
         <!-- Delete Modal --------------------------------------------------------------------------------------------->
-        <x-Ui::modal.delete/>
+        <x-Ui::modal.confirm-delete/>
 
         <div class="pt-5">{{ $list->links() }}</div>
 
@@ -79,12 +159,13 @@
                                     </x-Ui::radio.btn>
                                     <x-Ui::radio.btn wire:model.live="transaction_mode" value="2">Payment
                                     </x-Ui::radio.btn>
+                                    <x-Ui::input.error-text wire:model="transaction_mode"/>
                                 </div>
-
 
                                 <div class="flex justify-between flex-row gap-4">
                                     <div class="w-1/2">
                                         <x-Ui::input.floating wire:model="vch_no" label="Voucher No"/>
+                                        <x-Ui::input.error-text wire:model="transaction_mode"/>
                                     </div>
 
                                     <div class="w-1/2">

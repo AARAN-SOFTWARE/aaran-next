@@ -4,8 +4,8 @@ namespace Aaran\Assets\Enums;
 
 enum TransactionMode: int
 {
-    case PAYMENT = 1;
-    case RECEIPT = 2;
+    case RECEIPT = 1;
+    case PAYMENT = 2;
     case UNKNOWN = 3;
 
     public function getName(): string
