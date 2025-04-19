@@ -24,28 +24,53 @@
                 <x-Ui::table.header-text sortIcon="none">Type</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Account No</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Bank</x-Ui::table.header-text>
-{{--                <x-Ui::table.header-text sortIcon="none">Opening</x-Ui::table.header-text>--}}
-{{--                <x-Ui::table.header-text sortIcon="none">Date</x-Ui::table.header-text>--}}
                 <x-Ui::table.header-text sortIcon="none">Balance</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">As on Date</x-Ui::table.header-text>
-{{--                <x-Ui::table.header-text sortIcon="none">Last Entry</x-Ui::table.header-text>--}}
                 <x-Ui::table.header-status/>
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
 
             <x-slot:table_body>
                 @foreach($list as $index=>$row)
+
+                    @php
+                        $data = json_encode([
+                            'opn' => $row->opening_balance,
+                            'name' => $row->vname,
+                            ]);
+                        $encrypted = Crypt::encryptString($data);
+                        $link = route('transactions', ['id' => $row->id]) . '?data=' . $encrypted;
+                    @endphp
+
                     <x-Ui::table.row>
-                        <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->vname}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->transaction_type->vname}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->account_no}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->bank->vname}}</x-Ui::table.cell-text>
-{{--                        <x-Ui::table.cell-text left>{{$row->opening_balance}}</x-Ui::table.cell-text>--}}
-{{--                        <x-Ui::table.cell-text left>{{$row->opening_balance_date}}</x-Ui::table.cell-text>--}}
-                        <x-Ui::table.cell-text right>{{$row->current_balance}}</x-Ui::table.cell-text>
-                        <x-Ui::table.cell-text left>{{$row->current_balance_date}}</x-Ui::table.cell-text>
-{{--                        <x-Ui::table.cell-text left>{{$row->current_entry_id}}</x-Ui::table.cell-text>--}}
+                        <x-Ui::table.cell-link :href="$link">
+                                {{$index+1}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                            {{$row->vname}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                                {{$row->transaction_type->vname}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                                {{$row->account_no}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                                {{$row->bank->vname}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                            {{$row->current_balance}}
+                        </x-Ui::table.cell-link>
+
+                        <x-Ui::table.cell-link :href="$link" left>
+                            {{$row->current_balance_date}}
+                        </x-Ui::table.cell-link>
+
                         <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>

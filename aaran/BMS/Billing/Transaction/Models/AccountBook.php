@@ -40,4 +40,11 @@ class AccountBook extends Model
         return $this->belongsTo(AccountType::class,'account_type_id','id');
     }
 
+//    protected $connection = 'tenant';
+//    protected static function booted()
+//    {
+//        self::creating(function ($model) {
+//        });
+//    }
+
 }

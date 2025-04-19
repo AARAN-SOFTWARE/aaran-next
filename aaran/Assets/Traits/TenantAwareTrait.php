@@ -21,6 +21,7 @@ trait TenantAwareTrait
 
 
         if ($tenantId && TenantManager::switchTenant($tenantId)) {
+            \Log::info('💾 DB connection being used: ' . $tenantId);
             return 'tenant';
         } else {
             Log::error("Failed to switch to tenant. Session tenant_id: " . ($tenantId ?? 'null'));

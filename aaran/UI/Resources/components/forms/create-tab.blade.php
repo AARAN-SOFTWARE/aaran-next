@@ -30,7 +30,7 @@
                                     {{$id === null ? 'New Entry' : 'Edit Entry'}}
                                 </div>
 
-                                <div class="border p-5 mt-2 rounded-xl border-neutral-300">
+                                <div class="mt-2">
                                     {{$slot}}
                                 </div>
                             </div>
