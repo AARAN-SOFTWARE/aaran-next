@@ -646,8 +646,6 @@ class Index extends Component
             $obj = Company::on($this->getTenantConnection())->find($id);
             if ($obj) {
                 $obj->delete();
-                $message = "Deleted Successfully";
-                $this->dispatch('notify', ...['type' => 'success', 'content' => $message]);
             }
         }
     }
