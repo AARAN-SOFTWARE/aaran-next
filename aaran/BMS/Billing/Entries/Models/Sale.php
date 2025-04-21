@@ -7,6 +7,7 @@ use Aaran\BMS\Billing\Master\Models\Contact;
 use Aaran\BMS\Billing\Master\Models\ContactAddress;
 use Aaran\BMS\Billing\Master\Models\Order;
 use Aaran\BMS\Billing\Master\Models\Style;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,11 @@ class Sale extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function scopeActive(Builder $query, $status = '1'): Builder
+    {
+        return $query->where('active_id', $status);
+    }
     public static function search(string $searches)
     {
         return empty($searches) ? static::query()
