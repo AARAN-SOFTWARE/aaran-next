@@ -18,15 +18,15 @@ class Sale extends Model
     use HasFactory;
 
     protected $guarded = [];
-    public static function search(string $searches)
-    {
-        return empty($searches) ? static::query()
-            : static::where('invoice_no', 'like', '%' . $searches . '%');
-    }
 
     public function scopeActive(Builder $query, $status = '1'): Builder
     {
         return $query->where('active_id', $status);
+    }
+    public static function search(string $searches)
+    {
+        return empty($searches) ? static::query()
+            : static::where('invoice_no', 'like', '%' . $searches . '%');
     }
 
     public function scopeSearchByName(Builder $query, string $search): Builder
@@ -35,7 +35,6 @@ class Sale extends Model
             $q->where('vname', 'like', "%$search%");
         });
     }
-
 
     public static function nextNo($connection = null)
     {
