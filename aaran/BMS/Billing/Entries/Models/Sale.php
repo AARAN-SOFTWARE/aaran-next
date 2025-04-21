@@ -29,18 +29,12 @@ class Sale extends Model
             : static::where('invoice_no', 'like', '%' . $searches . '%');
     }
 
-    public function scopeActive(Builder $query, $status = '1'): Builder
-    {
-        return $query->where('active_id', $status);
-    }
-
     public function scopeSearchByName(Builder $query, string $search): Builder
     {
         return $query->whereHas('contact', function ($q) use ($search) {
             $q->where('vname', 'like', "%$search%");
         });
     }
-
 
     public static function nextNo($connection = null)
     {
