@@ -28,7 +28,9 @@ shadow-md print:hidden">
         </div>
         <div class="w-5/12 flex sm:flex-row flex-col sm:justify-end justify-evenly items-center space-y-1">
             <div class="flex max-w-max justify-center items-center">
-{{--                <livewire:DefaultCompany::SwitchDefaultCompany/>--}}
+
+                @livewire('dashboard::default-company')
+
             </div>
 
             {{-- login menu--}}
