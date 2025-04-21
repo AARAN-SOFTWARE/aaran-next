@@ -168,11 +168,12 @@ class ConvertTo
     public static function rupeesFormat($v)
     {
         if ($v) {
-            $fmt = new NumberFormatter('en_IN', NumberFormatter::CURRENCY);
-            return $fmt->formatCurrency($v, "INR");
-        } else {
-            return '';
+            $fmt = new \NumberFormatter('en_IN', \NumberFormatter::CURRENCY);
+            // Modify the pattern to include a space between symbol and value
+            $fmt->setPattern('¤ #,##,##0.00'); // '¤' = currency symbol, followed by a non-breaking space
+            return $fmt->formatCurrency($v, 'INR');
         }
+        return '';
     }
 
     public static function toLower($v): string

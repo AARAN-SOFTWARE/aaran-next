@@ -2,7 +2,6 @@
 
 namespace Aaran\UI\Providers;
 
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class UiServiceProvider extends ServiceProvider

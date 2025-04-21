@@ -18,14 +18,12 @@
 
     <div class="flex-col flex h-[24rem] px-2 overflow-y-auto">
 
-        <a
-{{--            href="{{route('sales')}}"--}}
-        >
+        <a href="{{route('sales')}}">
             <x-Ui::web.dashboard.entries_list
                 entry="Sales"
-{{--                date="{{$entries['sales_date']}}"--}}
-{{--                invoice="INV - {{$entries['sales_no']}}"--}}
-{{--                amount="{{$entries['sales']}}"--}}
+                date="{{ \Carbon\Carbon::parse($entries['sales_date'])->format('d-m-Y') }}"
+                invoice="Bill No: {{$entries['sales_no']}}"
+                amount="{{$entries['sales']}}"
                 color="text-[#23B7E5]"
             >
                 <x-Ui::icons.sales/>
@@ -33,13 +31,13 @@
         </a>
 
         <a
-{{--            href="{{route('purchase')}}"--}}
+            href="{{route('purchases')}}"
         >
             <x-Ui::web.dashboard.entries_list
                 entry="Purchase"
-{{--                date="{{$entries['purchase_date']}}"--}}
-{{--                invoice="INV - {{$entries['purchase_no']}}"--}}
-{{--                amount="{{$entries['purchase']}}"--}}
+                date="{{ \Carbon\Carbon::parse($entries['purchase_date'])->format('d-m-Y') }}"
+                invoice="Bill No: {{$entries['purchase_no']}}"
+                amount="{{$entries['purchase']}}"
                 color="text-[#845ADF]"
             >
                 <x-Ui::icons.purchase/>
@@ -47,32 +45,33 @@
         </a>
 
         <a
-{{--            href="{{route('transactions',[2])}}"--}}
+            href="{{route('transactions',[1])}}"
+        >
+            <x-Ui::web.dashboard.entries_list
+                entry="Receipt"
+                date="{{ \Carbon\Carbon::parse($entries['receipt_date'])->format('d-m-Y') }}"
+                invoice="Vch No: {{$entries['receipt_no']}}"
+                amount="{{$entries['receipt']}}"
+                color="text-[#F5B849]"
+            >
+                <x-Ui::icons.receipt/>
+            </x-Ui::web.dashboard.entries_list>
+        </a>
+
+        <a
+            href="{{route('transactions',[2])}}"
         >
             <x-Ui::web.dashboard.entries_list
                 entry="Payment"
-{{--                date="{{$entries['payment_date']}}"--}}
-{{--                invoice=""--}}
-{{--                amount="{{$entries['payment']}}"--}}
+                date="{{ \Carbon\Carbon::parse($entries['payment_date'])->format('d-m-Y') }}"
+                invoice="Vch No: {{$entries['payment_no']}}"
+                amount="{{$entries['payment']}}"
                 color="text-[#E6533C]"
             >
                 <x-Ui::icons.payment/>
             </x-Ui::web.dashboard.entries_list>
         </a>
 
-        <a
-{{--            href="{{route('transactions',[1])}}"--}}
-        >
-            <x-Ui::web.dashboard.entries_list
-                entry="Receipt"
-{{--                date="{{$entries['receipt_date']}}"--}}
-{{--                invoice=""--}}
-{{--                amount="{{$entries['receipt']}}"--}}
-                color="text-[#F5B849]"
-            >
-                <x-Ui::icons.receipt/>
-            </x-Ui::web.dashboard.entries_list>
-        </a>
     </div>
 
 </div>
