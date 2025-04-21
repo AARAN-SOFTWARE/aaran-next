@@ -29,6 +29,7 @@ class SwitchDefaultCompany extends Component
             ->where('default_companies.id', '1')->first();
 
         session()->put('company_id', $this->defaultCompany->company_id);
+        session()->put('company_name', $this->defaultCompany->vname);
         session()->put('acyear_id', $this->defaultCompany->acyear_id);
     }
 
@@ -45,6 +46,8 @@ class SwitchDefaultCompany extends Component
         $obj->company_id = $id;
         $obj->save();
 
+        session()->put('company_id', $obj->company_id);
+        session()->put('company_name', $this->defaultCompany->vname);
         session()->put('company_id', $obj->company_id);
 
         $this->showModal = false;
@@ -64,7 +67,10 @@ class SwitchDefaultCompany extends Component
     {
         $this->getAllCompanies();
         $this->getDefaultCompany();
-        return view('dashboard::switch-default-company')->layout('components.layouts.auth.simple');
+        return view('dashboard::switch-default-company')->with([
+            'list' => $this->companies,
+            'defaultCompany' => $this->defaultCompany,
+        ]);
     }
 
 }
