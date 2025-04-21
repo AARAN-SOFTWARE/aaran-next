@@ -61,7 +61,7 @@
                         <span class="text-lg font-semibold font-lex">Recent Articles</span>
                     </span>
                 </div>
-                <div class="flex-col flex px-5 h-[24] overflow-y-auto gap-y-5 font-lex" wire:poll.300s>
+                <div class="flex-col flex px-5 overflow-y-auto gap-y-5 font-lex" wire:poll.300s>
                     @if(isset($blogs))
                         @forelse($blogs as $index=>$row)
 
