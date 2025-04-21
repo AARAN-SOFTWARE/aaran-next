@@ -46,7 +46,7 @@ class DashboardServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', $this->moduleNameLower);
 
-//        Livewire::component('dashboard::sales-chart', SalesChart::class);
+        Livewire::component('dashboard::sales-chart', SalesChart::class);
     }
 
 }
