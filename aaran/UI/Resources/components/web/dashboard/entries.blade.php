@@ -21,7 +21,7 @@
         <a href="{{route('sales')}}">
             <x-Ui::web.dashboard.entries_list
                 entry="Sales"
-                date="{{ \Carbon\Carbon::parse($entries['sales_date'])->format('d-m-Y') }}"
+                date="{{$entries['sales_date']}}"
                 invoice="Bill No: {{$entries['sales_no']}}"
                 amount="{{$entries['sales']}}"
                 color="text-[#23B7E5]"
@@ -35,7 +35,7 @@
         >
             <x-Ui::web.dashboard.entries_list
                 entry="Purchase"
-                date="{{ \Carbon\Carbon::parse($entries['purchase_date'])->format('d-m-Y') }}"
+                date="{{$entries['purchase_date']}}"
                 invoice="Bill No: {{$entries['purchase_no']}}"
                 amount="{{$entries['purchase']}}"
                 color="text-[#845ADF]"
@@ -49,7 +49,7 @@
         >
             <x-Ui::web.dashboard.entries_list
                 entry="Receipt"
-                date="{{ \Carbon\Carbon::parse($entries['receipt_date'])->format('d-m-Y') }}"
+                date="{{$entries['receipt_date']}}"
                 invoice="Vch No: {{$entries['receipt_no']}}"
                 amount="{{$entries['receipt']}}"
                 color="text-[#F5B849]"
@@ -63,7 +63,7 @@
         >
             <x-Ui::web.dashboard.entries_list
                 entry="Payment"
-                date="{{ \Carbon\Carbon::parse($entries['payment_date'])->format('d-m-Y') }}"
+                date="{{$entries['payment_date']}}"
                 invoice="Vch No: {{$entries['payment_no']}}"
                 amount="{{$entries['payment']}}"
                 color="text-[#E6533C]"

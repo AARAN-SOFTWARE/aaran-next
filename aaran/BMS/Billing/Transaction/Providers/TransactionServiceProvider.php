@@ -20,11 +20,8 @@ class TransactionServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrations();
-
         Livewire::component('transaction::account-book.index', Class\AccountBook\Index::class);
         Livewire::component('transaction::transaction.index', Class\Transaction\Index::class);
-//        Livewire::component('account-book.trans', AccountBook\Trans::class);
 
 
     }
