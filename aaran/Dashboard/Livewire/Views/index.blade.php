@@ -86,7 +86,8 @@
                     @if(isset($blogs))
                         @forelse($blogs as $index=>$row)
 
-                            <a href="{{ route('showArticles', [$index]) }}"
+                            <a
+{{--                                href="{{ route('showArticles', [$index]) }}"--}}
                                class="flex w-full h-auto rounded-md gap-x-2 bg-gray-50 hover:bg-slate-100 animate__animated wow animate__backInRight"
                                data-wow-duration="3s">
                                 <div class="w-32 h-24 overflow-hidden">
