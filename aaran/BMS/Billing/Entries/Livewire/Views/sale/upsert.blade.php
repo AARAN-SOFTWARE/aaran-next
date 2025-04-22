@@ -402,10 +402,11 @@
         </div>
 
         <div class="max-w-7xl mx-auto">
-            @if( $vid != "")
-                <x-Ui::forms.m-panel-bottom-button save back/>
+
+            @if($sale->vid == '')
+                <x-Ui::forms.m-panel-bottom-button save back />
             @else
-                <x-Ui::forms.m-panel-bottom-button save print back/>
+                <x-Ui::forms.m-panel-bottom-button save print back routes="{{ route('sales.print', [$sale->vid])}}"/>
             @endif
         </div>
     </div>

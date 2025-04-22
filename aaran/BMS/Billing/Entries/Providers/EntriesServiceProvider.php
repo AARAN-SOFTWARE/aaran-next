@@ -52,6 +52,7 @@ class EntriesServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', $this->moduleNameLower);
+        $this->loadViewsFrom(__DIR__ . '/../Pdf', 'entries-pdf');
     }
 
 }

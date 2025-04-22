@@ -14,16 +14,13 @@
             @endif
             <div>
                 @if($print)
-                    {{--                    <x-button.print/>--}}
-                    {{--                    <x-Ui::button.print-x href="{{$routes}}"  />--}}
+                    <x-Ui::button.print-x href="{{$routes}}"/>
                 @endif
             </div>
         </div>
         <div class="flex flex-wrap gap-3 justify-end ">
 
             @if($back)
-
-                {{--                <x-button.back/>--}}
                 <x-Ui::button.back-x wire:click="getRoute"/>
             @endif
 
