@@ -63,3 +63,15 @@
 - 2. We should write validation for Purchase date (or) set default date value.✅ fixed
 - 3. While editing, a random address is automatically filled in the 'Address tab'. (3rd street, Postal Colony, Chennai, -- 641601, India. ) ✅ fixed
 - 4. In the Product modal, when I press the Tab key to move between fields, it only works for the first three input fields. 
+
+
+
+## // 22-04-2025 //
+
+- The account books table is wrongly migrating into the primary table (aaran_next).
+
+## AccountBook
+- 1. We should write validation for Transaction Type.
+- 2. If the transaction type is set to 'Bank', validation needs to be written for 'Bank Name' and 'Account Type'.
+- 3. If the transaction type is set to 'UPI', validation needs to be written for 'Bank Name' and 'Account Type'.
+- 4. The 'Balance' is not displaying in the table, but it is stored in the database.
