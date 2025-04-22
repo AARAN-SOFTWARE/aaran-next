@@ -102,7 +102,7 @@ class MainForm extends Form
         $this->invoice_no = Sale::nextNo($this->getTenantConnection());
         $this->invoice_date = Carbon::now()->format('Y-m-d');
 
-        $this->uniqueno = session()->get('company_id') . '~' . session()->get('acyear') . '~' . $this->invoice_no;
+        $this->uniqueno = session('company_id') . '~' . session('acyear_id') . '~' . $this->invoice_no;
         $this->sales_type = '1';
         $this->trans_mode = '1';
         $this->trans_id = 1;
@@ -221,12 +221,12 @@ class MainForm extends Form
         }
 
         // === Basic Info ===
-        $sale->uniqueno = $this->uniqueno;
-        $sale->acyear = $this->acyear ?? '1';
-        $sale->company_id = $this->company_id ?? '1';
+        $sale->uniqueno = $this->uniqueno ?? session('company_id') . '~' . session('acyear_id') . '~' . $this->invoice_no;
+        $sale->acyear = $this->acyear ?? session('acyear_id');
+        $sale->company_id = $this->company_id ?? session('company_id');
         $sale->contact_id = $this->contact_id;
         $sale->invoice_no = $this->invoice_no;
-        $sale->invoice_date = $this->invoice_date;
+        $sale->invoice_date = $this->invoice_date ?? now()->format('Y-m-d');
         $sale->sales_type = $this->sales_type;
         $sale->order_id = $this->order_id;
         $sale->billing_id = $this->billing_id;

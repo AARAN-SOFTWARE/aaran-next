@@ -97,8 +97,8 @@ class Index extends Component
         Transaction::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
-                'acyear' => '1',
-                'company_id' => '1',
+                'acyear' => session('acyear_id'),
+                'company_id' => session('company_id'),
                 'account_book_id' => $this->accountBookId,
                 'transaction_mode' => $this->transaction_mode ?: '1',
                 'contact_id' => $this->contact_id ?: '1',

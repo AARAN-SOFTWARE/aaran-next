@@ -60,6 +60,7 @@ class SwitchDefaultCompany extends Component
         $obj->acyear_id = $this->defaultCompany->acyear_id;
         $obj->save();
         session()->put('acyear_id', $obj->acyear_id);
+        $this->js('window.location.reload()');
     }
 
 
