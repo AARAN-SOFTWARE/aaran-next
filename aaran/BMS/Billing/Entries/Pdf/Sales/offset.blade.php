@@ -5,8 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Offset</title>
-    {{--    <link rel="stylesheet" href="/public/invoice.css" type="text/css">--}}
+    <title>Invoice</title>
     <link rel="stylesheet" href="https://cdn.curlwind.com">
     <style type="text/css">
         /*common class*/
@@ -340,7 +339,7 @@
         @endphp
     @endforeach
 
-     Spacing
+    Spacing
     @for($i = 0; $i < 13-$list->count(); $i++)
         <tr class="">
             <td height="26px" class="border-r text-sm v-align-t p-1 center">&nbsp;</td>
@@ -366,7 +365,7 @@
         <td>&nbsp;{{number_format($obj->grand_total-$obj->additional,2,'.','')}}</td>
     </tr>
 
-{{--        @if($obj->sales_type==0)--}}
+    {{--        @if($obj->sales_type==0)--}}
     <tr>
         <td rowspan="2" colspan="5" class="text-xs lh-2 ">
                             <span>We hereby certify that our registration under the GST Act 2017 is in force on
