@@ -4,13 +4,6 @@ namespace Aaran\BMS\Billing\Entries\Controllers\Sales;
 
 use Aaran\Assets\Helper\ConvertTo;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Entries\Models\Sale;
-use Aaran\BMS\Billing\Master\Models\Company;
-use Aaran\BMS\Billing\Master\Models\ContactAddress;
-use Aaran\Common\Models\City;
-use Aaran\Common\Models\Country;
-use Aaran\Common\Models\Pincode;
-use Aaran\Common\Models\State;
 use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
@@ -49,7 +42,7 @@ class SalesInvoiceController extends Controller
 
             $pdf->render();
 
-            return $pdf->stream();
+            return $pdf->stream($sale->invoice_no);
         }
 
         return null;

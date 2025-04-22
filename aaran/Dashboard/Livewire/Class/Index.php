@@ -124,27 +124,42 @@ class Index extends Component
     {
         $sales = Sale::on($this->getTenantConnection())->latest()->first();
         $purchase = Purchase::on($this->getTenantConnection())->latest()->first();
-        $payment = Transaction::on($this->getTenantConnection())->latest()->where('transaction_mode', '=', TransactionMode::PAYMENT)->first();
-        $receipt = Transaction::on($this->getTenantConnection())->latest()->where('transaction_mode', '=', TransactionMode::RECEIPT)->first();
+        $payment = Transaction::on($this->getTenantConnection())
+            ->latest()
+            ->where('transaction_mode', '=', TransactionMode::PAYMENT)
+            ->first();
+        $receipt = Transaction::on($this->getTenantConnection())
+            ->latest()
+            ->where('transaction_mode', '=', TransactionMode::RECEIPT)
+            ->first();
 
         return Collection::make([
             'sales' => ConvertTo::rupeesFormat($sales->grand_total ?? 0),
             'sales_no' => $sales->invoice_no ?? 0,
-            'sales_date' => $sales->invoice_date ?? '-',
+            'sales_date' => $sales && $sales->invoice_date
+                ? \Carbon\Carbon::parse($sales->invoice_date)->format('d-m-Y')
+                : '-',
 
             'purchase' => ConvertTo::rupeesFormat($purchase->grand_total ?? 0),
             'purchase_no' => $purchase->purchase_no ?? 0,
-            'purchase_date' => $purchase->purchase_date ?? '-',
+            'purchase_date' => $purchase && $purchase->purchase_date
+                ? \Carbon\Carbon::parse($purchase->purchase_date)->format('d-m-Y')
+                : '-',
 
             'payment' => ConvertTo::rupeesFormat($payment->amount ?? 0),
             'payment_no' => $payment->vch_no ?? 0,
-            'payment_date' => $payment->vdate ?? '-',
+            'payment_date' => $payment && $payment->vdate
+                ? \Carbon\Carbon::parse($payment->vdate)->format('d-m-Y')
+                : '-',
 
             'receipt' => ConvertTo::rupeesFormat($receipt->amount ?? 0),
             'receipt_no' => $receipt->vch_no ?? 0,
-            'receipt_date' => $receipt->vdate ?? '-',
+            'receipt_date' => $receipt && $receipt->vdate
+                ? \Carbon\Carbon::parse($receipt->vdate)->format('d-m-Y')
+                : '-',
         ]);
     }
+
 
 
     public function getDefaultCompany(): void
