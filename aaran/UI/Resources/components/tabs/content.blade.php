@@ -3,6 +3,7 @@
     :aria-labelledby="$id('tab', whichChild($el, $el.parentElement))"
     role="tabpanel"
     class=" p-4 space-y-2"
+    x-cloak
 >
     {{$slot}}
 </section>
