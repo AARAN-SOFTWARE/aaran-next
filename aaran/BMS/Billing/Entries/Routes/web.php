@@ -14,6 +14,9 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('/purchases', Class\Purchase\Index::class)->name('purchases');
     Route::get('/purchases/{id}/upsert', Class\Purchase\Upsert::class)->name('purchases.upsert');
 
+    Route::get('/payments', Class\Payment\Index::class)->name('payments');
+    Route::get('/receipts', Class\Payment\Index::class)->name('receipts');
+
 
 //    Route::get('/sales/{id}/invoice', Aaran\Entries\Controllers\Sales\InvController::class)->name('sales.invoice');
 //    Route::get('/sales/{id}/eway', Aaran\Entries\Livewire\Sales\EwayBill::class)->name('sales.eway');

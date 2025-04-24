@@ -1,5 +1,5 @@
 <div>
-    <x-slot name="header">Transactions</x-slot>
+    <x-slot name="header">{{$transaction_mode == 1 ? 'Receipt Entry' : 'Payment Entry'}}</x-slot>
 
     <x-Ui::forms.m-panel>
         <x-Ui::alerts.notification/>
@@ -22,7 +22,7 @@
                     Date
                 </x-Ui::table.header-text>
 
-                <x-Ui::table.header-text sortIcon="none">Ac Book</x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click.prevent="sortBy('account_book_id')" sortIcon="{{$sortAsc}}">Ac Book</x-Ui::table.header-text>
                 <x-Ui::table.header-text class="w-[7rem]" sortIcon="none">Mode</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Party</x-Ui::table.header-text>
                 <x-Ui::table.header-text class="w-[12rem]" sortIcon="none">Payment Method</x-Ui::table.header-text>
@@ -152,16 +152,14 @@
                         <!-- Tab 1 ------------------------------------------------------------------------------------>
 
                         <x-Ui::tabs.content>
-                            <div class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-6">
 
-                                <div class="flex flex-row gap-4">
-                                    <x-Ui::radio.btn wire:model.live="transaction_mode" value="1">Receipt
-                                    </x-Ui::radio.btn>
-                                    <x-Ui::radio.btn wire:model.live="transaction_mode" value="2">Payment
-                                    </x-Ui::radio.btn>
-                                    <x-Ui::input.error-text wire:model="transaction_mode"/>
+                                <div>
+                                    @livewire('transaction::account-book.lookup',['initId' => $account_book_id])
                                 </div>
 
+
+                                @if($vch_no)
                                 <div class="flex justify-between flex-row gap-4">
                                     <div class="w-1/2">
                                         <x-Ui::input.floating wire:model="vch_no" label="Voucher No"/>
@@ -172,6 +170,9 @@
                                         <x-Ui::input.model-date wire:model="vdate" label="Date"/>
                                     </div>
                                 </div>
+                                @else
+                                    <x-Ui::input.model-date wire:model="vdate" label="Date"/>
+                                @endif
 
                                 <div>
                                     @livewire('master::contact.lookup',['initId' => $contact_id])
@@ -189,14 +190,14 @@
                                     <x-Ui::input.error-text wire:model="payment_method"/>
                                 </div>
 
-                                <x-Ui::input.floating-textarea wire:model="Remarks" label="Remarks"/>
+                                <x-Ui::input.floating-textarea wire:model="remarks" label="Remarks"/>
                             </div>
                         </x-Ui::tabs.content>
 
                         <!-- Tab 2 ------------------------------------------------------------------------------------>
 
                         <x-Ui::tabs.content>
-                            <div class="flex flex-col gap-3">
+                            <div class="flex flex-col gap-6">
 
                                 {{-- CHEQUE & DD --}}
                                 @if (

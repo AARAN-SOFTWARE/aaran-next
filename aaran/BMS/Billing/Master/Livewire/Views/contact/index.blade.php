@@ -60,7 +60,7 @@
 
         <!-- Create --------------------------------------------------------------------------------------------------->
 
-        <x-Ui::forms.create :id="$vid" :max-width="'6xl'">
+        <x-Ui::forms.create-tab :id="$vid" :max-width="'6xl'">
             <div class="h-full">
                 <!-- Tab Header --------------------------------------------------------------------------------------->
                 <x-Ui::tabs.tab-panel>
@@ -77,7 +77,7 @@
                         <!-- Tab 1 ------------------------------------------------------------------------------------>
 
                         <x-Ui::tabs.content>
-                            <div class="flex flex-col gap-3">
+                            <div class="flex flex-col h-fit gap-3">
 
                                 <div>
                                     <x-Ui::input.floating autofocus wire:model.live="vname" label="Name"/>
@@ -306,7 +306,7 @@
                     </x-slot>
                 </x-Ui::tabs.tab-panel>
             </div>
-        </x-Ui::forms.create>
+        </x-Ui::forms.create-tab>
 
         <!-- Actions ------------------------------------------------------------------------------------------->
 
