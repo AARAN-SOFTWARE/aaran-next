@@ -19,7 +19,10 @@ Route::middleware(['website'])->group(function () {
             return view('profile.show');
         })->name('profile.show');
     });
-    Route::post('/web-contacts',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('web-contacts');
+    Route::post('/web-contacts',\Aaran\Website\Livewire\Class\Index::class)->name('web-contacts');
+
+    Route::get('/client-register',\Aaran\Website\Livewire\Class\Index::class)->name('client-register');
+    Route::get('/client-plans',\Aaran\Website\Livewire\Class\Index::class)->name('client-plans');
 
 
 });

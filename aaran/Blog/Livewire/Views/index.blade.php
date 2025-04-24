@@ -229,7 +229,7 @@
     <x-Ui::forms.create :id="$vid" :max-width="'xl'">
         <div class="flex flex-col gap-4">
 
-{{--                        <x-aaran-ui::inputmodel-text wire:model="common.vname" :label="'Name'"/> --}}
+{{--                        <x-Ui::inputmodel-text wire:model="common.vname" :label="'Name'"/> --}}
 
             <input type="checkbox" wire:model="visibility">
             <label for="">Public</label>
