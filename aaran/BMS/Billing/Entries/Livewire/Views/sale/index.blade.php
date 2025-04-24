@@ -132,10 +132,12 @@
                                     @endif
                                 </div>
                             </x-Ui::table.cell-text>
+
+
                         @endif
 
                         <x-Ui::table.cell-text>
-                            {{--                            <x-Ui::button.print-pdf routes="{{route('sales.print', [$row->id])}}"/>--}}
+                            <x-Ui::button.print-pdf routes="{{route('sales.print', [$row->id])}}"/>
                         </x-Ui::table.cell-text>
 
                         <td class="max-w-max print:hidden">

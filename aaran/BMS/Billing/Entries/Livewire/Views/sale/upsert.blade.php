@@ -57,7 +57,7 @@
                                             <x-Ui::input.error-text wire:model="sale.invoice_date"/>
                                         </div>
                                         <div>
-                                            <x-Ui::input.model-select wire:model="sale.sales_type"
+                                            <x-Ui::input.model-select class="w-full" wire:model="sale.sales_type"
                                                                       :label="'Sales Type'">
                                                 <option value="0" class="text-gray-400"> choose ..</option>
                                                 <option value="1">CGST-SGST</option>
@@ -333,7 +333,7 @@
                                         <x-Ui::input.model-date wire:model="sale.trans_docs_dt" label="Transport Date"/>
                                         <x-Ui::input.error-text wire:model="sale.trans_docs_dt"/>
 
-                                        <x-Ui::input.model-select wire:model="sale.trans_mode" label="Transport Mode">
+                                        <x-Ui::input.model-select class="w-full" wire:model="sale.trans_mode" label="Transport Mode">
                                             <option value="">Choose..</option>
                                             <option value="1">Road</option>
                                             <option value="2">Rail</option>
@@ -350,7 +350,7 @@
                                             <x-Ui::input.error-text wire:model="sale.distance"/>
                                         </div>
 
-                                        <x-Ui::input.model-select wire:model="sale.veh_type" label="Vechile Type">
+                                        <x-Ui::input.model-select class="w-full" wire:model="sale.veh_type" label="Vechile Type">
                                             <option value="">Choose..</option>
                                             <option value="R">Regular</option>
                                             <option value="O">ODC</option>

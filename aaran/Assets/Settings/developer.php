@@ -37,7 +37,7 @@ return [
         SaleEntry::transport(),
         SaleEntry::destination(),
         SaleEntry::bundle(),
-        SaleEntry::einvoice(),
+//        SaleEntry::einvoice(),
 //        SaleEntry::eway(),
 
         SaleEntry::productDescription(),
