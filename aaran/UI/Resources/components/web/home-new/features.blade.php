@@ -1,4 +1,4 @@
-<div class=" sm:mt-10 mt-8">
+<div class=" sm:mt-10 mt-8 bg-amber-50">
     <div class="sm:w-8/12 w-11/12 sm:h-screen h-auto mx-auto flex-col flex sm:gap-6
     gap-0.5 justify-evenly items-center">
 
@@ -83,17 +83,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
-
-        <div class="grid lg:grid-cols-2 sm:grid-cols-1 sm:gap-12 gap-5 sm:text-sm text-xs text-zinc-600 font-roboto tracking-wider sm:py-5">
-
-            <div class="animate__animated wow animate__backInLeft" data-wow-duration="3s">
-                Codexsun is the best rated top seller for a reason. It comes with a lot of great features and available resources.
-            </div>
-
-            <div class="animate__animated wow animate__backInRight" data-wow-duration="3s">
-                With a cloud based GST billing software, you can access all your documents and create invoices on the go.            </div>
 
         </div>
     </div>

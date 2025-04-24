@@ -6,30 +6,6 @@
     <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300..900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Merienda:wght@300..900&display=swap');
-
-        .font-lex {
-            font-family: "Lexend", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: 300;
-            font-style: normal;
-        }
-
-        .merienda-cursive {
-            font-family: "Merienda", cursive;
-            font-optical-sizing: auto;
-            font-weight: 600;
-            font-style: italic;
-        }
-
-        .caveat-brush-regular {
-            font-family: "Caveat Brush", cursive;
-            font-weight: 600;
-            font-style: normal;
-        }
-
         .autoplay-progress {
             position: absolute;
             right: 16px;
@@ -141,8 +117,8 @@
 
         @foreach(Aaran\Assets\Helper\SlideQuotes::all() as $slide)
             <div class="swiper-slide {{ $slide['color']['bg'] }}" data-in="fade-in">
-                <div class="h-screen flex items-center justify-center w-full">
-                    <div class="text-center space-y-6">
+                <div class="h-screen flex items-center justify-center w-full animate__animated wow animate__bounceInDown">
+                    <div class="text-center space-y-6" data-animatable>
                         <h1
                             class="fade-in mx-auto max-w-7xl font-display caveat-brush-regular text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
                             {!! Aaran\Assets\Helper\SlideQuotes::highlightKeyword($slide['h1'], $slide['color']) !!}

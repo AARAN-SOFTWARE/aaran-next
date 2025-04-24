@@ -17,7 +17,7 @@
         }
     }"
     x-init="init"
-    class="relative bg-blue-600 min-h-[40rem] overflow-hidden py-24 wow bounceInUp animate__animated"
+    class="relative bg-blue-600 min-h-[40rem] overflow-hidden py-24 animate__animated wow animate__bounceInDown"
     id="features"
 >
     <!-- Static Background -->
@@ -69,9 +69,9 @@
             >
                 <template x-if="features[selected]">
                     <div>
-                        <img :src="features[selected].image" class="w-full h-full object-cover rounded-xl shadow-lg" />
+                        <img :src="features[selected].image" class="w-full h-full object-cover rounded-xl shadow-lg animate__animated wow animate__bounceInDown" />
                         <div
-                            class="absolute top-6 left-6 max-w-sm bg-white/80 backdrop-blur-md rounded-xl p-4"
+                            class="absolute top-6 left-6 max-w-sm bg-white/80 backdrop-blur-md rounded-xl p-4 animate__animated wow animate__bounceInUp" data-wow-delay="1s"
                         >
                             <h4 class="text-blue-800 font-semibold text-xl" x-text="features[selected].title"></h4>
                             <p class="mt-2 text-sm text-blue-700" x-text="features[selected].description"></p>
