@@ -21,6 +21,9 @@ class TransactionServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Livewire::component('transaction::account-book.index', Class\AccountBook\Index::class);
+        Livewire::component('transaction::account-book.lookup', Class\AccountBook\Lookup::class);
+
+
         Livewire::component('transaction::transaction.index', Class\Transaction\Index::class);
 
 

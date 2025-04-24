@@ -31,6 +31,8 @@ class EntriesServiceProvider extends ServiceProvider
         Livewire::component('entries::purchase-list', Class\Purchase\Index::class);
         Livewire::component('entries::purchase-upsert', Class\Purchase\Upsert::class);
 
+        Livewire::component('entries::payment-list', Class\Payment\Index::class);
+
 //        Livewire::component('sales.eway-bill', Sales\EwayBill::class);
 //        Livewire::component('sales.einvoice', Sales\Einvoice::class);
 
