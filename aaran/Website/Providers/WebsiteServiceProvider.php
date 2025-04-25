@@ -5,6 +5,8 @@ namespace Aaran\Website\Providers;
 use Aaran\Website\Http\Middleware\WebsiteMiddleware;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Aaran\Website\Livewire\Class;
 
 class WebsiteServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,9 @@ class WebsiteServiceProvider extends ServiceProvider
 //        $this->registerConfigs();
         $this->registerMigrations();
         $this->registerViews();
+
+        // Register Livewire components
+        Livewire::component('website::blog', Class\Blog::class);
     }
 
 
