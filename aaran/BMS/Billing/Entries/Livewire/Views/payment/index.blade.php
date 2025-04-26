@@ -22,13 +22,20 @@
                     Date
                 </x-Ui::table.header-text>
 
-                <x-Ui::table.header-text wire:click.prevent="sortBy('account_book_id')" sortIcon="{{$sortAsc}}">Ac Book</x-Ui::table.header-text>
+                <x-Ui::table.header-text wire:click.prevent="sortBy('account_book_id')" sortIcon="{{$sortAsc}}">Ac
+                    Book
+                </x-Ui::table.header-text>
                 <x-Ui::table.header-text class="w-[7rem]" sortIcon="none">Mode</x-Ui::table.header-text>
                 <x-Ui::table.header-text sortIcon="none">Party</x-Ui::table.header-text>
                 <x-Ui::table.header-text class="w-[12rem]" sortIcon="none">Payment Method</x-Ui::table.header-text>
+
+                @if($transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
                 <x-Ui::table.header-text sortIcon="none">Receipt</x-Ui::table.header-text>
+                @else
                 <x-Ui::table.header-text sortIcon="none">Payment</x-Ui::table.header-text>
-                <x-Ui::table.header-text sortIcon="none">Balance</x-Ui::table.header-text>
+                @endif
+
+{{--                <x-Ui::table.header-text sortIcon="none">Balance</x-Ui::table.header-text>--}}
                 <x-Ui::table.header-action/>
             </x-slot:table_header>
 
@@ -81,30 +88,25 @@
                             {{\Aaran\Assets\Enums\PaymentMethod::tryFrom($row->payment_method)->getName()}}
                         </x-Ui::table.cell-text>
 
-                        <x-Ui::table.cell-text right>
-                            @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
+                        @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
+                            <x-Ui::table.cell-text right>
                                 {{\Aaran\Assets\Helper\Format::Decimal($row->amount)}}
                                 @php
                                     $current_balance += ($row->amount + 0);
                                     $total_debit += ($row->amount + 0);
                                 @endphp
-                            @endif
-                        </x-Ui::table.cell-text>
+                            </x-Ui::table.cell-text>
+                        @endif
 
-                        <x-Ui::table.cell-text right>
-                            @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
+                        @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
+                            <x-Ui::table.cell-text right>
                                 {{\Aaran\Assets\Helper\Format::Decimal($row->amount)}}
                                 @php
                                     $current_balance -= ($row->amount + 0);
                                     $total_credit += ($row->amount + 0);
                                 @endphp
-                            @endif
-                        </x-Ui::table.cell-text>
-
-                        <x-Ui::table.cell-text right>
-                            {{ \Aaran\Assets\Helper\Format::Decimal($current_balance) }}
-                        </x-Ui::table.cell-text>
-
+                            </x-Ui::table.cell-text>
+                        @endif
                         <x-Ui::table.cell-action id="{{$row->id}}"/>
                     </x-Ui::table.row>
                 @endforeach
@@ -114,15 +116,17 @@
                     <x-Ui::table.cell-text colspan="6" class="text-md text-right text-gray-400 ">
                         TOTALS
                     </x-Ui::table.cell-text>
+                    @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
                     <x-Ui::table.cell-text class="text-right text-lg ">
                         {{ $total_debit != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_debit) :'' }}
                     </x-Ui::table.cell-text>
+                    @endif
+
+                    @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
                     <x-Ui::table.cell-text class="text-right text-lg ">
                         {{ $total_credit  != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_credit) :'' }}
                     </x-Ui::table.cell-text>
-                    <x-Ui::table.cell-text class="text-right text-lg text-orange-500 ">
-                        {{ $current_balance != 0 ? \Aaran\Assets\Helper\Format::Decimal($current_balance) :'' }}
-                    </x-Ui::table.cell-text>
+                    @endif
                 </x-Ui::table.row>
 
             </x-slot:table_body>
@@ -160,16 +164,16 @@
 
 
                                 @if($vch_no)
-                                <div class="flex justify-between flex-row gap-4">
-                                    <div class="w-1/2">
-                                        <x-Ui::input.floating wire:model="vch_no" label="Voucher No"/>
-                                        <x-Ui::input.error-text wire:model="vch_no"/>
-                                    </div>
+                                    <div class="flex justify-between flex-row gap-4">
+                                        <div class="w-1/2">
+                                            <x-Ui::input.floating wire:model="vch_no" label="Voucher No"/>
+                                            <x-Ui::input.error-text wire:model="vch_no"/>
+                                        </div>
 
-                                    <div class="w-1/2">
-                                        <x-Ui::input.model-date wire:model="vdate" label="Date"/>
+                                        <div class="w-1/2">
+                                            <x-Ui::input.model-date wire:model="vdate" label="Date"/>
+                                        </div>
                                     </div>
-                                </div>
                                 @else
                                     <x-Ui::input.model-date wire:model="vdate" label="Date"/>
                                 @endif
