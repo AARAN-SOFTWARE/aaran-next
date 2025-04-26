@@ -35,10 +35,10 @@ class Blog extends Component
     public bool $active_id = true;
     #endregion
 
-    public function mount()
-    {
-        $this->blogCategories = BlogCategory::on($this->getTenantConnection())->get();
-    }
+//    public function mount()
+//    {
+//        $this->blogCategories = BlogCategory::on($this->getTenantConnection())->get();
+//    }
 
 
     public function rules(): array

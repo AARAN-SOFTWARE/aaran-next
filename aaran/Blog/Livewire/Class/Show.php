@@ -95,7 +95,6 @@ class Show extends Component
     public function getList()
     {
         return BlogComment::on($this->getTenantConnection())
-            ->active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
