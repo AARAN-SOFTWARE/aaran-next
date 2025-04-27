@@ -1,8 +1,7 @@
 <?php
 
-namespace Aaran\Dashboard\Database\Seeders;
+namespace Aaran\BMS\Billing\Baseline\Database\Seeders;
 
-use Aaran\BMS\Billing\Books\Models\Ledger;
 use Aaran\BMS\Billing\Baseline\Models\DefaultCompany;
 use Illuminate\Database\Seeder;
 

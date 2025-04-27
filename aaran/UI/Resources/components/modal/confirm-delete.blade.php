@@ -1,11 +1,15 @@
 @props(
-    ['id' => null,]
+    [
+        'id' => null,
+        'showDeleteModal'=>false
+    ]
 )
 
 <div
     x-data="{ showDeleteModal: @entangle('showDeleteModal')}"
     x-show="showDeleteModal"
     x-transition
+    x-cloak
     wire:model.defer="showDeleteModal"
     class="relative z-10"
     aria-labelledby="modal-title"

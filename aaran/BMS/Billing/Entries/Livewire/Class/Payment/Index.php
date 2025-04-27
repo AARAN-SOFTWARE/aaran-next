@@ -77,7 +77,7 @@ class Index extends Component
         // Call the tenant connection once
         $connection = $this->getTenantConnection();
 
-        $this->vch_no = $this->vch_no ?: '1';
+        $this->vch_no = $this->vch_no ?: '0';
 
         // Create or update transaction
         $transaction = Transaction::on($connection)->updateOrCreate(
@@ -119,7 +119,7 @@ class Index extends Component
     {
         $this->vid = null;
         $this->account_book_id = $this->account_book_id;
-        $this->transaction_mode = '1';
+        $this->transaction_mode = request()->routeIs('receipts') ? '1' : '2';
         $this->contact_id = '';
         $this->vch_no = null;
         $this->vdate = Carbon::now()->format('Y-m-d');

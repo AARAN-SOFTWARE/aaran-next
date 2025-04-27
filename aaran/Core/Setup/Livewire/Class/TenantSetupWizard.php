@@ -2,23 +2,27 @@
 
 namespace Aaran\Core\Setup\Livewire\Class;
 
-use Aaran\Core\Tenant\Facades\TenantManager;
+use Aaran\Core\Setup\Jobs\CreateTenantJob;
+use Aaran\Core\Tenant\Models\Feature;
+use Aaran\Core\Tenant\Models\Industry;
 use Aaran\Core\Tenant\Models\Tenant;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class TenantSetupWizard extends Component
 {
     public $step = 1;
     public $b_name, $t_name, $email, $contact, $phone;
-    public $db_name, $db_user, $db_pass;
+    public $db_name, $db_user = 'root', $db_pass = 'Computer.1';
     public $plan = 'free', $subscription_start, $subscription_end;
     public $storage_limit = 10, $user_limit = 5, $is_active = true;
     public $two_factor_enabled = false, $allow_sso = false;
     public $industry_id, $selected_features = [], $settings = [];
+    public array $progress = [];
 
     protected $rules = [
         'b_name' => 'required|string|max:255',
@@ -126,12 +130,13 @@ class TenantSetupWizard extends Component
 
             Log::info('✅ Tenant created successfully.', ['tenant_id' => $tenant->id]);
 
-            $this->runTenantMigrations($tenant);
-
             DB::commit();
 
-            session()->flash('success', '🎉 Tenant created successfully!');
 
+            $this->runTenantMigrations($tenant);
+
+
+            session()->flash('success', '🎉 Tenant created successfully!');
             $this->dispatch('tenant-created');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -140,24 +145,41 @@ class TenantSetupWizard extends Component
         }
     }
 
-    protected function runTenantMigrations(Tenant $tenant)
+    protected function runTenantMigrations($tenantId)
     {
-        try {
-            // Ensure the database exists before migrating
-            $dbExists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$tenant->db_name]);
-            if (!$dbExists) {
-                throw new \Exception("Database '{$tenant->db_name}' does not exist.");
-            }
+//        $this->dispatch('tenant-setup-progress', message: 'starting Setup...');
+        (new CreateTenantJob())->createTenant($tenantId);
 
-            TenantManager::switchTenant($tenant->id);
-
-            Artisan::call("aaran:migrate", ['tenant' => $tenant->t_name, '--fresh' => true]);
-
-
-        } catch (\Exception $e) {
-            throw new \Exception("Migration failed: " . $e->getMessage());
-        }
     }
+
+    public function setupss()
+    {
+        $tenant = Tenant::where('t_name', 'tenant_1')->first();
+
+        $this->runTenantMigrations($tenant->id);
+    }
+
+    public $progressMessages = [];
+
+    #[On('tenant-setup-progress')]
+    public function handleProgress($message)
+    {
+        $this->progressMessages[] = $message;
+    }
+//    public function pollMigrationStatus()
+//    {
+//        $tenant = Tenant::where('t_name', $this->t_name)->first();
+//        if ($tenant?->migration_status === 'success') {
+//            $this->is_processing = false;
+//            session()->flash('success', '🎉 Setup completed successfully!');
+//            $this->dispatch('migration-success');
+//        } elseif ($tenant?->migration_status === 'failed') {
+//            $this->is_processing = false;
+//            session()->flash('error', '❌ Migration failed. Please check logs or retry.');
+//            $this->dispatch('migration-failed');
+//        }
+//    }
+
 
     #[Layout('Ui::components.layouts.web')]
     public function render()
