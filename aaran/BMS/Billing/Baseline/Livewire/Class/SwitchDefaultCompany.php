@@ -1,10 +1,10 @@
 <?php
 
-namespace Aaran\Dashboard\Livewire\Class;
+namespace Aaran\BMS\Billing\Baseline\Livewire\Class;
 
 use Aaran\Assets\Enums\Active;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\Dashboard\Models\DefaultCompany;
+use Aaran\BMS\Billing\Baseline\Models\DefaultCompany;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -68,7 +68,7 @@ class SwitchDefaultCompany extends Component
     {
         $this->getAllCompanies();
         $this->getDefaultCompany();
-        return view('dashboard::switch-default-company')->with([
+        return view('baseline::switch-default-company')->with([
             'list' => $this->companies,
             'defaultCompany' => $this->defaultCompany,
         ]);

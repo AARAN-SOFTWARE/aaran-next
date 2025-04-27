@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use Aaran\Core\Tenant\Database\Seeders\FeatureSeeder;
+use Aaran\Core\Tenant\Database\Seeders\IndustrySeeder;
+use Aaran\Core\Tenant\Database\Seeders\SubscriptionSeeder;
 use Aaran\Core\Tenant\Database\Seeders\TenantSeeder;
 use Aaran\Core\User\Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
@@ -12,6 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             TenantSeeder::class,
+            IndustrySeeder::class,
+            SubscriptionSeeder::class,
+            FeatureSeeder::class,
             UserSeeder::class,
         ]);
     }

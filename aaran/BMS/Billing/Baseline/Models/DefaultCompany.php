@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Dashboard\Models;
+namespace Aaran\BMS\Billing\Baseline\Models;
 
 use Aaran\BMS\Billing\Master\Models\Company;
 use Illuminate\Database\Eloquent\Model;

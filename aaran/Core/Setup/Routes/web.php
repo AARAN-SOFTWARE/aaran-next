@@ -20,4 +20,4 @@ use Illuminate\Support\Facades\Route;
 //    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 //});
 
-//Route::get('/setup', Aaran\Core\Setup\Livewire\Class\TenantSetupWizard::class)->name('setup');
+Route::get('/setup', Aaran\Core\Setup\Livewire\Class\TenantSetupWizard::class)->name('setup');

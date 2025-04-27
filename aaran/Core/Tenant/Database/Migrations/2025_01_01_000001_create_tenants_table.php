@@ -42,6 +42,7 @@ return new class extends Migration {
             $table->decimal('disk_usage', 10, 2)->default(0);
             // Lifecycle
             $table->timestamp('last_active_at')->nullable();
+            $table->string('migration_status')->default('pending')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

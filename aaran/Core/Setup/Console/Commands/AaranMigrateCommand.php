@@ -43,6 +43,7 @@ class AaranMigrateCommand extends Command
             'aaran/BMS/Billing/Entries/Database/Migrations',
             'aaran/BMS/Billing/Transaction/Database/Migrations',
             'aaran/BMS/Billing/Transaction/Database/Migrations',
+            'aaran/BMS/Baseline/Database/Migrations',
             'aaran/Dashboard/Database/Migrations',
             'aaran/Blog/Database/Migrations',
         ];

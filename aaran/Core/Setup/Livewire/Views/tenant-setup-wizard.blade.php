@@ -1,5 +1,6 @@
 <div>
-    <x-Ui::loadings.loading/>
+
+{{--    <x-Ui::loadings.loading/>--}}
 
     <!-- Banner -->
     <x-Ui::web.home-new.items.banner
@@ -8,6 +9,12 @@
         padding="sm:px-[160px]"
         padding_mob="px-[70px]"
     />
+
+
+    <button wire:click="setupss" class="bg-amber-300 px-3 py-3">setup</button>
+
+
+
 
     <div class="mt-10 max-w-3xl mx-auto bg-white shadow-lg border border-neutral-200 rounded-lg p-6">
         <h2 class="text-2xl font-semibold text-gray-800">Setup</h2>
@@ -18,15 +25,15 @@
             <div>
                 <label class="block text-gray-700">Business Name</label>
                 <input type="text" wire:model.defer="b_name" class="w-full border rounded px-3 py-2 mt-1">
-                @error('b_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <x-Ui::input.error-text wire:model="b_name"/>
 
                 <label class="block text-gray-700 mt-4">Tenant Name</label>
                 <input type="text" wire:model.defer="t_name" class="w-full border rounded px-3 py-2 mt-1">
-                @error('t_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <x-Ui::input.error-text wire:model="t_name"/>
 
                 <label class="block text-gray-700 mt-4">Email</label>
                 <input type="email" wire:model.defer="email" class="w-full border rounded px-3 py-2 mt-1">
-                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                <x-Ui::input.error-text wire:model="email"/>
             </div>
         @endif
 
@@ -35,16 +42,43 @@
             <div>
                 <label class="block text-gray-700">Database Name</label>
                 <input type="text" wire:model.defer="db_name" class="w-full border rounded px-3 py-2 mt-1">
+                <x-Ui::input.error-text wire:model="db_name"/>
 
                 <label class="block text-gray-700 mt-4">Database User</label>
                 <input type="text" wire:model.defer="db_user" class="w-full border rounded px-3 py-2 mt-1">
+                <x-Ui::input.error-text wire:model="db_user"/>
 
                 <label class="block text-gray-700 mt-4">Database Password</label>
                 <input type="password" wire:model.defer="db_pass" class="w-full border rounded px-3 py-2 mt-1">
+                <x-Ui::input.error-text wire:model="db_pass"/>
             </div>
         @endif
 
-        <!-- Step 3: Subscription & Security -->
+        <!-- Step 3: Industry & Features -->
+        @if($step === 3)
+            <div>
+                <label class="block text-gray-700">Select Industry</label>
+                <select wire:model="industry_id" class="w-full border rounded px-3 py-2 mt-1">
+                    @foreach($industries ?? [] as $industry)
+                        <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+                    @endforeach
+                </select>
+                <x-Ui::input.error-text wire:model="industry_id"/>
+
+                <label class="block text-gray-700 mt-4">Enable Features</label>
+                <div class="grid grid-cols-2 gap-2">
+                    @foreach($features ?? [] as $feature)
+                        <label class="flex items-center">
+                            <input type="checkbox" wire:model="selected_features" value="{{ $feature->id }}"
+                                   class="mr-2">
+                            {{ $feature->name }}
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- Step 4: Subscription & Security -->
         @if($step === 4)
             <div>
                 <label class="block text-gray-700">Plan</label>
@@ -55,29 +89,6 @@
 
                 <label class="block text-gray-700 mt-4">Storage Limit (GB)</label>
                 <input type="number" wire:model="storage_limit" class="w-full border rounded px-3 py-2 mt-1">
-            </div>
-        @endif
-
-        <!-- Step 4: Industry & Features -->
-        @if($step === 3)
-            <div>
-                <label class="block text-gray-700">Select Industry</label>
-                <select wire:model="industry_id" class="w-full border rounded px-3 py-2 mt-1">
-                    @foreach($industries ?? [] as $industry)
-                        <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-                    @endforeach
-                </select>
-                @error('industry_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-
-                <label class="block text-gray-700 mt-4">Enable Features</label>
-                <div class="grid grid-cols-2 gap-2">
-                    @foreach($features ?? [] as $feature)
-                        <label class="flex items-center">
-                            <input type="checkbox" wire:model="selected_features" value="{{ $feature->id }}" class="mr-2">
-                            {{ $feature->name }}
-                        </label>
-                    @endforeach
-                </div>
             </div>
         @endif
 
@@ -94,6 +105,14 @@
             @endif
         </div>
     </div>
+
+    <div class="p-4 bg-gray-100 rounded shadow h-64 overflow-y-auto">
+        @foreach ($progressMessages as $msg)
+            <div class="mb-2 text-gray-700">{{ $msg }}</div>
+        @endforeach
+    </div>
+
+
 
     <x-Ui::setup.alerts/>
     <x-Ui::setup.confetti-effect/>
