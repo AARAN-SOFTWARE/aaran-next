@@ -33,7 +33,6 @@ class Index extends Component
     public $active_id = true;
     #endregion
 
-
     public function mount()
     {
         $this->BlogCategories = BlogCategory::on($this->getTenantConnection())->get();

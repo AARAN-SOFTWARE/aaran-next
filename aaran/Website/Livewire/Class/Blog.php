@@ -2,9 +2,13 @@
 
 namespace Aaran\Website\Livewire\Class;
 
+use Aaran\Assets\Traits\ComponentStateTrait;
+use Aaran\Assets\Traits\TenantAwareTrait;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
-//use Aaran\Assets\Traits\CommonTraitNew;
 use Aaran\Website\Models\BlogCategory;
 use Aaran\Website\Models\BlogPost;
 use Aaran\Website\Models\BlogTag;
@@ -13,12 +17,12 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 class Blog extends Component
 {
-
-//    use CommonTraitNew;
+    use ComponentStateTrait, TenantAwareTrait;
 
     use WithFileUploads;
 
     #region[properties]
+    public string $vname = '';
     public string $body;
     public $users;
     public $image;
@@ -28,12 +32,19 @@ class Blog extends Component
     public $tags;
     public $tagfilter = [];
     public $visibility = false;
+    public bool $active_id = true;
     #endregion
+
+//    public function mount()
+//    {
+//        $this->blogCategories = BlogCategory::on($this->getTenantConnection())->get();
+//    }
+
 
     public function rules(): array
     {
         return [
-            'common.vname' => 'required|min:3|max:75',
+            'vname' => 'required|min:3|max:75',
             'body' => 'required|min:10|',
         ];
     }
@@ -41,7 +52,7 @@ class Blog extends Component
     public function messages()
     {
         return [
-            'common.vname.required' => ' :attribute is required.',
+            'vname.required' => ' :attribute is required.',
             'body.required' => ' :attribute is required.',
         ];
     }
@@ -49,86 +60,60 @@ class Blog extends Component
     public function validationAttributes()
     {
         return [
-            'common.vname' => 'User name',
+            'vname' => 'User name',
             'body' => 'Description',
         ];
     }
-    public function mount()
-    {
-        $this->BlogCategories = BlogCategory::get();
-    }
-
-
-//    #region[getList]
-//    private function getList()
-//    {
-//        return 'web';
-//    }
-//    #endregion
 
     #region[Get-Save]
     public function getSave(): void
     {
-        $this->validate($this->rules());
-        if ($this->common->vname != '') {
-            if ($this->common->vid == '') {
-                $Post = new BlogPost();
-                $extraFields = [
-                    'body' => $this->body,
-                    'blog_category_id' => $this->blog_category_id?:104,
-                    'blog_tag_id' => $this->blog_tag_id?:1,
-                    'image' => $this->saveImage(),
-                    'user_id' => auth()->id(),
-                    'visibility' => $this->visibility,
+        $this->validate();
+        $connection = $this->getTenantConnection();
 
-                ];
-                $this->common->save($Post, $extraFields);
-                $message = "Saved";
-            } else {
-                $Post = BlogPost::find($this->common->vid);
-                $extraFields = [
-                    'body' => $this->body,
-                    'blog_category_id' => $this->blog_category_id?:104,
-                    'blog_tag_id' => $this->blog_tag_id?:1,
-                    'image' => $this->saveImage(),
-                    'user_id' => auth()->id(),
-                    'visibility' => $this->visibility,
-                ];
-                $this->common->edit($Post, $extraFields);
-                $message = "Updated";
-            }
-            $this->dispatch('notify', ...['type' => 'success', 'content' => $message . ' Successfully']);
-        }
+        BlogPost::on($connection)->updateOrCreate(
+            ['id' => $this->vid],
+            [
+                'vname' => Str::ucfirst($this->vname),
+                'body' => $this->body,
+                'blog_category_id' => $this->blog_category_id,
+                'blog_tag_id' => $this->blog_tag_id,
+                'image' => $this->saveImage(),
+//                'user_id' => auth()->id(),
+                'visibility' => $this->visibility,
+                'active_id' => $this->active_id
+            ],
+        );
+        $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
+        $this->clearFields();
     }
     #endregion
 
     #region[Get-Obj]
-    public function getObj($id)
+    public function getObj(int $id): void
     {
         if ($id) {
-            $Post = BlogPost::find($id);
-            $this->common->vid = $Post->id;
-            $this->common->vname = $Post->vname;
+            $Post = BlogPost::on($this->getTenantConnection())->find($id);
+            $this->vid = $Post->id;
+            $this->vname = $Post->vname;
             $this->body = $Post->body;
             $this->blog_category_id = $Post->blog_category_id;
-            $this->blog_category_name = $Post->blog_category_id?BlogCategory::find($Post->blog_category_id)->vname:'';
+            $this->blog_category_name = $Post->blog_category_id?BlogCategory::on($this->getTenantConnection())->find($Post->blog_category_id)->vname:'';
             $this->blog_tag_id = $Post->blog_tag_id;
-            $this->blog_tag_name = $Post->blog_tag_id?BlogTag::find($Post->blog_tag_id)->vname:'';
-            $this->common->active_id = $Post->active_id;
+            $this->blog_tag_name = $Post->blog_tag_id?BlogTag::on($this->getTenantConnection())->find($Post->blog_tag_id)->vname:'';
+            $this->active_id = $Post->active_id;
             $this->old_image = $Post->image;
             $this->visibility = $Post->visibility;
-            return $Post;
         }
-        return null;
     }
     #endregion
 
     #region[Clear-Fields]
     public function clearFields(): void
     {
-        $this->common->vid = '';
-        $this->common->vname = '';
-        $this->common->active_id = '1';
+        $this->vid = null;
+        $this->vname = '';
+        $this->active_id = true;
         $this->body = '';
         $this->blog_category_id = '';
         $this->blog_category_name = '';
@@ -169,14 +154,9 @@ class Blog extends Component
     #region[blogCategory]
     public $blog_category_id = '';
     public $blog_category_name = '';
-    public Collection $blogcategoryCollection;
+    public $blogcategoryCollection;
     public $highlightBlogCategory = 0;
     public $blogcategoryTyped = false;
-
-//    public function mount()
-//    {
-//        $this->BlogCategories = Common::where('label_id', '=', '18')->get();
-//    }
 
     public function decrementBlogcategory(): void
     {
@@ -211,8 +191,8 @@ class Blog extends Component
         $this->blogcategoryCollection = Collection::empty();
         $this->highlightBlogCategory = 0;
 
-        $this->blog_category_name = $obj['vname'] ?? '';
-        $this->blog_category_id = $obj['id'] ?? '';
+        $this->blog_category_name = $obj->vname ?? '';
+        $this->blog_category_id = $obj->id ?? '';
     }
 
     public function refreshBlogcategory($v): void
@@ -224,7 +204,7 @@ class Blog extends Component
 
     public function blogcategorySave($name)
     {
-        $obj = BlogCategory::create([
+        $obj = BlogCategory::on($this->getTenantConnection())->create([
             'vname' => $name,
             'active_id' => '1'
         ]);
@@ -234,9 +214,14 @@ class Blog extends Component
 
     public function getBlogcategoryList(): void
     {
-        $this->blogcategoryCollection = $this->blog_category_name ?
-            BlogCategory::search(trim($this->blog_category_name))->get() :
-            BlogCategory::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->blogcategoryCollection = DB::connection($this->getTenantConnection())
+            ->table('blog_categories')
+            ->when($this->blog_category_name, fn($query) => $query->where('vname', 'like', "%{$this->blog_category_name}%"))
+            ->get();
     }
 
     #endregion
@@ -244,7 +229,7 @@ class Blog extends Component
     #region[blogTag]
     public $blog_tag_id = '';
     public $blog_tag_name = '';
-    public Collection $blogtagCollection;
+    public $blogtagCollection;
     public $highlightBlogtag = 0;
     public $blogtagTyped = false;
 
@@ -285,6 +270,7 @@ class Blog extends Component
         $this->blog_tag_id = $obj['id'] ?? '';
     }
 
+    #[On('refresh-blog_tag')]
     public function refreshBlogtag($v): void
     {
         $this->blog_tag_id = $v['id'];
@@ -294,7 +280,7 @@ class Blog extends Component
 
     public function blogtagSave($name)
     {
-        $obj = BlogTag::create([
+        $obj = BlogTag::on($this->getTenantConnection())->create([
             'blog_category_id' => $this->blog_category_id,
             'vname' => $name,
             'active_id' => '1'
@@ -305,9 +291,14 @@ class Blog extends Component
 
     public function getBlogTagList(): void
     {
-        $this->blogtagCollection = $this->blog_tag_name ?
-            BlogTag::search(trim($this->blog_tag_name))->get() :
-            BlogTag::all();
+        if (!$this->getTenantConnection()) {
+            return; // Prevent execution if tenant is not set
+        }
+
+        $this->blogtagCollection = DB::connection($this->getTenantConnection())
+            ->table('blog_tags')
+            ->when($this->blog_tag_name, fn($query) => $query->where('vname', 'like', "%{$this->blog_tag_name}%"))
+            ->get();
     }
 
     #endregion
@@ -320,7 +311,7 @@ class Blog extends Component
 
     public function gettags()
     {
-        $this->tags = BlogTag::where('blog_category_id', '=', $this->category_id)->get();
+        $this->tags = BlogTag::on($this->getTenantConnection())->where('blog_category_id', '=', $this->category_id)->get();
     }
 
     public function getFilter($id)
@@ -347,6 +338,28 @@ class Blog extends Component
         return route('blog');
     }
 
+    #region[getList]
+    public function getList()
+    {
+        return BlogPost::on($this->getTenantConnection())
+            ->active($this->activeRecord)
+            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+            ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
+            ->paginate($this->perPage);
+    }
+    #endregion
+
+    #region[Delete]
+    public function deleteFunction(): void
+    {
+        if (!$this->deleteId) return;
+
+        $obj = BlogPost::on($this->getTenantConnection())->find($this->deleteId);
+        if ($obj) {
+            $obj->delete();
+        }
+    }
+    #endregion
 
     #region[render]
     #[Layout('Ui::components.layouts.web')]
@@ -355,26 +368,26 @@ class Blog extends Component
         $this->getBlogcategoryList();
         $this->getBlogtagList();
 
-        $this->getListForm->perPage = 6;
-        return view('website::blog')->layout('layouts.web')->with([
-            'list' => $this->getListForm->getList(BlogPost::class, function ($query) {
-                return $query->latest()->whereIN('visibility', session()->get('tenant_id') ? [0, 1] : [1])
-                    ->when($this->tagfilter, function ($query, $tagfilter) {
-                        return $query->whereIn('blog_tag_id', $tagfilter);
-                    });
-            }),
-            'topPost' => BlogPost::take(4)->whereIN('visibility', session()->get('tenant_id') ? [0, 1] : [1])->when($this->tagfilter, function ($query, $tagfilter) {
-                return $query->whereIn('blog_tag_id', $tagfilter);
-            })->get(),
+        return view('website::blog')->with([
+            'list' => $this->getList(),
+            'topPost' => BlogPost::on($this->getTenantConnection())->orderBy('created_at', 'desc')->first()
         ]);
-    }
 
-//    #endregion
-//    #[Layout('components.layouts.web')]
-//    public function render()
-//    {
-//        return view('website::blog');
-//    }
+//        $this->getListForm->perPage = 6;
+//        return view('website::blog')->layout('layouts.web')->with([
+//            'list' => $this->getListForm->getList(BlogPost::class, function ($query) {
+//                return $query->latest()->whereIN('visibility', session()->get('tenant_id') ? [0, 1] : [1])
+//                    ->when($this->tagfilter, function ($query, $tagfilter) {
+//                        return $query->whereIn('blog_tag_id', $tagfilter);
+//                    });
+//            }),
+//            'topPost' => BlogPost::take(4)->whereIN('visibility', session()->get('tenant_id') ? [0, 1] : [1])->when($this->tagfilter, function ($query, $tagfilter) {
+//                return $query->whereIn('blog_tag_id', $tagfilter);
+//            })->get(),
+//        ]);
+    }
+    #endregion
+
 
 
 }

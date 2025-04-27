@@ -2,6 +2,8 @@
     <x-Ui::web.home-new.items.banner label="Blog" desc=" We Design and develop Outstanding Digital products and digital -
                 first Brands" padding="sm:px-[95px]" padding_mob="px-[40px]" />
 
+    <x-Ui::alerts.notification />
+
     <div class="flex sm:flex-row flex-col-reverse justify-center font-roboto tracking-wider my-16 gap-6 scroll-smooth">
 
         <div class="sm:w-6/12 w-auto flex-col flex gap-y-16 border-r border-gray-200 sm:pr-6 sm:px-0 px-2">
@@ -17,7 +19,7 @@
                         </a>
                         <!-- Drop down ---------------------------------------------------------------------------->
 
-                        @if(session()->get('tenant_id')!='')
+{{--                        @if(session()->get('tenant_id')!='')--}}
                             <x-Ui::dropdown.icon>
                                 <div class="max-w-max  flex-col flex justify-start items-start space-y-3 text-xs">
                                     <button wire:click="edit({{$row->id}})" class="inline-flex items-center gap-x-2 px-2 py-1">
@@ -27,7 +29,7 @@
                                         <span>Edit</span>
                                     </button>
 
-                                    <button wire:click="getDelete({{$row->id}})" class="inline-flex items-center gap-x-2 px-2 py-1">
+                                    <button wire:click="confirmDelete({{$row->id}})" class="inline-flex items-center gap-x-2 px-2 py-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                         </svg>
@@ -36,7 +38,7 @@
 
                                 </div>
                             </x-Ui::dropdown.icon>
-                        @endif
+{{--                        @endif--}}
                     </div>
 
                     <div class="space-y-5 pb-16">
@@ -64,16 +66,18 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-3 text-gray-600">
                                         <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
                                     </svg>
-                                    <span>POST BY : {{$row->user->name}}</span>
+{{--                                    <span>POST BY : {{$row->user->name}}</span>--}}
                                 </div>
                             </div>
 
                             <div class="inline-flex items-center space-x-5">
                                 <div> {{$row->visibility==0?'Private':'Public'}}</div>
                                 <div class="text-sm">|</div>
-                                <div>#{{ \Aaran\Blog\Models\BlogPost::type($row->blog_category_id) ?: 'posts' }}</div>
+                                <div>#{{ $row->category->name ?? 'posts' }}</div>
+
                                 <div class="text-sm">|</div>
-                                <div>{{ \Aaran\Blog\Models\BlogPost::tagName($row->blog_tag_id) ?: 'posts'}}</div>
+                                <div>#{{ $row->tag->name ?? 'posts' }}</div>
+
                             </div>
 
                         </div>
@@ -126,18 +130,16 @@
 
             <!-- Form create  ----------------------------------------------------------------------------------------->
 
-            <x-Ui::forms.create :id="$common->vid" :max-width="'xl'">
+            <x-Ui::forms.create :id="$vid" :max-width="'xl'">
                 <div class="flex flex-col gap-4">
-
-                    {{-- <x-Ui::input.model-text wire:model="common.vname" :label="'Name'"/>--}}
 
                     <div class="inline-flex gap-3">
                         <input type="checkbox" wire:model="visibility">
                         <label for="">Public</label>
                     </div>
 
-                    <x-Ui::input.floating wire:model="common.vname" label="Name" />
-                    @error('common.vname')
+                    <x-Ui::input.floating wire:model="vname" label="Name" />
+                    @error('vname')
                     <div class="text-xs text-red-500">
                         {{$message}}
                     </div>
@@ -242,7 +244,7 @@
                     @foreach($topPost as $row)
                         <div class="w-full h-auto flex gap-x-2 hover:bg-slate-100 group animate__animated wow animate__backInRight " data-wow-duration="3s">
                             <div class="w-2/6 overflow-hidden">
-                                <img src="{{ \Illuminate\Support\Facades\Storage::url('/images/'.$row->image) }}"
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url('/images/' . ($row->image ?? 'default.png')) }}"
                                      alt="no image" class="w-full h-20 object-cover transition ease-in-out duration-300 hover:scale-105">
                             </div>
 
@@ -253,12 +255,20 @@
                                         <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
                                     </svg>
                                 </span>
-                                    <span class="text-xs text-gray-600">By {{$row->user->name}}</span>
+{{--                                    <span class="text-xs text-gray-600">By {{$row->user->name}}</span>--}}
                                 </div>
                                 <div class="3/4 flex-col flex justify-start items-start ">
-                                    <div class="text-sm font-semibold font-merri">{{\Illuminate\Support\Str::words($row->vname, 5)}}</div>
+                                    <div class="text-sm font-semibold font-merri">
+{{--                                        {{\Illuminate\Support\Str::words($row->vname, 5)}}--}}
+                                        {{ isset($row['vname']) ? \Illuminate\Support\Str::words($row['vname'], 5) : '' }}
 
-                                    <div class="text-xs text-gray-600">{{\Illuminate\Support\Str::words($row->body, 9)}}</div>
+                                    </div>
+
+                                    <div class="text-xs text-gray-600">
+{{--                                        {{\Illuminate\Support\Str::words($row->body, 9)}}--}}
+                                        {{ isset($row['body']) ? \Illuminate\Support\Str::words($row['body'], 5) : '' }}
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -275,6 +285,7 @@
 
             <div class="flex-col flex justify-between w-full overflow-y-auto h-72">
 
+                @if(!is_null($BlogCategories))
                 @foreach($BlogCategories as $blogcategory)
 
                     <button wire:click="getCategory_id({{$blogcategory->id}})" class="h-12 w-3/4 inline-flex items-center gap-x-4 py-2 my-3 bg-red-50 text-red-600 px-4 group hover:bg-red-600 rounded-md mr-2 transition-all ease-linear duration-300
@@ -287,6 +298,7 @@
                         <span class="group-hover:text-white">{{$blogcategory->vname}}</span>
                     </button>
                 @endforeach
+                @endif
 
             </div>
 

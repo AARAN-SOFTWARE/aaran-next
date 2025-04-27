@@ -32,7 +32,7 @@ shadow-md print:hidden">
                 <a role="button" href="{{route('switch-default-company')}}"
                         class="text-gray-600 bg-white focus:outline-none hover:bg-gray-100 font-semibold sm:px-2 px-0.5 sm:py-2 py-1 rounded-lg text-xs cursor-pointer">
                     {{session()->get('company_name') ?:'Select Company' }}
-                    &nbsp;-&nbsp;{{ \Aaran\Assets\Enums\Acyear::tryFrom(session()->get('acyear_id'))->getName()}}
+{{--                    &nbsp;-&nbsp;{{ \Aaran\Assets\Enums\Acyear::tryFrom(session()->get('acyear_id'))->getName()}}--}}
                 </a>
 
             </div>
