@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->date('subscription_end')->nullable();
             $table->decimal('storage_limit', 13, 2)->default(10);
             $table->integer('user_limit')->default(5);
-            $table->boolean('is_active')->default(true);
+            $table->boolean('active_id')->default(true);
             // Multi-Tenant Features
             $table->string('industry_code')->nullable();
             $table->json('settings')->nullable();
@@ -50,7 +50,7 @@ return new class extends Migration {
             $table->index('t_name');
             $table->index('email');
             $table->index('industry_code');
-            $table->index('is_active');
+            $table->index('active_id');
         });
     }
 

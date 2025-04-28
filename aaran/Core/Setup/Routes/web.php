@@ -21,3 +21,4 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::get('/setup', Aaran\Core\Setup\Livewire\Class\TenantSetupWizard::class)->name('setup');
+Route::get('/clients', Aaran\Core\Setup\Livewire\Class\ClientSetup::class)->name('clients');
