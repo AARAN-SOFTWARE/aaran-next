@@ -20,8 +20,12 @@ class TenantMigration extends Component
 
     public function createTenant()
     {
-        set_time_limit(300); // 5 minutes
-        RunTenantMigrationJob::dispatchSync($this->tenant->t_name);
+        try {
+            set_time_limit(300); // 5 minutes
+            RunTenantMigrationJob::dispatchSync($this->tenant->t_name);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     #[Layout('Ui::components.layouts.web')]

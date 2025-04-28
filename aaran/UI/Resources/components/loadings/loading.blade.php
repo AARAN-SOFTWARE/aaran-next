@@ -1,28 +1,66 @@
-<div wire:loading
-     class="fixed inset-0 bg-black/50 z-50 flex justify-center items-center transition-opacity duration-300">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center animate-fadeIn">
-        <div class="loader rounded-full border-4 border-t-4 border-white h-12 w-12 mb-4 animate-spin"></div>
+<div
+    wire:loading.class="loading"
+    x-data="{
+        loading: false,
+        seconds: 0,
+        timer: null,
+        startTimer() {
+            this.seconds = 0;
+            this.timer = setInterval(() => { this.seconds++ }, 1000);
+        },
+        stopTimer() {
+            clearInterval(this.timer);
+        },
+        formattedTime() {
+            let mins = Math.floor(this.seconds / 60);
+            let secs = this.seconds % 60;
+            return String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+        }
+    }"
+    x-init="
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.attributeName === 'class') {
+                    if ($el.classList.contains('loading')) {
+                        loading = true;
+                        startTimer();
+                    } else {
+                        loading = false;
+                        stopTimer();
+                    }
+                }
+            });
+        });
+        observer.observe($el, { attributes: true });
+    "
+>
+
+    {{-- Backdrop --}}
+    <div x-show="loading" class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"></div>
+
+    {{-- Loader + Timer --}}
+    <div x-show="loading" class="fixed inset-0 z-50 flex flex-col justify-center items-center space-y-4">
+        {{-- Spinner --}}
+        <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+
+        {{-- Timer --}}
+        <div class="text-white text-2xl font-bold">
+            <span x-text="formattedTime()"></span>
+        </div>
+
+        {{-- Loading Text --}}
         <p class="text-white text-lg font-semibold">Loading...</p>
     </div>
+
 </div>
 
 <style>
-    .loader {
-        border-top-color: transparent;
-        animation: spin 1s linear infinite;
-    }
-
     @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
-    }
-
-    .animate-fadeIn {
-        animation: fadeIn 0.3s ease-out;
+    .animate-spin {
+        animation: spin 1s linear infinite;
     }
 </style>

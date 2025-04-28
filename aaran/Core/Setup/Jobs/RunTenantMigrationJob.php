@@ -62,6 +62,6 @@ class RunTenantMigrationJob implements ShouldQueue
         // Mark migration completion
         Log::channel('migration_logs')->info("Migration completed for tenant: {$this->t_name}");
 
-//        session()->flash('success', '🎉 Tenant created successfully!');
+        session()->flash('success', '🎉 Tenant created successfully!');
     }
 }
