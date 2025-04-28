@@ -39,7 +39,9 @@
                             <x-Ui::table.cell-text left>{{$row->db_name}}</x-Ui::table.cell-text>
                             <x-Ui::table.cell-text left>{{$row->db_user}}</x-Ui::table.cell-text>
                             <x-Ui::table.cell-text left>{{$row->db_pass}}</x-Ui::table.cell-text>
-                            <x-Ui::table.cell-text left>{{$row->migration_status}}</x-Ui::table.cell-text>
+                            <x-Ui::table.cell-link :href="route('tenant-migrations',$row->id)">
+                                {{$row->migration_status}}
+                            </x-Ui::table.cell-link>
                             <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                             <x-Ui::table.cell-action id="{{$row->id}}"/>
                         </x-Ui::table.row>
