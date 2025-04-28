@@ -18,7 +18,7 @@ class TenantSeeder extends Seeder
                 'plan' => 'premium',
                 'storage_limit' => 50.00,
                 'user_limit' => 20,
-                'is_active' => true,
+                'active_id' => true,
             ],
             [
                 'b_name' => 'Tenant Two Business',
@@ -27,7 +27,7 @@ class TenantSeeder extends Seeder
                 'plan' => 'free',
                 'storage_limit' => 10.00,
                 'user_limit' => 5,
-                'is_active' => true,
+                'active_id' => true,
             ],
             [
                 'b_name' => 'Tenant Three Business',
@@ -36,7 +36,7 @@ class TenantSeeder extends Seeder
                 'plan' => 'business',
                 'storage_limit' => 100.00,
                 'user_limit' => 50,
-                'is_active' => true,
+                'active_id' => true,
             ],
         ];
 

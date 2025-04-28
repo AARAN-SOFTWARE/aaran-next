@@ -3,6 +3,7 @@
 namespace Aaran\Core\Tenant\Models;
 
 use Aaran\Core\Tenant\Database\Factories\TenantFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -59,6 +60,16 @@ class Tenant extends Model
 //    {
 //        $this->attributes['api_key'] = $value ? Crypt::encryptString($value) : null;
 //    }
+
+    public function scopeActive(Builder $query, $status = '1'): Builder
+    {
+        return $query->where('active_id', $status);
+    }
+
+    public function scopeSearchByName(Builder $query, string $search): Builder
+    {
+        return $query->where('t_name', 'like', "%$search%");
+    }
 
     /**
      * Relationship: A Tenant has many Users.
