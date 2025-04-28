@@ -15,13 +15,14 @@ class IntentResolver
         $connection = $instance->getTenantConnection();
         $message = strtolower($message);
 
-        $patterns = ChatbotIntent::orderByDesc('priority')->get();
+        $patterns = ChatbotIntent::on($connection)->orderByDesc('priority')->get();
 
         foreach ($patterns as $intent) {
-            if (preg_match($intent->pattern, $message)) {
-                $handlerClass = $intent->handler_class;
+            $pattern = self::prepareRegex($intent->pattern);
+
+            if (preg_match($pattern, $message)) {
                 return [
-                    'handler' => new $handlerClass($connection),
+                    'handler' => new DynamicQueryHandler($connection, $intent, auth()->user()),
                     'suggestions' => [],
                 ];
             }
@@ -33,5 +34,16 @@ class IntentResolver
             'handler' => null,
             'suggestions' => $suggestions,
         ];
+    }
+
+    protected static function prepareRegex(string $pattern): string
+    {
+        // If pattern already has proper regex format, use it
+        if (preg_match('~^/.+/[a-z]*$~i', $pattern)) {
+            return $pattern;
+        }
+
+        // Otherwise auto-wrap into safe regex
+        return '/' . preg_quote($pattern, '/') . '/i';
     }
 }

@@ -6,6 +6,7 @@ use Aaran\BMS\Billing\Books\Database\Seeders\BooksSeeder;
 use Aaran\BMS\Billing\Common\Database\Seeders\CommonSeeder;
 use Aaran\BMS\Billing\Master\Database\Seeders\MasterSeeder;
 use Aaran\BMS\Billing\Baseline\Database\Seeders\DefaultCompanySeeder;
+use Aaran\Neot\Database\Seeders\ChatbotIntentSeeder;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -17,6 +18,7 @@ class ClientSeeder extends Seeder
             BooksSeeder::class,
             MasterSeeder::class,
             DefaultCompanySeeder::class,
+            ChatbotIntentSeeder::class,
         ]);
     }
 }

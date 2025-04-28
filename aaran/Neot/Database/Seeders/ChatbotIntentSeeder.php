@@ -16,7 +16,7 @@ class ChatbotIntentSeeder extends Seeder
                 'pattern' => '/price\s*list/i',
                 'static_response' => null,
                 'model_class' => 'Aaran\BMS\Billing\Master\Models\Product',
-                'columns' => json_encode(['name', 'price']),
+                'columns' => json_encode(['vname', 'initial_price']),
                 'where_conditions' => json_encode([]),
                 'view_template' => 'neot.partials::price-list',
                 'priority' => 10,

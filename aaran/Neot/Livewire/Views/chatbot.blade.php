@@ -1,5 +1,5 @@
 <div>
-    <x-slot name="header">Neot - Chat Bot</x-slot>
+    <x-slot name="header">Neot -Chat Bot</x-slot>
 
     @foreach ($chatHistory as $chat)
         @if ($chat['sender'] === 'user')
