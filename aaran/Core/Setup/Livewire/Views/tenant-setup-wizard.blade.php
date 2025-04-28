@@ -1,18 +1,23 @@
 <div>
 
-{{--    <x-Ui::loadings.loading/>--}}
+    <x-Ui::loadings.loading/>
 
-    <!-- Banner -->
-    <x-Ui::web.home-new.items.banner
-        label="Setup"
-        desc="Empowering your digital dreams"
-        padding="sm:px-[160px]"
-        padding_mob="px-[70px]"
-    />
-
-
-    <button wire:click="setupss" class="bg-amber-300 px-3 py-3">setup</button>
-
+    <div class="relative font-roboto tracking-wider">
+        <div class="h-[20rem] bg-amber-100">
+        </div>
+        <div class="w-full absolute text-white top-[120px] text-center flex-col flex items-center justify-center">
+            <div class="z-20 w-6/12 mx-auto sm:text-8xl text-4xl font-semibold pb-4 animate__animated wow bounceInDown"
+                 data-wow-duration="3s">Setup
+            </div>
+            <span
+                class="z-10 absolute rounded-xl sm:top-6 -top-2 sm:py-6 py-3 sm:px-[180px] px-[80px]
+                bg-gradient-to-r from-transparent via-[#1CB5E0] to-[#000851]
+                animate__animated wow animate__backInLeft" data-wow-duration="3s">&nbsp;</span>
+            <div class="sm:w-6/12 w-auto mx-auto text-black sm:text-lg pb-4 animate__animated wow animate__backInRight" data-wow-duration="3s">
+                Empowering your digital dreams
+            </div>
+        </div>
+    </div>
 
 
 
@@ -106,14 +111,18 @@
         </div>
     </div>
 
-    <div class="p-4 bg-gray-100 rounded shadow h-64 overflow-y-auto">
-        @foreach ($progressMessages as $msg)
-            <div class="mb-2 text-gray-700">{{ $msg }}</div>
-        @endforeach
-    </div>
-
-
-
     <x-Ui::setup.alerts/>
     <x-Ui::setup.confetti-effect/>
 </div>
+
+<script>
+    document.addEventListener('livewire:update', () => {
+        const logsContainer = document.getElementById('logs-container');
+        if (logsContainer) {
+            logsContainer.scrollTo({
+                top: logsContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    });
+</script>
