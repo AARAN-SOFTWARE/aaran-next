@@ -116,13 +116,13 @@
                     <x-Ui::table.cell-text colspan="6" class="text-md text-right text-gray-400 ">
                         TOTALS
                     </x-Ui::table.cell-text>
-                    @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
+                    @if($transaction_mode  == \Aaran\Assets\Enums\TransactionMode::RECEIPT->value)
                     <x-Ui::table.cell-text class="text-right text-lg ">
                         {{ $total_debit != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_debit) :'' }}
                     </x-Ui::table.cell-text>
                     @endif
 
-                    @if($row->transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
+                    @if($transaction_mode  == \Aaran\Assets\Enums\TransactionMode::PAYMENT->value)
                     <x-Ui::table.cell-text class="text-right text-lg ">
                         {{ $total_credit  != 0 ? \Aaran\Assets\Helper\Format::Decimal($total_credit) :'' }}
                     </x-Ui::table.cell-text>
