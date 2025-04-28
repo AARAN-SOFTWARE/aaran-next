@@ -18,7 +18,10 @@ class ChatbotIntentSeeder extends Seeder
                 'model_class' => 'Aaran\BMS\Billing\Master\Models\Product',
                 'columns' => json_encode(['vname', 'initial_price']),
                 'where_conditions' => json_encode([]),
-                'view_template' => 'neot.partials::price-list',
+                'view_template' => json_encode([
+                    'vname' => 'Product',
+                    'initial_price' => 'Price',
+                ]),
                 'priority' => 10,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -33,7 +36,7 @@ class ChatbotIntentSeeder extends Seeder
                     ['status', '=', 'pending'],
                     ['customer_id', '=', '{{user_id}}']
                 ]),
-                'view_template' => 'neot.partials::pending-payments',
+                'view_template' => json_encode([]),
                 'priority' => 20,
                 'created_at' => now(),
                 'updated_at' => now(),

@@ -24,11 +24,11 @@ class DynamicQueryHandler
             return $this->intent->static_response;
         }
 
-        // 2. Otherwise, build dynamic query
+        // 2. Build dynamic query
         $modelClass = $this->intent->model_class;
         $columns = json_decode($this->intent->columns, true) ?? ['*'];
         $whereConditions = json_decode($this->intent->where_conditions, true) ?? [];
-        $viewTemplate = $this->intent->view_template;
+        $columnMappings = json_decode($this->intent->view_template, true) ?? []; // <-- now decoding
 
         $query = $modelClass::on($this->connection)->select($columns);
 
@@ -43,12 +43,17 @@ class DynamicQueryHandler
 
         $results = $query->get();
 
-        return view($viewTemplate, ['results' => $results])->render();
+        return view('neot.partials::message', [
+            'results' => $results,
+            'columnMappings' => $columnMappings,
+        ])->render();
     }
+
 
     protected function replacePlaceholders($value)
     {
         if (is_string($value)) {
+
             if (strpos($value, '{{user_id}}') !== false && $this->user) {
                 $value = str_replace('{{user_id}}', $this->user->id, $value);
             }

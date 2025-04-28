@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('model_class')->nullable();    // Model to query (optional)
             $table->json('columns')->nullable();          // Select columns (optional)
             $table->json('where_conditions')->nullable(); // Where clauses (optional)
-            $table->string('view_template')->nullable();  // Blade template
+            $table->json('view_template')->nullable();  // Blade template
             $table->integer('priority')->default(0);      // Matching priority
             $table->timestamps();
         });
