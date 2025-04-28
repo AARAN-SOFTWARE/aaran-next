@@ -25,7 +25,7 @@
             <div>{{$tenant->db_pass}}</div>
 
             <div>&nbsp;</div>
-            |
+
         </div>
 
         <div class="flex justify-between mt-6">
