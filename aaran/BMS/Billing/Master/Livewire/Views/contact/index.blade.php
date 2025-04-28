@@ -54,7 +54,8 @@
 
         </x-Ui::table.form>
 
-        <x-Ui::modal.delete/>
+        <!-- Delete Modal --------------------------------------------------------------------------------------------->
+        <x-Ui::modal.confirm-delete/>
 
         {{-- <div class="">{{ $list->links() }}</div>--}}
 
