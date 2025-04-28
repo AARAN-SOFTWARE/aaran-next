@@ -36,7 +36,7 @@
         </x-Ui::table.form>
 
         <!-- Delete Modal --------------------------------------------------------------------------------------------->
-        <x-Ui::modal.delete/>
+        <x-Ui::modal.confirm-delete/>
 
         <div class="pt-5">{{ $list->links() }}</div>
 

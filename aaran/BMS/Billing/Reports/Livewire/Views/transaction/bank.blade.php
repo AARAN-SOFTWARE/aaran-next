@@ -141,7 +141,8 @@
 
         </x-Ui::table.form>
 
-        <x-Ui::modal.delete/>
+        <!-- Delete Modal --------------------------------------------------------------------------------------------->
+        <x-Ui::modal.confirm-delete/>
 
         <x-Ui::forms.create :id="$common->vid" :max-width="'6xl'" wire:click="contactUpdate">
 
