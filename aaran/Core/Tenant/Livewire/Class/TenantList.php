@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Core\Setup\Livewire\Class;
+namespace Aaran\Core\Tenant\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
@@ -10,7 +10,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ClientSetup extends Component
+class TenantList extends Component
 {
     use ComponentStateTrait, TenantAwareTrait;
 
@@ -49,7 +49,7 @@ class ClientSetup extends Component
     {
         return [
             'b_name' => 'required',
-            't_name' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.tenants,t_name"),
+            't_name' => 'required' . ($this->vid ? '' : "|unique:tenants,t_name"),
             'db_name' => 'required',
             'db_user' => 'required',
             'db_pass' => 'required',
@@ -89,7 +89,7 @@ class ClientSetup extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        Tenant::on($connection)->updateOrCreate(
+        Tenant::updateOrCreate(
             ['id' => $this->vid],
             [
                 'b_name' => Str::ucfirst($this->b_name),
@@ -235,7 +235,7 @@ class ClientSetup extends Component
     #[layout('Ui::components.layouts.web')]
     public function render()
     {
-        return view('setup::client-setup', [
+        return view('tenant::tenant-list', [
             'list' => $this->getList()
         ]);
     }

@@ -1,9 +1,8 @@
 <?php
 
+use Aaran\Core\Tenant\Livewire\Class;
 use Illuminate\Support\Facades\Route;
 
-//Common
-//Route::middleware(['web'])->group(function () {
-//});
 
-    Route::get('/subscriptions', \Aaran\Core\Tenant\Livewire\Class\SubscriptionList::class)->name('subscriptions');
+Route::get('/subscriptions', Class\SubscriptionList::class)->name('subscriptions');
+Route::get('/tenants', Class\TenantList::class)->name('tenants');

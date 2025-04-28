@@ -24,7 +24,6 @@ class SetupServiceProvider extends ServiceProvider
         $this->registerViews();
 
         Livewire::component('setup::tenant-setup', TenantSetupWizard::class);
-        Livewire::component('setup::client-setup', ClientSetup::class);
     }
 
     private function registerViews()

@@ -4,6 +4,7 @@ namespace Aaran\Core\Tenant\Providers;
 
 use Aaran\Core\Tenant\Http\Middleware\TenantMiddleware;
 use Aaran\Core\Tenant\Livewire\Class\SubscriptionList;
+use Aaran\Core\Tenant\Livewire\Class\TenantList;
 use Aaran\Core\Tenant\Services\TenantDatabaseService;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,8 @@ class TenantServiceProvider extends ServiceProvider
         $this->app->singleton(TenantDatabaseService::class, function ($app) {
             return new TenantDatabaseService();
         });
+
+        $this->app->register(TenantRouteServiceProvider::class);
 
         $this->loadViews();
     }
@@ -33,6 +36,7 @@ class TenantServiceProvider extends ServiceProvider
     protected function registerLivewire(): void
     {
         Livewire::component('tenant.tenant', SubscriptionList::class);
+        Livewire::component('tenant.tenant-list', TenantList::class);
     }
 
     protected function loadViews(): void

@@ -40,7 +40,7 @@
                             <x-Ui::table.cell-text left>{{$row->db_user}}</x-Ui::table.cell-text>
                             <x-Ui::table.cell-text left>{{$row->db_pass}}</x-Ui::table.cell-text>
                             <x-Ui::table.cell-text left>{{$row->migration_status}}</x-Ui::table.cell-text>
-                            <x-Ui::table.cell-status active="{{$row->is_active}}"/>
+                            <x-Ui::table.cell-status active="{{$row->active_id}}"/>
                             <x-Ui::table.cell-action id="{{$row->id}}"/>
                         </x-Ui::table.row>
                     @endforeach
