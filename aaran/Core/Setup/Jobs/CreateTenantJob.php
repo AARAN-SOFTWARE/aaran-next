@@ -14,13 +14,13 @@ class CreateTenantJob extends component
     public function createTenant($tenantId)
     {
         try {
-            $this->dispatch('tenant-setup-progress', message: 'Starting...');
+            $this->dispatch('setup-progress', message: 'Starting...');
             sleep(1);
-            $this->dispatch('tenant-setup-progress', message: 'Creating tables...');
+            $this->dispatch('setup-progress', message: 'Creating tables...');
             sleep(1);
-            $this->dispatch('tenant-setup-progress', message: 'Setting permissions...');
+            $this->dispatch('setup-progress', message: 'Setting permissions...');
             sleep(1);
-            $this->dispatch('tenant-setup-progress', message: 'Setup completed!');
+            $this->dispatch('setup-progress', message: 'Setup completed!');
             dd('here');
 
             $tenant = Tenant::findOrFail($tenantId);

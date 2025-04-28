@@ -2,13 +2,14 @@
 
 namespace Aaran\Core\Setup\Livewire\Class;
 
-use Aaran\Core\Setup\Jobs\CreateTenantJob;
+use Aaran\Core\Setup\Jobs\RunTenantMigrationJob;
 use Aaran\Core\Tenant\Models\Feature;
 use Aaran\Core\Tenant\Models\Industry;
 use Aaran\Core\Tenant\Models\Tenant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -133,7 +134,7 @@ class TenantSetupWizard extends Component
             DB::commit();
 
 
-            $this->runTenantMigrations($tenant);
+            $this->runTenantMigrations($tenant->t_name);
 
 
             session()->flash('success', '🎉 Tenant created successfully!');
@@ -145,41 +146,32 @@ class TenantSetupWizard extends Component
         }
     }
 
-    protected function runTenantMigrations($tenantId)
-    {
-//        $this->dispatch('tenant-setup-progress', message: 'starting Setup...');
-        (new CreateTenantJob())->createTenant($tenantId);
+    public $logs = '';
+    public $migrationRunning = false;
 
+    public function runTenantMigrations($t_name)
+    {
+        $this->migrationRunning = true;
+
+        set_time_limit(300); // 5 minutes
+        RunTenantMigrationJob::dispatchSync($t_name);
+
+        $this->migrationRunning = false;
     }
 
-    public function setupss()
+    public function updateLogs()
     {
-        $tenant = Tenant::where('t_name', 'tenant_1')->first();
+        $logFile = storage_path('logs/migration_logs/' . $this->t_name . '.log');
 
-        $this->runTenantMigrations($tenant->id);
+        if (File::exists($logFile)) {
+            $this->logs = File::get($logFile);
+
+            if (str_contains($this->logs, 'Migration completed')) {
+                $this->migrationRunning = false;
+                session()->flash('message', 'Migration completed successfully!');
+            }
+        }
     }
-
-    public $progressMessages = [];
-
-    #[On('tenant-setup-progress')]
-    public function handleProgress($message)
-    {
-        $this->progressMessages[] = $message;
-    }
-//    public function pollMigrationStatus()
-//    {
-//        $tenant = Tenant::where('t_name', $this->t_name)->first();
-//        if ($tenant?->migration_status === 'success') {
-//            $this->is_processing = false;
-//            session()->flash('success', '🎉 Setup completed successfully!');
-//            $this->dispatch('migration-success');
-//        } elseif ($tenant?->migration_status === 'failed') {
-//            $this->is_processing = false;
-//            session()->flash('error', '❌ Migration failed. Please check logs or retry.');
-//            $this->dispatch('migration-failed');
-//        }
-//    }
-
 
     #[Layout('Ui::components.layouts.web')]
     public function render()
