@@ -15,6 +15,7 @@ use Aaran\Core\Setup\Providers\SetupServiceProvider;
 use Aaran\Core\Tenant\Providers\TenantServiceProvider;
 use Aaran\Core\User\Providers\UserServiceProvider;
 use Aaran\Dashboard\Providers\DashboardServiceProvider;
+use Aaran\Neot\Providers\NeotServiceProvider;
 use Aaran\UI\Providers\UiServiceProvider;
 use Aaran\Website\Providers\WebsiteServiceProvider;
 use Illuminate\Support\ServiceProvider;
@@ -53,6 +54,8 @@ class AaranServiceProvider extends ServiceProvider
         $this->app->register(BlogServiceProvider::class);
 
         $this->app->register(BaselineServiceProvider::class);
+
+        $this->app->register(NeotServiceProvider::class);
     }
 
     public function boot()
