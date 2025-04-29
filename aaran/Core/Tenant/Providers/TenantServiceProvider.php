@@ -3,6 +3,9 @@
 namespace Aaran\Core\Tenant\Providers;
 
 use Aaran\Core\Tenant\Http\Middleware\TenantMiddleware;
+use Aaran\Core\Tenant\Livewire\Class\FeatureList;
+use Aaran\Core\Tenant\Livewire\Class\PlanFeatureList;
+use Aaran\Core\Tenant\Livewire\Class\PlanList;
 use Aaran\Core\Tenant\Livewire\Class\SubscriptionList;
 use Aaran\Core\Tenant\Livewire\Class\TenantList;
 use Aaran\Core\Tenant\Services\TenantDatabaseService;
@@ -35,8 +38,11 @@ class TenantServiceProvider extends ServiceProvider
 
     protected function registerLivewire(): void
     {
-        Livewire::component('tenant.tenant', SubscriptionList::class);
-        Livewire::component('tenant.tenant-list', TenantList::class);
+        Livewire::component('tenant::tenant-list', TenantList::class);
+        Livewire::component('tenant::plan-list', PlanList::class);
+        Livewire::component('tenant::feature-list', FeatureList::class);
+        Livewire::component('tenant::plan-feature-list', PlanFeatureList::class);
+        Livewire::component('tenant::subscription-list', SubscriptionList::class);
     }
 
     protected function loadViews(): void
