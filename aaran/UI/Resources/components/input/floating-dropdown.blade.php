@@ -12,21 +12,30 @@
     x-data="{
         open: false,
         selected: @entangle($attributes->wire('model')),
+        selectedLabel: '',
+        options: {{ json_encode($options) }},
+        init() {
+            if (this.selected && this.options[this.selected]) {
+                this.selectedLabel = this.options[this.selected];
+            }
+        },
         select(option) {
             this.selected = option;
+            this.selectedLabel = this.options[option];
             this.open = false;
         }
     }"
+    x-init="init"
     @click.away="open = false"
     class="relative w-full"
 >
-    <!-- Visible input (readonly, controlled by Alpine) -->
+    <!-- Input showing selected label, not the key -->
     <input
-        x-model="selected"
+        x-model="selectedLabel"
         readonly
         id="{{ $id }}"
         @focus="open = true"
-        class="block px-2.5 pb-2.5 pt-3 w-full bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 peer"
+        class="block px-2.5 pb-2.5 pt-3 w-full bg-white border border-gray-300 rounded-lg focus:outline-none  focus:ring-cyan-50 focus:border-blue-400 peer"
         type="text"
         placeholder=" "
     />
@@ -40,19 +49,25 @@
         {{ $label }}
     </label>
 
-    <!-- Dropdown list -->
+    <!-- Dropdown with tick -->
     <ul
         x-show="open"
         x-transition
-        class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-auto"
+        class="absolute z-50 mt-1.5 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-48 overflow-auto"
     >
-        @foreach ($options as $value => $display)
+        <template x-for="(label, key) in options" :key="key">
             <li
-                @click="select('{{ $value }}')"
-                class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                @click="select(key)"
+                class="flex items-center justify-between px-4 py-2 hover:bg-blue-100 cursor-pointer"
             >
-                {{ $display }}
+                <span x-text="label"></span>
+                <template x-if="selected === key">
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>
+                </template>
             </li>
-        @endforeach
+        </template>
     </ul>
 </div>
