@@ -69,12 +69,13 @@
                         label="Billing Cycle"
                         id="billing_cycle"
                         :options="['monthly' => 'Monthly', 'yearly' => 'Yearly']"
+                        placeholder="Choose a billing cycle"
                     />
                     <x-Ui::input.error-text wire:model="billing_cycle"/>
                 </div>
 
                 <div>
-                    <x-Ui::input.floating-textarea wire:model="billing_cycle" label="Description"/>
+                    <x-Ui::input.floating-textarea wire:model="description" label="Description"/>
                 </div>
 
             </div>
