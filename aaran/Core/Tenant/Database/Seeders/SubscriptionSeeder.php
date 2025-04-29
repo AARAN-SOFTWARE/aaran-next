@@ -11,8 +11,7 @@ class SubscriptionSeeder extends Seeder
     {
         Subscription::create([
             'tenant_id' => 1,
-            'plan_name' => 'Premium',
-            'price' => 99.99,
+            'plain_id' => '1',
             'status' => 'active',
             'started_at' => now(),
             'expires_at' => now()->addYear(),

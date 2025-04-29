@@ -2,6 +2,7 @@
 
 namespace Aaran\Core\Tenant\Database\Factories;
 
+use Aaran\Core\Tenant\Models\Plan;
 use Aaran\Core\Tenant\Models\Subscription;
 use Aaran\Core\Tenant\Models\Tenant;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,8 +15,7 @@ class SubscriptionFactory extends Factory
     {
         return [
             'tenant_id' => Tenant::factory(),
-            'plan_name' => $this->faker->word(),
-            'price' => $this->faker->randomFloat(2, 10, 500),
+            'plain_id' => Plan::factory(),
             'status' => 'active',
             'started_at' => now(),
             'expires_at' => now()->addMonth(),
