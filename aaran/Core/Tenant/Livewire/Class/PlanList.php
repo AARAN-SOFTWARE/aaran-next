@@ -6,6 +6,7 @@ namespace Aaran\Core\Tenant\Livewire\Class;
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Common\Models\City;
+use Aaran\Core\Tenant\Models\Plan;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -17,13 +18,16 @@ class PlanList extends Component
 
     #[Validate]
     public string $vname = '';
+    public string $price = '';
+    public string $billing_cycle = '';
+    public string $description = '';
     public bool $active_id = true;
 
-    #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.cities,vname"),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:plans,vname"),
+            'price' => 'required' . ($this->vid ? '' : "|unique:plans,price"),
         ];
     }
 
@@ -32,27 +36,31 @@ class PlanList extends Component
         return [
             'vname.required' => ':attribute is missing.',
             'vname.unique' => 'This :attribute is already created.',
+
+            'price.required' => ':attribute is missing.',
+            'price.unique' => 'This :attribute is already created.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'City name',
+            'vname' => 'Plan',
+            'price' => 'Price',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
-        $connection = $this->getTenantConnection();
 
-        City::on($connection)->updateOrCreate(
+        Plan::updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
+                'price' => $this->price,
+                'billing_cycle' => $this->billing_cycle,
+                'description' => $this->description,
                 'active_id' => $this->active_id
             ],
         );
@@ -61,57 +69,51 @@ class PlanList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
         $this->vname = '';
+        $this->price = '';
+        $this->billing_cycle = '';
+        $this->description = '';
         $this->active_id = true;
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
-        if ($obj = City::on($this->getTenantConnection())->find($id)) {
+        if ($obj = Plan::find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
+            $this->price = $obj->price;
+            $this->billing_cycle = $obj->billing_cycle;
+            $this->description = $obj->description;
             $this->active_id = $obj->active_id;
         }
     }
 
     public function getList()
     {
-        return City::on($this->getTenantConnection())
-            ->active($this->activeRecord)
+        return Plan::active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
 
-        $obj = City::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = Plan::find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
-
-    #[Layout('Ui::components.layouts.web')]
     public function render()
     {
-        return view('common::city-list', [
+        return view('tenant::plan-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
 }
