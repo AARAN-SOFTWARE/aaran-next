@@ -1,4 +1,4 @@
-<div xmlns:x-ui="http://www.w3.org/1999/html">
+<div>
     <x-slot name="header">Plan</x-slot>
     <x-Ui::forms.m-panel>
         <x-Ui::alerts.notification/>
