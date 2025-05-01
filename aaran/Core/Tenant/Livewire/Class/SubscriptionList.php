@@ -26,24 +26,24 @@ class SubscriptionList extends Component
     public function rules(): array
     {
         return [
-            'plan_id' => 'required',
             'tenant_id' => 'required',
+            'plan_id' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'plan_id.required' => ':attribute is missing.',
             'tenant_id.unique' => 'This :attribute is already created.',
+            'plan_id.required' => ':attribute is missing.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'plan_id' => 'Plan',
             'tenant_id' => 'Tenant',
+            'plan_id' => 'Plan',
         ];
     }
 
@@ -69,8 +69,8 @@ class SubscriptionList extends Component
     public function clearFields(): void
     {
         $this->vid = null;
-        $this->plan_id = '';
         $this->tenant_id = '';
+        $this->plan_id = '';
         $this->status = '';
         $this->started_at = '';
         $this->expires_at = '';
@@ -81,8 +81,8 @@ class SubscriptionList extends Component
     {
         if ($obj = Subscription::find($id)) {
             $this->vid = $obj->id;
-            $this->plan_id = $obj->vname;
             $this->tenant_id = $obj->code;
+            $this->plan_id = $obj->vname;
             $this->status = $obj->status;
             $this->started_at = $obj->started_at;
             $this->expires_at = $obj->expires_at;
@@ -108,7 +108,7 @@ class SubscriptionList extends Component
 
     public function render()
     {
-        return view('common::city-list', [
+        return view('tenant::subscription-list', [
             'list' => $this->getList()
         ]);
     }
