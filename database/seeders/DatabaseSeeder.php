@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Aaran\Core\Tenant\Database\Seeders\FeatureSeeder;
-use Aaran\Core\Tenant\Database\Seeders\IndustrySeeder;
+use Aaran\Core\Tenant\Database\Seeders\PlanFeatureSeeder;
 use Aaran\Core\Tenant\Database\Seeders\PlanSeeder;
 use Aaran\Core\Tenant\Database\Seeders\SubscriptionSeeder;
 use Aaran\Core\Tenant\Database\Seeders\TenantSeeder;
@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             TenantSeeder::class,
             PlanSeeder::class,
             FeatureSeeder::class,
+            PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
             UserSeeder::class,
         ]);

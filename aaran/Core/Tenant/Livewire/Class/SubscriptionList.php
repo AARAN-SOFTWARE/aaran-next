@@ -6,6 +6,7 @@ namespace Aaran\Core\Tenant\Livewire\Class;
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\BMS\Billing\Common\Models\City;
+use Aaran\Core\Tenant\Models\Subscription;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -16,44 +17,48 @@ class SubscriptionList extends Component
     use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
-    public string $vname = '';
-    public bool $active_id = true;
+    public string $tenant_id = '';
+    public string $plan_id = '';
+    public string $status = '';
+    public string $started_at = '';
+    public string $expires_at = '';
 
-    #region[Validation]
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.cities,vname"),
+            'plan_id' => 'required',
+            'tenant_id' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'vname.required' => ':attribute is missing.',
-            'vname.unique' => 'This :attribute is already created.',
+            'plan_id.required' => ':attribute is missing.',
+            'tenant_id.unique' => 'This :attribute is already created.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'City name',
+            'plan_id' => 'Plan',
+            'tenant_id' => 'Tenant',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
-        $connection = $this->getTenantConnection();
 
-        City::on($connection)->updateOrCreate(
+        Subscription::updateOrCreate(
             ['id' => $this->vid],
             [
-                'vname' => Str::ucfirst($this->vname),
-                'active_id' => $this->active_id
+                'tenant_id' => $this->tenant_id,
+                'plan_id' => $this->plan_id,
+                'status' => $this->status,
+                'started_at' => $this->started_at,
+                'expires_at' => $this->expires_at,
             ],
         );
 
@@ -61,57 +66,50 @@ class SubscriptionList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
-        $this->vname = '';
-        $this->active_id = true;
+        $this->plan_id = '';
+        $this->tenant_id = '';
+        $this->status = '';
+        $this->started_at = '';
+        $this->expires_at = '';
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
-        if ($obj = City::on($this->getTenantConnection())->find($id)) {
+        if ($obj = Subscription::find($id)) {
             $this->vid = $obj->id;
-            $this->vname = $obj->vname;
-            $this->active_id = $obj->active_id;
+            $this->plan_id = $obj->vname;
+            $this->tenant_id = $obj->code;
+            $this->status = $obj->status;
+            $this->started_at = $obj->started_at;
+            $this->expires_at = $obj->expires_at;
         }
     }
 
     public function getList()
     {
-        return City::on($this->getTenantConnection())
-            ->active($this->activeRecord)
-            ->when($this->searches, fn($query) => $query->searchByName($this->searches))
+        return Subscription::when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
 
-        $obj = City::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = Subscription::find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
-
-    #[Layout('Ui::components.layouts.web')]
     public function render()
     {
         return view('common::city-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
 }

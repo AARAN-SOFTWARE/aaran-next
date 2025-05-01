@@ -5,10 +5,8 @@ namespace Aaran\Core\Tenant\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
 use Aaran\Core\Tenant\Models\Feature;
 use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -106,7 +104,6 @@ class FeatureList extends Component
         }
     }
 
-    #[Layout('Ui::components.layouts.web')]
     public function render()
     {
         return view('tenant::feature-list', [
