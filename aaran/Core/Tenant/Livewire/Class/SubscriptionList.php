@@ -84,8 +84,8 @@ class SubscriptionList extends Component
     {
         if ($obj = Subscription::find($id)) {
             $this->vid = $obj->id;
-            $this->tenant_id = $obj->code;
-            $this->plan_id = $obj->vname;
+            $this->tenant_id = $obj->tenant_id;
+            $this->plan_id = $obj->plan_id;
             $this->status = $obj->status;
             $this->started_at = $obj->started_at;
             $this->expires_at = $obj->expires_at;

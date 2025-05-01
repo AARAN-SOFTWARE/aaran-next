@@ -12,8 +12,8 @@ return new class extends Migration {
             $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
             $table->foreignId('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->enum('status', ['active', 'expired', 'canceled', 'trial'])->default('trial');
-            $table->timestamp('started_at')->nullable();
-            $table->timestamp('expires_at')->nullable();
+            $table->date('started_at')->nullable();
+            $table->date('expires_at')->nullable();
             $table->timestamps();
         });
     }
