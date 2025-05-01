@@ -16,7 +16,7 @@ class PlanFeature extends Model
 
     protected $table = 'plan_features';
 
-    protected $fillable = ['vname', 'price', 'billing_cycle', 'description', 'active_id'];
+    protected $fillable = ['plan_id', 'feature_id','active_id'];
 
     protected $casts = [
         'active_id' => 'boolean',

@@ -45,14 +45,28 @@
 
         <x-Ui::forms.create :id="$vid">
             <div class="flex flex-col h-fit gap-3">
-                <div>
-                    <x-Ui::input.floating wire:model="plan_id" label="Name"/>
-                    <x-Ui::input.error-text wire:model="vname"/>
-                </div>
 
                 <div>
-                    <x-Ui::input.floating wire:model="code" label="Code"/>
-                    <x-Ui::input.error-text wire:model="code"/>
+                    <x-Ui::input.floating-dropdown
+                        wire:model="plan_id"
+                        label="Plan"
+                        id="plan_id"
+                        :options="$plans"
+                        placeholder="Choose a Plan.."
+                    />
+                    <x-Ui::input.error-text wire:model="plan_id"/>
+                </div>
+
+
+                <div>
+                    <x-Ui::input.floating-dropdown
+                        wire:model="feature_id"
+                        label="Feature"
+                        id="feature_id"
+                        :options="$features"
+                        placeholder="Choose a Feature.."
+                    />
+                    <x-Ui::input.error-text wire:model="feature_id"/>
                 </div>
 
             </div>

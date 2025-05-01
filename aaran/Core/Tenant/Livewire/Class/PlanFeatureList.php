@@ -5,6 +5,8 @@ namespace Aaran\Core\Tenant\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
+use Aaran\Core\Tenant\Models\Feature;
+use Aaran\Core\Tenant\Models\Plan;
 use Aaran\Core\Tenant\Models\PlanFeature;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -17,6 +19,9 @@ class PlanFeatureList extends Component
     public string $plan_id = '';
     public string $feature_id = '';
     public bool $active_id = true;
+
+    public $plans = [];
+    public $features = [];
 
     public function rules(): array
     {
@@ -72,8 +77,8 @@ class PlanFeatureList extends Component
     {
         if ($obj = PlanFeature::find($id)) {
             $this->vid = $obj->id;
-            $this->plan_id = $obj->vname;
-            $this->feature_id = $obj->code;
+            $this->plan_id = $obj->plan_id;
+            $this->feature_id = $obj->feature_id;
             $this->active_id = $obj->active_id;
         }
     }
@@ -94,6 +99,13 @@ class PlanFeatureList extends Component
         if ($obj) {
             $obj->delete();
         }
+    }
+
+
+    public function mount()
+    {
+        $this->plans = Plan::all()->pluck('vname', 'id')->toArray();
+        $this->features = Feature::all()->pluck('vname', 'id')->toArray();
     }
 
     public function render()
