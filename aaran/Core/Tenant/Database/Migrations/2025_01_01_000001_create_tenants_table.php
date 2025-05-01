@@ -21,9 +21,6 @@ return new class extends Migration {
             $table->string('db_user');
             $table->text('db_pass');
             // Subscription & Limits
-            $table->string('plan')->default('free');
-            $table->date('subscription_start')->nullable();
-            $table->date('subscription_end')->nullable();
             $table->decimal('storage_limit', 13, 2)->default(10);
             $table->integer('user_limit')->default(5);
             $table->boolean('active_id')->default(true);

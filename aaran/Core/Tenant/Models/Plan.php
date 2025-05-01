@@ -4,16 +4,14 @@ namespace Aaran\Core\Tenant\Models;
 
 use Aaran\Core\Tenant\Database\Factories\FeatureFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Feature extends Model
+class Plan extends Model
 {
-    use HasFactory;
 
-    protected $fillable = ['vname', 'code', 'description', 'active_id'];
+    protected $table = 'plans';
+
+    protected $fillable = ['vname','price','billing_cycle', 'description','active_id'];
 
     protected $casts = [
         'active_id' => 'boolean',
