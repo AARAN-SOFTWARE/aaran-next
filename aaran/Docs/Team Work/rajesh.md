@@ -64,14 +64,27 @@
 - 3. While editing, a random address is automatically filled in the 'Address tab'. (3rd street, Postal Colony, Chennai, -- 641601, India. ) ✅ fixed
 - 4. In the Product modal, when I press the Tab key to move between fields, it only works for the first three input fields. 
 
+    
+    
 
+## // 29-04-2025 //  [Online]
 
-## // 22-04-2025 //
+- 1. When I create a new contact in 'Sales' or 'Purchase' entry, and then try to save the Sales or Purchase, it returns an error. (Column 'company_id' cannot be null)
 
-- The account books table is wrongly migrating into the primary table (aaran_next).
+## Books 
+- 1. Account Heads -> When I try to delete an entry, the confirmation pop-up blended into the background.
+- 2. Ledger Groups -> When I try to delete an entry, the confirmation pop-up  blended into the background.
+- 3. Ledgers -> When I try to delete an entry, the confirmation pop-up  blended into the background.
+             -> The error message text for the 'Ledger Group' input field is slightly larger than the normal error messages
+
+## Receipt & Payment
+- 1. When I create a new contact in 'Receipt' or 'Payment' entry, and then try to save the Receipt or Payment, it returns an error. (Column 'company_id' cannot be null)
+- 2. When I edit a Payment or Receipt entry, the 'Voucher No' increases by 1. For example, if I enter 2, it changes to 3; if I enter 3, it changes to 4. 
 
 ## AccountBook
 - 1. We should write validation for Transaction Type.
 - 2. If the transaction type is set to 'Bank', validation needs to be written for 'Bank Name' and 'Account Type'.
 - 3. If the transaction type is set to 'UPI', validation needs to be written for 'Bank Name' and 'Account Type'.
 - 4. The 'Balance' is not displaying in the table, but it is stored in the database.
+- 5. We should write validation for Party Name.
+
