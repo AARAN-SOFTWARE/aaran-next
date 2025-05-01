@@ -49,14 +49,48 @@
 
         <x-Ui::forms.create :id="$vid">
             <div class="flex flex-col h-fit gap-3">
+
                 <div>
-                    <x-Ui::input.floating wire:model="plan_id" label="Name"/>
-                    <x-Ui::input.error-text wire:model="vname"/>
+                    <x-Ui::input.floating-dropdown
+                            wire:model="tenant_id"
+                            label="Tenant"
+                            id="tenant_id"
+                            :options="$tenants"
+                            placeholder="Choose a Tenant.."
+                    />
+                    <x-Ui::input.error-text wire:model="tenant_id"/>
                 </div>
 
                 <div>
-                    <x-Ui::input.floating wire:model="code" label="Code"/>
-                    <x-Ui::input.error-text wire:model="code"/>
+                    <x-Ui::input.floating-dropdown
+                            wire:model="plan_id"
+                            label="Plan"
+                            id="plan_id"
+                            :options="$plans"
+                            placeholder="Choose a Plan.."
+                    />
+                    <x-Ui::input.error-text wire:model="plan_id"/>
+                </div>
+
+                <div>
+                    <x-Ui::input.model-date wire:model="started_at" label="Started at"/>
+                    <x-Ui::input.error-text wire:model="started_at"/>
+                </div>
+
+                <div>
+                    <x-Ui::input.model-date wire:model="expires_at" label="Expires at"/>
+                    <x-Ui::input.error-text wire:model="expires_at"/>
+                </div>
+
+                <div>
+                    <x-Ui::input.floating-dropdown
+                            wire:model="status"
+                            label="status"
+                            id="status"
+                            :options="['active'=>'Active', 'expired'=>'Expired', 'canceled'=>'Canceled', 'trial'=>'Trial',]"
+                        placeholder="Choose a status.."
+                    />
+                    <x-Ui::input.error-text wire:model="status"/>
                 </div>
 
             </div>

@@ -5,10 +5,9 @@ namespace Aaran\Core\Tenant\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
+use Aaran\Core\Tenant\Models\Plan;
 use Aaran\Core\Tenant\Models\Subscription;
-use Illuminate\Support\Str;
-use Livewire\Attributes\Layout;
+use Aaran\Core\Tenant\Models\Tenant;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -22,6 +21,10 @@ class SubscriptionList extends Component
     public string $status = '';
     public string $started_at = '';
     public string $expires_at = '';
+    public bool $active_id = true;
+
+    public array $tenants = [];
+    public array $plans = [];
 
     public function rules(): array
     {
@@ -104,6 +107,12 @@ class SubscriptionList extends Component
         if ($obj) {
             $obj->delete();
         }
+    }
+
+    public function mount(): void
+    {
+        $this->tenants = Tenant::all()->pluck('t_name', 'id')->toArray();
+        $this->plans = Plan::all()->pluck('vname', 'id')->toArray();
     }
 
     public function render()
