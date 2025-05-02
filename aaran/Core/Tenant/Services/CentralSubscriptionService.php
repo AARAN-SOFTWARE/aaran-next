@@ -13,14 +13,14 @@ class CentralSubscriptionService
      */
     public static function getForTenant(string $tenantId): ?Subscription
     {
-        return Cache::remember("subscription:$tenantId", now()->addMinutes(5), function () use ($tenantId) {
+//        return Cache::remember("subscription:$tenantId", now()->addMinutes(5), function () use ($tenantId) {
 
             return Subscription::with('plan')
                 ->where('tenant_id', $tenantId)
                 ->where('expires_at', '>', Carbon::now())
                 ->latest()
                 ->first();
-        });
+//        });
     }
 
     /**
