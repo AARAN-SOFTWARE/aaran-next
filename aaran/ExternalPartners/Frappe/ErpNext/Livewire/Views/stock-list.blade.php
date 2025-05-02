@@ -8,7 +8,7 @@
 
         <!-- Table Caption -------------------------------------------------------------------------------------------->
         <x-Ui::table.caption :caption="'City'">
-            {{$list->count()}}
+{{--            {{$list->count()}}--}}
         </x-Ui::table.caption>
 
         <!-- Table Data ----------------------------------------------------------------------------------------------->
@@ -24,6 +24,9 @@
             </x-slot:table_header>
 
             <x-slot:table_body>
+
+                @dd($list)
+
                 @foreach($list as $index=>$row)
                     <x-Ui::table.row>
                         <x-Ui::table.cell-text>{{$index+1}}</x-Ui::table.cell-text>

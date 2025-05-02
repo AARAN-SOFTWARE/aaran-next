@@ -15,8 +15,8 @@ class ErpNextService
     public function __construct()
     {
         $this->baseUrl = 'https://techmedia.co.in/';
-        $this->apiKey = 'ce1d667b18813a0';
-        $this->apiSecret = '***************';
+        $this->apiKey = 'be958bbb06ddff6';
+        $this->apiSecret = 'f6344b61729e7e0';
     }
 
     /**
