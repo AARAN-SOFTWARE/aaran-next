@@ -1,6 +1,6 @@
-<div class="p-5">
-    <div class="h-28">&nbsp;</div>
-    <div>
+<div>
+    <x-slot name="header">Tenant List</x-slot>
+
         <x-Ui::forms.m-panel>
             <x-Ui::alerts.notification/>
 
