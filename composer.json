@@ -10,13 +10,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "intervention/image-laravel": "^1.5",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.0",
         "maatwebsite/excel": "^3.1",
-        "ext-intl": "*"
+        "razorpay/razorpay": "^2.9"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",

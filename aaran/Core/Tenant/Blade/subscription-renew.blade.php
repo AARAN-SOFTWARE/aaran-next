@@ -14,8 +14,8 @@
                     <h3 class="text-xl font-semibold text-blue-600">Basic Plan</h3>
                     <p class="text-lg text-gray-700">Access to basic features and support.</p>
                     <div class="flex justify-between items-center mt-4">
-                        <span class="text-lg font-bold text-green-600">$9.99 / month</span>
-                        <a href="{{ route('subscription.pay', ['plan' => 'basic']) }}"
+                        <span class="text-lg font-bold text-green-600">rs.100 / month</span>
+                        <a href="{{ route('subscription.pay', ['plan' => 'basic', 'amount'=>'100']) }}"
                            class="inline-block px-6 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700 transition duration-300">
                             Renew Now
                         </a>
@@ -26,8 +26,8 @@
                     <h3 class="text-xl font-semibold text-blue-600">Pro Plan</h3>
                     <p class="text-lg text-gray-700">Access to all features, premium support, and more.</p>
                     <div class="flex justify-between items-center mt-4">
-                        <span class="text-lg font-bold text-green-600">$29.99 / month</span>
-                        <a href="{{ route('subscription.pay', ['plan' => 'pro']) }}"
+                        <span class="text-lg font-bold text-green-600">rs.100 / month</span>
+                        <a href="{{ route('subscription.pay', ['plan' => 'pro', 'amount'=>'100']) }}"
                            class="inline-block px-6 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700 transition duration-300">
                             Renew Now
                         </a>

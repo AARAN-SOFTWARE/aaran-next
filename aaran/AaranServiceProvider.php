@@ -16,6 +16,7 @@ use Aaran\Core\Tenant\Providers\TenantServiceProvider;
 use Aaran\Core\User\Providers\UserServiceProvider;
 use Aaran\Dashboard\Providers\DashboardServiceProvider;
 use Aaran\ExternalPartners\Frappe\ErpNext\Providers\FrappeServiceProvider;
+use Aaran\ExternalPartners\Razorpay\Providers\RazorpayServiceProvider;
 use Aaran\ExternalPartners\Tally\Providers\TallyServiceProvider;
 use Aaran\Neot\Providers\NeotServiceProvider;
 use Aaran\UI\Providers\UiServiceProvider;
@@ -62,6 +63,8 @@ class AaranServiceProvider extends ServiceProvider
         $this->app->register(TallyServiceProvider::class);
 
         $this->app->register(FrappeServiceProvider::class);
+
+        $this->app->register(RazorpayServiceProvider::class);
     }
 
     public function boot()

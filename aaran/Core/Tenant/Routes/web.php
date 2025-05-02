@@ -21,7 +21,7 @@ Route::get('/subscription-renew', function () {
     return view('tenant.blade::subscription-renew'); // Create a blade file
 })->name('subscription.renew');
 
-
-Route::get('/subscription-pay', function () {
-    return view('tenant.blade::subscription-pay'); // Create a blade file
-})->name('subscription.pay');
+//
+//Route::get('/subscription-pay', function () {
+//    return view('tenant.blade::subscription-pay'); // Create a blade file
+//})->name('subscription.pay');
