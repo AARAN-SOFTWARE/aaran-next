@@ -2,7 +2,7 @@
     <x-slot name="header">Templates</x-slot>
 
     @php
-        $buttonLabel = 'Save'; // Options: Back, New, Cancel, Save, print
+        $buttonLabel = 'Save'; // Options: Back, New, Cancel, Save, Print
 
         // color and icon
         $buttonStyles = [
