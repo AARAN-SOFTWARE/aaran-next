@@ -29,7 +29,7 @@ class ErpNextService
         return Http::withHeaders([
             'Authorization' => 'token ' . $this->apiKey . ':' . $this->apiSecret,
             'Accept' => 'application/json',
-        ]);
+        ])->withoutVerifying(); // <- Add this line
     }
 
     /**
