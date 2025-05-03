@@ -2,43 +2,54 @@
 
 namespace Aaran\ExternalPartners\Frappe\ErpNext\Livewire\Class;
 
-use Aaran\Assets\Traits\ComponentStateTrait;
-use Aaran\Assets\Traits\TenantAwareTrait;
 use Aaran\ExternalPartners\Frappe\ErpNext\Services\ErpNextService;
 use Exception;
 use Livewire\Component;
 
 class StockList extends Component
 {
-    use ComponentStateTrait, TenantAwareTrait;
+    public $selected = 'Wireless Mouse';
+    public $stockData = [];
 
-    protected $erpNextService;
+    protected ErpNextService $erpNextService;
 
-    // Dependency Injection of ErpNextService
-    public function __construct()
+    public function mount()
+    {
+
+        $this->getStockBalanceReport();
+    }
+
+    public function updatedSelected()
+    {
+        $this->getStockBalanceReport();  // Trigger report fetch on item change
+    }
+
+
+    public function getStockBalanceReport()
     {
         $this->erpNextService = new ErpNextService();
-    }
-    public function getList()
-    {
+
         try {
-            $filters = [
-                'fields' => '["name", "item_code", "item_name", "stock_uom"]'
-            ];
+            $url = $this->erpNextService->baseUrl . "/api/method/frappe.desk.query_report.run";
 
-            $url = $this->erpNextService->baseUrl . "/api/resource/Item";
-            $response = $this->erpNextService->client()->get($url, $filters);
+            $response = $this->erpNextService->client()->get($url, [
+                'report_name' => 'Stock Balance',
+                'ignore_prepared_report' => 'True',
+                'filters' => json_encode([
+                    'item_group' => $this->selected,
+                    'to_date' => '2025-01-03',
+                ])
+            ]);
 
-            return $this->erpNextService->handleResponse($response);
+            $this->stockData = $this->erpNextService->handleResponse($response)['message']['result'] ?? [];
         } catch (Exception $e) {
-            return $this->erpNextService->handleError($e);
+            $this->stockData = [];
+            report($e); // optional: log the error
         }
     }
 
     public function render()
     {
-        return view('frappe::stock-list', [
-            'list' => $this->getList()
-        ]);
+        return view('frappe::stock-list');
     }
 }

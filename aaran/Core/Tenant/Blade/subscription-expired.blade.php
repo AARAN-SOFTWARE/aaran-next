@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Expired')">
+<x-Ui::layouts.guest :title="__('Subscription Expired')">
     <div class="flex items-center justify-center min-h-screen">
         <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
             <h2 class="text-2xl font-bold text-center text-red-600 mb-4">Your Subscription Has Expired</h2>
@@ -24,4 +24,4 @@
             </div>
         </div>
     </div>
-</x-layouts.app>
+</x-Ui::layouts.guest>

@@ -28,7 +28,7 @@
 
             setTimeout(() => {
                 window.location.href = "{{ route('dashboard') }}";
-            }, 5000);
+            }, 7000);
         });
     });
 </script>

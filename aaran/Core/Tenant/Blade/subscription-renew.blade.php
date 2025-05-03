@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Renew')">
+<x-Ui::layouts.guest :title="__('Subscription Renew')">
     <div class="bg-gray-50 flex items-center justify-center min-h-fit">
         <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
             <h2 class="text-2xl font-bold text-center text-blue-600 mb-4">Renew Your Subscription</h2>
@@ -44,4 +44,4 @@
             </div>
         </div>
     </div>
-</x-layouts.app>
+</x-Ui::layouts.guest>

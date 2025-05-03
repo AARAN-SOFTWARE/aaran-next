@@ -40,7 +40,7 @@
 
                         const result = await verifyResponse.json();
                         if (result.success) {
-                            window.location.href = '{{ route('dashboard') }}';
+                            window.location.href = '{{ route('payment.success') }}';
                         } else {
                             alert('Payment verification failed!');
                         }
