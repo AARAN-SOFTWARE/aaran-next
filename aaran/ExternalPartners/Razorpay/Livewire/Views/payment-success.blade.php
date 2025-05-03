@@ -12,8 +12,19 @@
             </div>
         @endif
 
+        @if($subscription)
+            <div class="text-left bg-gray-100 p-4 rounded">
+                <p><strong>plan</strong> {{ $subscription->plan->vname }}</p>
+                <p><strong>Registered Date</strong>{{ date('d-m-Y', strtotime( $subscription->started_at))}}</p>
+                <p><strong>Expires Date</strong>{{ date('d-m-Y', strtotime( $subscription->expires_at))}}</p>
+                <p><strong>Status:</strong> {{ ucfirst($subscription->status) }}</p>
+            </div>
+        @endif
+
         <a href="{{ route('dashboard') }}" class="inline-block mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
             Go to Dashboard
         </a>
     </div>
+
+    <x-Ui::setup.confetti-effect/>
 </div>
