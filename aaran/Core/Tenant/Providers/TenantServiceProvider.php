@@ -2,6 +2,7 @@
 
 namespace Aaran\Core\Tenant\Providers;
 
+use Aaran\Core\Tenant\Http\Middleware\EnsureTenantIsSubscribed;
 use Aaran\Core\Tenant\Http\Middleware\TenantMiddleware;
 use Aaran\Core\Tenant\Livewire\Class\FeatureList;
 use Aaran\Core\Tenant\Livewire\Class\PlanFeatureList;
@@ -48,6 +49,7 @@ class TenantServiceProvider extends ServiceProvider
     protected function loadViews(): void
     {
         $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', 'tenant');
+        $this->loadViewsFrom(__DIR__ . '/../Blade', 'tenant.blade');
     }
 
     protected function registerMiddleware(): void
@@ -56,6 +58,7 @@ class TenantServiceProvider extends ServiceProvider
 
         // Register 'tenant' as a standalone middleware key
         $router->aliasMiddleware('tenant', TenantMiddleware::class);
+        $router->aliasMiddleware('subscribed', EnsureTenantIsSubscribed::class);
     }
 
 

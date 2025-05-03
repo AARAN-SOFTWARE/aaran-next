@@ -44,7 +44,6 @@ class TenantList extends Component
     public ?string $migration_status = null;
     public bool $active_id = true;
 
-    #region[Validation]
     public function rules(): array
     {
         return [
@@ -81,9 +80,7 @@ class TenantList extends Component
             'db_pass' => 'Database password',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -127,9 +124,6 @@ class TenantList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -169,7 +163,6 @@ class TenantList extends Component
         $this->migration_status = 'pending';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = Tenant::find($id)) {
@@ -217,9 +210,7 @@ class TenantList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -230,9 +221,6 @@ class TenantList extends Component
         }
     }
 
-    #endregion
-
-    #[layout('Ui::components.layouts.web')]
     public function render()
     {
         return view('tenant::tenant-list', [

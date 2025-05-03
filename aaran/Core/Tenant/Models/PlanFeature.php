@@ -5,16 +5,18 @@ namespace Aaran\Core\Tenant\Models;
 use Aaran\Core\Tenant\Database\Factories\FeatureFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PlanFeature extends Model
 {
-    use SoftDeletes;
+
+    public $timestamps = false;
 
     protected $table = 'plan_features';
 
-    protected $fillable = ['vname','price','billing_cycle', 'description','active_id'];
+    protected $fillable = ['plan_id', 'feature_id','active_id'];
 
     protected $casts = [
         'active_id' => 'boolean',
@@ -30,8 +32,13 @@ class PlanFeature extends Model
         return $query->where('vname', 'like', "%$search%");
     }
 
-    protected static function newFactory(): FeatureFactory
+    public function plan(): BelongsTo
     {
-        return FeatureFactory::new();
+        return $this->belongsTo(Plan::class, 'plan_id', 'id');
+    }
+
+    public function feature(): BelongsTo
+    {
+        return $this->belongsTo(Feature::class, 'feature_id', 'id');
     }
 }

@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->foreignId('feature_id')->references('id')->on('features')->onDelete('cascade');
+            $table->boolean('active_id')->default(true);
         });
     }
 
