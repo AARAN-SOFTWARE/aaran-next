@@ -19,6 +19,14 @@ class RazorpayServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__ . '/../Config/razor.php', 'razorpay');
 
+        $this->registerMigrations();
+
+    }
+
+
+    private function registerMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 
     protected function loadViews(): void

@@ -9,7 +9,8 @@ return new class extends Migration {
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->enum('status', ['active', 'expired', 'canceled', 'trial'])->default('trial');
             $table->date('started_at')->nullable();
