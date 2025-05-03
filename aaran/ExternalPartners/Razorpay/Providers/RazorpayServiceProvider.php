@@ -2,6 +2,7 @@
 
 namespace Aaran\ExternalPartners\Razorpay\Providers;
 
+use Aaran\ExternalPartners\Razorpay\Livewire\Class;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -15,7 +16,8 @@ class RazorpayServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-//        Livewire::component('tally::Tally-handshake', Class\TallyHandshake::class);
+        Livewire::component('razor::payment-success', Class\PaymentSuccess::class);
+        Livewire::component('razor::payment-list', Class\PaymentList::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../Config/razor.php', 'razorpay');
 
