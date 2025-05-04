@@ -20,7 +20,7 @@
                 image="../../../../images/home/gstBilling.png"
             >
                 <x-Ui::web.home-new.icons.gst-bill/>
-            </x-Ui::aaran-ui::web.home-new.items.service-card>
+            </x-Ui::web.home-new.items.service-card>
 
             <x-Ui::web.home-new.items.service-card
                 title="/USER EXPERIENCE"
