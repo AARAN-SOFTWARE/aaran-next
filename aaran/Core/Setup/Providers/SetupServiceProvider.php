@@ -3,6 +3,7 @@
 namespace Aaran\Core\Setup\Providers;
 
 use Aaran\Core\Setup\Console\Commands\AaranMigrateCommand;
+use Aaran\Core\Setup\Console\Commands\AaranModule;
 use Aaran\Core\Setup\Livewire\Class\ClientSetup;
 use Aaran\Core\Setup\Livewire\Class\DatabaseManager;
 use Aaran\Core\Setup\Livewire\Class\TenantMigration;
@@ -16,9 +17,10 @@ class SetupServiceProvider extends ServiceProvider
     {
         $this->commands([
             AaranMigrateCommand::class,
+            AaranModule::class,
         ]);
 
-        $this->app->register(SetupRouteServiceProvider::class);
+        $this->app->register(SetupRouteProvider::class);
     }
 
     public function boot()
