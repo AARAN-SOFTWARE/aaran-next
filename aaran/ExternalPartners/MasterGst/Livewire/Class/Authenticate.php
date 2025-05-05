@@ -12,9 +12,9 @@ class Authenticate extends Component
     public $authToken;
     public $responseData;
 
-    protected MasterGstEInvoiceService $authService;
+    protected MasterGstAuthService $authService;
 
-    public function boot(MasterGstEInvoiceService $authService)
+    public function boot(MasterGstAuthService $authService)
     {
         $this->authService = $authService;
     }

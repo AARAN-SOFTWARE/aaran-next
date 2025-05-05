@@ -12,10 +12,17 @@ return new class extends Migration {
 
             Schema::create('master_gst_tokens', function (Blueprint $table) {
                 $table->id();
+//                $table->unsignedBigInteger('tenant_id'); // Foreign key or unique tenant identifier
                 $table->string('token');
-                $table->string('expires_at')->nullable();
-                $table->foreignId('user_id')->nullable();
+                $table->timestamp('expires_at');
+                $table->string('client_id')->nullable();
+                $table->string('sek')->nullable();
+                $table->string('txn')->nullable();
+                $table->string('status_cd')->nullable();
+                $table->unsignedBigInteger('user_id')->nullable(); // Who triggered it
                 $table->timestamps();
+
+//                $table->unique('tenant_id'); // Ensures one active token per tenant
             });
         }
     }
