@@ -2,7 +2,7 @@
     <x-slot name="header">Templates</x-slot>
 
     @php
-        $buttonLabel = 'Save'; // Options: Back, New, Cancel, Save, Print
+        $buttonLabel = 'New'; // Options: Back, New, Cancel, Save, Print
 
         // color and icon
         $buttonStyles = [
@@ -44,16 +44,19 @@
         class="absolute top-0 left-0 flex h-full w-0 transition-all duration-500 ease-out transform group-hover:w-full opacity-90 {{ $style['hover'] }}">
     </span>
 
-        <span class="relative group-hover:hidden sm:text-lg text-sm">
-        {{ $buttonLabel }}
-    </span>
+        <span class="relative sm:text-lg text-sm flex items-center justify-center h-full">
 
-        <span class="relative hidden group-hover:block group-hover:text-white sm:px-[6px] px-[3px] sm:py-[2px] py-[0]">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="{{ $style['icon'] }}" />
-        </svg>
+        <span class="transition-opacity duration-200 group-hover:opacity-0">
+            {{ $buttonLabel }}
+        </span>
+
+            <!-- Icon -->
+        <span class="absolute transition-opacity duration-200 opacity-0 group-hover:opacity-100">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="{{ $style['icon'] }}" />
+            </svg>
+        </span>
     </span>
     </button>
-
 
 </div>

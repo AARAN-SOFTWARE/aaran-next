@@ -13,7 +13,7 @@
     <div class="flex sm:justify-center justify-between">
         <x-Ui::forms.per-page/>
         <div class="self-end">
-            <x-Ui::button.new-x wire:click="create"/>
+            <x-Ui::newtemplate.new_button :button-label="'New'" wire:click="create"/>
         </div>
     </div>
 </div>
