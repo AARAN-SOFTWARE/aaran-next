@@ -15,7 +15,7 @@ return [
         Customise::transaction(),
 //        Customise::demodata(),
 //        Customise::taskManager(),
-        Customise::exportSales(),
+//        Customise::exportSales(),
         Customise::report(),
         Customise::logbooks(),
         Customise::books(),
