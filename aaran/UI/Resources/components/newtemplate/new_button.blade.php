@@ -1,7 +1,8 @@
-@props(['buttonLabel' => 'Back'])
+@props([
+    'buttonLabel' => 'Back', // Default is Back
+    'class' => '',           // Accept custom class
+])
 @php
-//    $buttonLabel = 'New'; // Options: Back, New, Cancel, Save, Print
-
     // color and icon
     $buttonStyles = [
         'Back' => [
