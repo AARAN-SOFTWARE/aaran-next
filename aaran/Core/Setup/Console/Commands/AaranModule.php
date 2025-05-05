@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class AaranModule extends Command
 {
-    protected $signature = 'aaran:module {name} {--path=} {--force}';
+    protected $signature = 'aaran:module {name} {--path=} {--force} {--all}';
     protected $description = 'Generate a module skeleton using stubs';
 
     public function handle()
@@ -33,6 +33,11 @@ class AaranModule extends Command
         }
 
         $this->createDirectories($basePath);
+
+        if ($this->option('all')) {
+            $this->createAdvanceDirectories($basePath);
+        }
+
         $this->createFilesFromStubs($basePath, $moduleName, $moduleLower);
 
         $this->info("Module '{$moduleName}' created successfully at '{$basePath}'.");
@@ -42,10 +47,19 @@ class AaranModule extends Command
     {
         $paths = [
             $basePath,
-            "$basePath/Http/Controllers",
+            "$basePath/Database/Migrations",
+            "$basePath/Database/Factories",
+            "$basePath/Database/Seeders",
+
+            "$basePath/Livewire/Class",
+            "$basePath/Livewire/Views",
+
             "$basePath/Models",
-            "$basePath/routes",
             "$basePath/Providers",
+
+            "$basePath/Routes",
+
+            "$basePath/Http/Controllers",
         ];
 
         foreach ($paths as $path) {
@@ -53,16 +67,35 @@ class AaranModule extends Command
         }
     }
 
+    protected function createAdvanceDirectories(string $basePath): void
+    {
+        $paths = [
+            $basePath,
+            "$basePath/Config",
+            "$basePath/Http/Controllers",
+            "$basePath/Http/Middleware",
+            "$basePath/Services",
+            "$basePath/Tests/Feature",
+            "$basePath/Tests/Unit",
+        ];
+
+        foreach ($paths as $path) {
+            File::makeDirectory($path, 0755, true);
+        }
+    }
+
+
     protected function createFilesFromStubs(string $basePath, string $moduleName, string $moduleLower): void
     {
         $stubs = [
-            'module.stub' => "$basePath/module.json",
-            'BlogServiceProvider.stub' => "$basePath/Providers/{$moduleName}ServiceProvider.php",
-            'web.stub' => "$basePath/routes/web.php",
+            'service-provider.stub' => "$basePath/Providers/{$moduleName}ServiceProvider.php",
+            'route-provider.stub' => "$basePath/Providers/{$moduleName}RouteProvider.php",
+            'web-routes.stub' => "$basePath/routes/web.php",
+            'api-routes.stub' => "$basePath/routes/api.php",
         ];
 
         foreach ($stubs as $stubFile => $targetPath) {
-            $stubPath = base_path("stubs/module/{$stubFile}");
+            $stubPath = base_path("aaran/Core/Setup/Stubs/{$stubFile}");
 
             if (!File::exists($stubPath)) {
                 $this->warn("Stub missing: {$stubPath}");
@@ -71,7 +104,7 @@ class AaranModule extends Command
 
             $content = File::get($stubPath);
             $content = str_replace(
-                ['{{ moduleName }}', '{{ moduleLower }}'],
+                ['{{moduleName}}', '{{moduleLower}}'],
                 [$moduleName, $moduleLower],
                 $content
             );

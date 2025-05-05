@@ -4,7 +4,6 @@ namespace Aaran\Core\Setup\Providers;
 
 use Aaran\Core\Setup\Console\Commands\AaranMigrateCommand;
 use Aaran\Core\Setup\Console\Commands\AaranModule;
-use Aaran\Core\Setup\Livewire\Class\ClientSetup;
 use Aaran\Core\Setup\Livewire\Class\DatabaseManager;
 use Aaran\Core\Setup\Livewire\Class\TenantMigration;
 use Aaran\Core\Setup\Livewire\Class\TenantSetupWizard;

@@ -1,0 +1,26 @@
+<?php
+
+namespace Aaran\Core\{{moduleName}}\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+
+class {{moduleName}}ServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->register({{moduleName}}RouteProvider::class);
+    }
+
+    public function boot()
+    {
+        $this->registerViews();
+
+        // Livewire::component('{{moduleLower}}::tenant-setup', TenantSetupWizard::class);
+    }
+
+    private function registerViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../Livewire/Views', '{{moduleLower}}');
+    }
+}
