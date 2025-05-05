@@ -15,7 +15,7 @@ return new class extends Migration {
 //                $table->unsignedBigInteger('tenant_id'); // Foreign key or unique tenant identifier
                 $table->string('token');
                 $table->timestamp('expires_at');
-                $table->string('client_id')->nullable();
+                $table->string('api_client_id')->nullable();
                 $table->string('sek')->nullable();
                 $table->string('txn')->nullable();
                 $table->string('status_cd')->nullable();

@@ -82,7 +82,7 @@ class MasterGstAuthService
             [
                 'token' => $responseData['data']['AuthToken'],
                 'expires_at' => $responseData['data']['TokenExpiry'],
-                'client_id' => $responseData['data']['Client_id'] ?? null,
+                'api_client_id' => $responseData['data']['Client_id'] ?? null,
                 'sek' => $responseData['data']['Sek'] ?? null,
                 'txn' => $responseData['header']['txn'] ?? null,
                 'status_cd' => $responseData['status_cd'] ?? null,
