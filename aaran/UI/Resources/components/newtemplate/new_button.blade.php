@@ -1,6 +1,6 @@
 @props([
     'buttonLabel' => 'Back', // Default is Back
-    'class' => '',           // Accept custom class
+    'class' => ''
 ])
 @php
     // color and icon
