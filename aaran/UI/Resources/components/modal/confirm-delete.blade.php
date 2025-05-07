@@ -46,8 +46,8 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
-                    <x-Ui::newtemplate.new_button :button-label="'Delete'" wire:click="closeDeleteModal"/>
-                    <x-Ui::newtemplate.new_button :button-label="'Cancel'" wire:click="$set('showDeleteModal', false)"/>
+                    <x-Ui::newtemplate.dynamic-button :button-label="'Delete'" wire:click="closeDeleteModal"/>
+                    <x-Ui::newtemplate.dynamic-button :button-label="'Cancel'" wire:click="$set('showDeleteModal', false)"/>
                 </div>
             </div>
         </div>
