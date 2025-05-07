@@ -105,6 +105,9 @@ class Authenticate extends Component
                 "Pin" => 518360,
                 "Stcd" => "37",
             ],
+
+            "ItemList" => [],
+
             "ValDtls" => [
                 "AssVal" => 9978.84,
                 "CgstVal" => 0,
