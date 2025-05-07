@@ -57,10 +57,10 @@
 
                                     <div class="flex gap-3">
 
-                                        <x-Ui::button.cancel-x
+                                        <x-Ui::newtemplate.new_button :button-label="'Cancel'"
                                             wire:click.prevent="$set('showEditModal', false)" {{$attributes}} />
 
-                                        <x-Ui::button.save-x wire:click.prevent="save"/>
+                                        <x-Ui::newtemplate.new_button :button-label="'Save'" wire:click.prevent="save"/>
                                     </div>
                                 </div>
                             </div>
