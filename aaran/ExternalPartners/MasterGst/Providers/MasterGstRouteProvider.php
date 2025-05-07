@@ -1,6 +1,6 @@
 <?php
 
-namespace Aaran\Core\Setup\Providers;
+namespace Aaran\ExternalPartners\MasterGst\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
-class SetupRouteServiceProvider extends RouteServiceProvider
+class MasterGstRouteProvider extends RouteServiceProvider
 {
     public function boot(): void
     {
