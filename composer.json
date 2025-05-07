@@ -14,9 +14,11 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "intervention/image-laravel": "^1.5",
         "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.0",
         "maatwebsite/excel": "^3.1",
+        "prism-php/prism": "^0.66.0",
         "razorpay/razorpay": "^2.9"
     },
     "require-dev": {

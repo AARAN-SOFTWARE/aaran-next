@@ -4,14 +4,16 @@ namespace Aaran\Core\User\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Aaran\Core\User\Database\Factories\UserFactory;
+use App\Models\Todo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
         'name',
@@ -47,4 +49,10 @@ class User extends Authenticatable
     {
         return UserFactory::new();
     }
+
+    public function todos()
+    {
+        return $this->hasMany(Todo::class);
+    }
+
 }
