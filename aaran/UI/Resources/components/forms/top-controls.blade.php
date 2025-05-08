@@ -10,7 +10,7 @@
         <x-Ui::input.toggle-filter :show-filters="$showFilters"/>
     </div>
 
-    <div class="flex sm:justify-center justify-between">
+    <div class="flex sm:justify-center justify-between items-center gap-6">
         <x-Ui::forms.per-page/>
         <div class="self-end">
             <x-Ui::newtemplate.dynamic-button :button-label="'New'" wire:click="create"/>
