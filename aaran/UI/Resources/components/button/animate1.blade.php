@@ -1,4 +1,3 @@
-
 <button {{$attributes}} class="max-w-max">
     <a href="#_" class="relative inline-block text-lg group font-roboto tracking-wider">
                 <span
