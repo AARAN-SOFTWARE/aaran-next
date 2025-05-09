@@ -34,9 +34,7 @@
                         </label>
                     </div>
                     <div class="flex gap-3">
-{{--                        <x-button.cancel/>--}}
                         <x-Ui::button.cancel-x wire:click.prevent="$set('showEditModal', false)" {{$attributes}} />
-{{--                        <x-button.save/>--}}
                         <x-Ui::button.save-x  wire:click.prevent="save" />
                     </div>
                 </div>

@@ -8,8 +8,6 @@
             onclick="copyToClipboard('{{$icon}}')">
         <x-Ui::icons.icon-fill :iconfill="$icon" :colour="$colour" class="block w-8 h-auto"/>
 
-
-        {{--        <x-icons.icon :icon="'{{Str::of($icon)->trim()}}'" class="block w-8 h-auto"/>--}}
         <h5 class="mt-2 text-xs">{{$icon}}</h5>
     </button>
 </div>

@@ -1,7 +1,7 @@
 @props([
-'showFilters'=>false,
-'contacts',
-'orders'
+    'showFilters'=>false,
+    'contacts',
+    'orders'
 ])
 
 <div>
