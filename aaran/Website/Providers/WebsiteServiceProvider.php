@@ -27,6 +27,7 @@ class WebsiteServiceProvider extends ServiceProvider
 
         // Register Livewire components
         Livewire::component('website::blog', Class\Blog::class);
+        Livewire::component('website::home.billing', Class\Home\Billing::class);
     }
 
 

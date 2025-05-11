@@ -3,6 +3,8 @@
 namespace Aaran\Website\Livewire\Class;
 
 use Aaran\Assets\Helper\SlideQuotes;
+use Aaran\Core\Tenant\Models\Plan;
+use Aaran\Core\Tenant\Models\PlanFeature;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -10,37 +12,29 @@ class Index extends Component
 {
 
     public $slides = [];
+    public $plans = [];
+
 
     public function mount(): void
     {
         $this->slides = SlideQuotes::all();
+
+        $this->plans = PlanFeature::select(
+
+            'Plans.id as plan_id',
+            'Plans.vname as plan_name',
+            'Plans.price as plan_price',
+            'Plans.billing_cycle as billing_cycle',
+            'Plans.description as plan_description',
+
+            'features.vname as feature_name',
+            'features.description as feature_description',
+        )
+            ->leftJoin('plans', 'plans.id', '=', 'plan_features.plan_id')
+            ->leftJoin('features', 'features.id', '=', 'plan_features.feature_id')
+            ->get();
+
     }
-
-
-    public $features = [
-        [
-            'title' => 'Payroll',
-            'description' => "Keep track of everyone's salaries and whether or not they've been paid.",
-            'image' => '/images/slider/home/bg_1.webp',
-        ],
-        [
-            'title' => 'GST handling',
-            'description' => "We support companies that don’t deal with VAT — so technically we do all they need.",
-            'image' => '/images/slider/home/bg_3.webp',
-        ],
-        [
-            'title' => 'Claim expenses',
-            'description' => "All your receipts organized — just type them in by hand.",
-            'image' => '/images/slider/home/bg_2.webp',
-        ],
-
-        [
-            'title' => 'Reporting',
-            'description' => "Export everything into Excel and take control.",
-            'image' => '/images/slider/home/bg_4.webp',
-        ],
-    ];
-
 
     #[Layout('Ui::components.layouts.web')]
     public function render()
