@@ -15,16 +15,25 @@ Route::middleware(['website'])->group(function () {
 //    Route::post('/web-contacts',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('contact.message');
     Route::get('/service', Service::class)->name('services');
 
+
+
+
+
+
     Route::get('/blog', Blog::class)->name('blogs');
     Route::middleware(['auth'])->group(function () {
         Route::get('/profile', function () {
             return view('profile.show');
         })->name('profile.show');
     });
-    Route::post('/web-contacts',\Aaran\Website\Livewire\Class\Index::class)->name('web-contacts');
+
 
     Route::get('/client-register',\Aaran\Website\Livewire\Class\Index::class)->name('client-register');
     Route::get('/client-plans',\Aaran\Website\Livewire\Class\Index::class)->name('client-plans');
 
+
+
+
+    Route::get('/web-contacts',\Aaran\Website\Livewire\Class\ContactPage::class)->name('web-contacts');
 
 });
