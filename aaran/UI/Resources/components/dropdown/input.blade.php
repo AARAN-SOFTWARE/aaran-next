@@ -2,19 +2,6 @@
     'label' => '',
     'enter' => null
 ])
-{{--<input--}}
-{{--    {{$attributes}}--}}
-
-{{--    type="search"--}}
-
-{{--    autocomplete="off"--}}
-{{--    placeholder="Contact Name.."--}}
-{{--    @focus="isTyped = true"--}}
-{{--    @keydown.escape.window="isTyped = false"--}}
-{{--    @keydown.tab.window="isTyped = false"--}}
-{{--    @keydown.enter.prevent="isTyped = false"--}}
-{{--    class="block w-full rounded-lg "--}}
-{{--/>--}}
 
 <div class="relative font-lex">
     <input {{$attributes}}
