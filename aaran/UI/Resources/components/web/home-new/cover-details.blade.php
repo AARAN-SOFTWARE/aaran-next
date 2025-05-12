@@ -12,7 +12,7 @@
                 desc="Create sleek invoices with the click of a button. customize templates to reflect your brand."
                 border="border-[#66C25F]"
                 bg_color="bg-[#66C25F]">
-                    <x-Ui::web.home-new.icons.sales-purchase-cover />
+                <x-Ui::web.home-new.icons.sales-purchase-cover />
             </x-Ui::web.home-new.items.cover-card>
 
             <x-Ui::web.home-new.items.cover-card

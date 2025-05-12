@@ -146,8 +146,6 @@
                 </div>
             </div>
         @endforeach
-
-
     </div>
 
     <div class="swiper-button-prev"></div>

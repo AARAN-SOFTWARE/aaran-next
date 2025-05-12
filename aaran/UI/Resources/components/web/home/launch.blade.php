@@ -1,7 +1,7 @@
-<section class="bg-white py-20">
+<section class="bg-white py-10">
     <div class="max-w-7xl mx-auto px-4 flex flex-col-reverse lg:flex-row items-center justify-between gap-12">
         <!-- Left: Illustration -->
-        <div class="w-full lg:w-1/2 flex justify-center">
+        <div class="w-full lg:w-1/2 lg:flex justify-center hidden ">
             <svg viewBox="0 0 900 900">
 
                 <g style="display:inline;">
