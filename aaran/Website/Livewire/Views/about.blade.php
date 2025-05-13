@@ -9,12 +9,12 @@
             padding_mob="px-[70px]"
         />
 
-        <x-Ui::web.about.company/>
-        <x-Ui::web.about.work-process/>
-        <x-Ui::web.about.counter/>
+        {{--        <x-Ui::web.about.company/>--}}
+        {{--        <x-Ui::web.about.work-process/>--}}
+        {{--        <x-Ui::web.about.counter/>--}}
         {{--    <x-web.about.goal/>--}}
-        <x-Ui::web.about.team/>
-        <x-Ui::web.about.feedback/>
+        {{--        <x-Ui::web.about.team/>--}}
+        {{--        <x-Ui::web.about.feedback/>--}}
         <x-Ui::web.home-new.footer/>
         <x-Ui::web.home-new.copyright/>
 

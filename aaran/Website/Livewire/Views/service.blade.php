@@ -1,5 +1,10 @@
 <div>
-    <div class="relative" x-data="{ open: false }">
+    <style>
+        .scrollbar::-webkit-scrollbar{
+            display: none;
+        }
+    </style>
+    <div class="relative bg-gray-200 text-black" x-data="{ open: false }">
 
         <x-Ui::web.home-new.items.banner
             label="Services"
@@ -8,9 +13,44 @@
             padding="sm:px-[175px]"
             padding_mob="px-[70px]"
         />
-        <x-Ui::web.services.pricing />
-        <x-Ui::web.services.terms />
-        <x-Ui::web.services.faq />
+
+        {{--        <x-Ui::web.service.our-service/>--}}
+        <div>
+            <h3 class="text-center text-xl mt-5">OUR SERVICES</h3>
+            <h1 class="text-center text-4xl font-bold mb-4">Explore Our Services</h1>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 gap-4 items-stretch">
+                @foreach($services as $service)
+                    <x-Ui::web.service.our-service
+                        :image="$service->image"
+                        :title="$service->title"
+                        :description="$service->description" />
+                @endforeach
+            </div>
+        </div>
+
+        <h3 class="text-center text-xl my-6">TESTIMONIAL</h3>
+        <h1 class="text-center  text-4xl font-bold mb-4">Our Clients Say!</h1>
+
+        <div class="flex justify-center bg-gray-200">
+            <div class="text-black flex flex-row overflow-x-auto scroll-smooth gap-6 w-[90%] items-stretch my-4 scrollbar">
+                @foreach($reviews as $review)
+                    <div class="h-full w-full sm:w-1/2 lg:w-1/3  shrink-0">
+                        <x-Ui::web.service.client-review
+                            :image="$review->image"
+                            :name="$review->name"
+                            :job="$review->job"
+                            :description="$review->description"
+                        />
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+
+        {{--        <x-Ui::web.services.pricing />--}}
+        {{--        <x-Ui::web.services.terms />--}}
+        {{--        <x-Ui::web.services.faq />--}}
         <x-Ui::web.home-new.footer/>
         <x-Ui::web.home-new.copyright/>
 

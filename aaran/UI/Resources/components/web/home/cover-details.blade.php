@@ -1,5 +1,5 @@
-<div class="py-8 mt-12">
-    <div class="font-roboto tracking-wider grid gap-5 sm:gap-10 sm:pt-20">
+<div class="py-4 mt-4">
+    <div class="font-roboto tracking-wider grid gap-5 sm:gap-10 sm:pt-10">
 
         <!-- Section Title -->
         <div class="flex items-center gap-x-3 justify-center animate__animated wow bounceInDown" data-wow-duration="3s">
@@ -8,10 +8,10 @@
             <span class="h-2 px-4 bg-gradient-to-r from-[#070609] to-white"></span>
         </div>
 
-        <div class="text-center text-lg md:text-6xl font-semibold">Try India’s easiest GST billing platform</div>
+        <div class="text-center text-black text-1xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold">Try India’s easiest GST billing platform</div>
 
         <!-- Feature Cards Grid -->
-        <div class="grid w-10/12 mx-auto gap-6 grid-cols-1 md:grid-cols-4">
+        <div class="grid w-10/12 mx-auto gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             <x-Ui::web.home.items.cover-card
                 title="Sales & Purchase"
                 desc="Create sleek invoices with the click of a button. Customize templates to reflect your brand."

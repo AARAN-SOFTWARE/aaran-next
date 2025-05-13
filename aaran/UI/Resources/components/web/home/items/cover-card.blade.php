@@ -5,7 +5,7 @@
     'desc' => null,
 ])
 
-<div class="sm:h-96 flex-col flex justify-center items-center">
+<div class="sm:h-76 lg:h-96 flex-col flex justify-center items-center">
     <div class="relative inline-flex items-center justify-center group">
         <span
             class="z-10 absolute sm:bottom-6 bottom-4 sm:right-12 right-8 sm:group-hover:translate-x-11 group-hover:translate-x-6 group-hover:translate-y-3 duration-700 transition-all ease-in-out">
@@ -16,7 +16,7 @@
                       {{$slot}}
        </span>
     </div>
-    <div class="text-2xl font-semibold py-4">{{$title}}</div>
-    <div class="text-gray-600 text-sm">{{$desc}}
+    <div class="text-2xl font-semibold text-black py-4">{{$title}}</div>
+    <div class="text-black text-center text-sm">{{$desc}}
     </div>
 </div>
