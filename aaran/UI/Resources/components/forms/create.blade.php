@@ -50,7 +50,6 @@
                                                          after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300
                                                          after:border after:rounded-full after:h-4 after:w-4 after:transition-all
                                                          peer-checked:bg-blue-600">
-
                                             </div>
                                             <span
                                                 class="ml-3 sm:text-sm text-xs font-medium text-gray-900">Active</span>
