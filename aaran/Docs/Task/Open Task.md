@@ -6,7 +6,8 @@
 - Contact page
 - Privacy policy page
 - Terms of service page
-- FAQ page
+- FAQ page    
+- 
 - Blog page
 - services page
 - Portfolio page
