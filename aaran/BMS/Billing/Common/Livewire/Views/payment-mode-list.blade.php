@@ -20,7 +20,7 @@
                     Name
                 </x-Ui::table.header-text>
                 <x-Ui::table.header-status/>
-                <x-Ui::table.header-serial/>
+                <x-Ui::table.header-action/>
             </x-slot:table_header>
 
             <x-slot:table_body>
