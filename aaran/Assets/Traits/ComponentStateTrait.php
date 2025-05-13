@@ -10,6 +10,8 @@ trait ComponentStateTrait
 
     protected $queryString = ['page'];
 
+    public mixed $page;
+
     public bool $showEditModal = false;
     public bool $showFilters = false;
     public bool $showDeleteModal = false;
