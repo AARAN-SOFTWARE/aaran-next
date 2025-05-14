@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Despatch extends Model
 {
     use HasFactory;
+
+    protected $table = 'despatches';
+
     protected $guarded = [];
 
     public $timestamps = false;

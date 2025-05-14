@@ -11,6 +11,8 @@ class State extends Model
 {
     use HasFactory;
 
+    protected $table = 'states';
+
     protected $guarded = [];
 
     public $timestamps = false;

@@ -19,7 +19,7 @@ class CountryList extends Component
 
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -41,9 +41,7 @@ class CountryList extends Component
             'vname' => 'Country name',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -62,7 +60,7 @@ class CountryList extends Component
         $this->clearFields();
     }
 
-    #endregion
+
 
 
     public function clearFields(): void

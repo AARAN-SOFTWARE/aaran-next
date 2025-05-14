@@ -17,7 +17,7 @@ class AccountTypeList extends Component
     public string $vname = '';
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -39,9 +39,7 @@ class AccountTypeList extends Component
             'vname' => 'Account Type name',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -59,7 +57,7 @@ class AccountTypeList extends Component
         $this->clearFields();
     }
 
-    #endregion
+
 
 
     public function clearFields(): void
@@ -70,7 +68,7 @@ class AccountTypeList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
+
     public function getObj(int $id): void
     {
         if ($obj = AccountType::on($this->getTenantConnection())->find($id)) {
@@ -88,9 +86,7 @@ class AccountTypeList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -100,14 +96,12 @@ class AccountTypeList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::account-type-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

@@ -18,7 +18,7 @@ class DespatchList extends Component
     public string $vdate = '';
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -40,9 +40,7 @@ class DespatchList extends Component
             'vname' => 'Despatch name',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -61,7 +59,6 @@ class DespatchList extends Component
         $this->clearFields();
     }
 
-    #endregion
 
 
     public function clearFields(): void
@@ -73,7 +70,7 @@ class DespatchList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
+
     public function getObj(int $id): void
     {
         if ($obj = Despatch::on($this->getTenantConnection())->find($id)) {
@@ -92,9 +89,7 @@ class DespatchList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -104,14 +99,12 @@ class DespatchList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::despatch-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

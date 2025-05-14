@@ -18,7 +18,7 @@ class UnitList extends Component
     public string $description = '';
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -40,9 +40,9 @@ class UnitList extends Component
             'vname' => 'Unit name',
         ];
     }
-    #endregion
 
-    #region[Save]
+
+
     public function getSave(): void
     {
         $this->validate();
@@ -61,7 +61,7 @@ class UnitList extends Component
         $this->clearFields();
     }
 
-    #endregion
+
 
 
     public function clearFields(): void
@@ -73,7 +73,7 @@ class UnitList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
+
     public function getObj(int $id): void
     {
         if ($obj = Unit::on($this->getTenantConnection())->find($id)) {
@@ -92,9 +92,9 @@ class UnitList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
+
+
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -104,14 +104,12 @@ class UnitList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::unit-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

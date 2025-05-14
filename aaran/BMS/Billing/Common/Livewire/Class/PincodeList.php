@@ -17,7 +17,7 @@ class PincodeList extends Component
     public string $vname = '';
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -39,9 +39,9 @@ class PincodeList extends Component
             'vname' => 'Pin code',
         ];
     }
-    #endregion
 
-    #region[Save]
+
+
     public function getSave(): void
     {
         $this->validate();
@@ -59,7 +59,7 @@ class PincodeList extends Component
         $this->clearFields();
     }
 
-    #endregion
+
 
 
     public function clearFields(): void
@@ -70,7 +70,7 @@ class PincodeList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
+
     public function getObj(int $id): void
     {
         if ($obj = Pincode::on($this->getTenantConnection())->find($id)) {
@@ -88,9 +88,7 @@ class PincodeList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -100,14 +98,12 @@ class PincodeList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::pincode-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

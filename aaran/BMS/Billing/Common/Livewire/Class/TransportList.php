@@ -4,26 +4,28 @@ namespace Aaran\BMS\Billing\Common\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
+use Aaran\BMS\Billing\Common\Models\Transport;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class CityList extends Component
+class TransportList extends Component
 {
-    public function clearFields(): void
-    {
-        $this->vid = null;
-        $this->vname = '';
-        $this->active_id = true;
-        $this->searches = '';
-    }
-
     use ComponentStateTrait, TenantAwareTrait;
+
     #[Validate]
     public string $vname = '';
-
+    public string $vehicle_no = '';
     public bool $active_id = true;
+
+
+    public function rules(): array
+    {
+        return [
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.transports,vname"),
+        ];
+    }
+
     public function messages(): array
     {
         return [
@@ -35,7 +37,7 @@ class CityList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'City name',
+            'vname' => 'Transport',
         ];
     }
 
@@ -45,10 +47,11 @@ class CityList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        City::on($connection)->updateOrCreate(
+        Transport::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
+                'vehicle_no' => $this->vehicle_no,
                 'active_id' => $this->active_id
             ],
         );
@@ -58,52 +61,50 @@ class CityList extends Component
     }
 
 
+
+
+    public function clearFields(): void
+    {
+        $this->vid = null;
+        $this->vname = '';
+        $this->vehicle_no = '';
+        $this->active_id = true;
+        $this->searches = '';
+    }
+
+
     public function getObj(int $id): void
     {
-        if ($obj = City::on($this->getTenantConnection())->find($id)) {
+        if ($obj = Transport::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
+            $this->vehicle_no = $obj->vehicle_no;
             $this->active_id = $obj->active_id;
         }
     }
 
-
-
-
-
-    public function rules(): array
-    {
-        return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.cities,vname"),
-        ];
-    }
-
     public function getList()
     {
-        return City::on($this->getTenantConnection())
+        return Transport::on($this->getTenantConnection())
             ->active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
 
-
-
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
 
-        $obj = City::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = Transport::on($this->getTenantConnection())->find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
     }
 
-
-
     public function render()
     {
-        return view('common::city-list', [
+        return view('common::transport-list', [
             'list' => $this->getList()
         ]);
     }

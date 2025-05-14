@@ -4,12 +4,12 @@ namespace Aaran\BMS\Billing\Common\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\City;
+use Aaran\BMS\Billing\Common\Models\District;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class CityList extends Component
+class DistrictList extends Component
 {
     public function clearFields(): void
     {
@@ -35,7 +35,7 @@ class CityList extends Component
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'City name',
+            'vname' => 'District name',
         ];
     }
 
@@ -45,7 +45,7 @@ class CityList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        City::on($connection)->updateOrCreate(
+        District::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
@@ -60,7 +60,7 @@ class CityList extends Component
 
     public function getObj(int $id): void
     {
-        if ($obj = City::on($this->getTenantConnection())->find($id)) {
+        if ($obj = District::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
             $this->active_id = $obj->active_id;
@@ -74,13 +74,13 @@ class CityList extends Component
     public function rules(): array
     {
         return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.cities,vname"),
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.districts,vname"),
         ];
     }
 
     public function getList()
     {
-        return City::on($this->getTenantConnection())
+        return District::on($this->getTenantConnection())
             ->active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
@@ -93,7 +93,7 @@ class CityList extends Component
     {
         if (!$this->deleteId) return;
 
-        $obj = City::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = District::on($this->getTenantConnection())->find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
@@ -103,7 +103,7 @@ class CityList extends Component
 
     public function render()
     {
-        return view('common::city-list', [
+        return view('common::district-list', [
             'list' => $this->getList()
         ]);
     }
