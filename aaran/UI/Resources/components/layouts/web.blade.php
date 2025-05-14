@@ -14,7 +14,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('custom-style')
-
+    <style>
+        body::-webkit-scrollbar{
+            display: none;
+        }
+    </style>
     <!-- Styles -->
 {{--    @livewireStyles--}}
     @fluxAppearance

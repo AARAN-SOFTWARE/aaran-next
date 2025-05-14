@@ -23,6 +23,7 @@ class Billing extends Component
     #[Layout('Ui::components.layouts.web')]
     public function render()
     {
+
         return view('website::home.billing');
     }
 

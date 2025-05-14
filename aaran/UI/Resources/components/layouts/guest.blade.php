@@ -12,7 +12,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('custom-style')
-
+    <style>
+        body::-webkit-scrollbar{
+            display: none;
+        }
+    </style>
     @fluxAppearance
 </head>
 <body class="font-sans antialiased">

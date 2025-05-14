@@ -1,7 +1,7 @@
 @php
     $plans = [
         [
-            'id' => '1',
+            'id' => 'starter',
             'title' => 'Starter',
             'price' => '$9',
             'description' => 'Good for anyone who is self-employed and just getting started.',
@@ -15,7 +15,7 @@
             'highlighted' => false,
         ],
         [
-             'id' => '2',
+             'id' => 'smallbusiness',
             'title' => 'Small Business',
             'price' => '$19',
             'description' => 'Ideal for growing businesses needing more features.',
@@ -29,7 +29,7 @@
             'highlighted' => true,
         ],
         [
-             'id' => '3',
+             'id' => 'enterprise',
             'title' => 'Enterprise',
             'price' => '$49',
             'description' => 'Best for teams and enterprises with advanced needs.',
@@ -41,6 +41,21 @@
                 'Unlimited reporting & analytics',
             ],
             'highlighted' => false,
+        ],
+        [
+             'id' => 'elite',
+            'title' => 'Elite',
+            'price' => '$49+',
+            'description' => 'Best for teams and enterprises with advanced needs.',
+            'features' => [
+                'Full Customizable',
+                'Unlimited quotes and invoices',
+                'Unlimited bank connections',
+                'Advanced expense tracking',
+                'Full payroll automation',
+                'Unlimited reporting & analytics',
+            ],
+            'highlighted' => true,
         ],
     ];
 @endphp
@@ -61,7 +76,7 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 px-6 sm:px-8 lg:py-8">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 px-6 sm:px-8 lg:py-8">
             @foreach ($plans as $plan)
                 @php
                     $containerClasses = $plan['highlighted']
@@ -82,7 +97,7 @@
 
                     <a href="{{route('billing',$plan['id'])}}"
                        class="mt-8 inline-flex items-center justify-center rounded-full border {{$plan['highlighted']?'bg-white text-gray-900 hover:text-white ':' '}}  border-white py-2 px-4 text-sm hover:bg-white/10">
-                        Get started
+                        Start my free trial
                     </a>
 
                     <ul class="mt-10 space-y-3 text-sm text-inherit">
@@ -100,4 +115,5 @@
             @endforeach
         </div>
     </div>
+   <div class="text-center my-4 border py-4 border-x-0 border-y-gray-800 cursor-pointer" href="{{route('plan-comparison')}}" wire:navigate>Explore All plans</div>
 </section>

@@ -3,13 +3,14 @@
         'home' => 'Home',
         'abouts' => 'About',
         'blogs' => 'Blog',
-        'services' => 'Services',
+//        'services' => 'Services',
+        'projects'=>'Products',
         'web-contacts' => 'Contact'
     ];
 @endphp
 
 <nav x-data="{ mobileMenuIsOpen: false }" @click.away="mobileMenuIsOpen = false" id="navBar"
-     class="sm:fixed sm:z-40 sm:w-full flex items-center justify-between border-b border-neutral-300 sm:px-32 px-6 py-4 dark:border-neutral-700 text-black transition-colors duration-300">
+     class="sm:fixed sm:z-40 sm:w-full flex items-center justify-between border-b border-neutral-300 px-6 py-4 dark:border-neutral-700 text-black transition-colors duration-300">
 
     <!-- Brand Logo -->
     <a href="#" class="text-3xl flex flex-row shrink-0 items-center hover:scale-105 transition duration-500">
@@ -22,7 +23,7 @@
     <ul class="hidden md:flex items-center gap-16">
         @foreach ($menuItems as $route => $label)
             <li class="hover:tracking-wide hover:font-bold transition duration-1000">
-                <a href="{{ route($route) }}" class="menu-text dark:text-neutral-300 dark:hover:text-white"
+                <a href="{{ route($route) }}" class="menu-text dark:text-black dark:hover:text-black"
                    wire:navigate>{{ $label }}</a>
             </li>
         @endforeach
@@ -40,7 +41,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
         @else
             <li class="hover:tracking-wide hover:font-bold transition duration-1000">
-                <a href="{{ route('login') }}" class="menu-text dark:text-neutral-300 dark:hover:text-white"
+                <a href="{{ route('login') }}" class="menu-text dark:text-black dark:hover:text-black"
                    wire:navigate>Login</a>
             </li>
         @endauth
@@ -82,9 +83,13 @@
                             class="w-full text-sm font-medium text-neutral-600 focus:underline dark:text-neutral-300"
                             wire:navigate>Blog</a>
         </li>
-        <li class="py-2"><a href="{{route('services')}}"
+{{--        <li class="py-2"><a href="{{route('services')}}"--}}
+{{--                            class="w-full text-sm font-medium text-neutral-600 focus:underline dark:text-neutral-300"--}}
+{{--                            wire:navigate>Services</a>--}}
+{{--        </li>--}}
+        <li class="py-2"><a href="{{route('projects')}}"
                             class="w-full text-sm font-medium text-neutral-600 focus:underline dark:text-neutral-300"
-                            wire:navigate>Services</a>
+                            wire:navigate>Products</a>
         </li>
         <li class="py-2"><a href="{{route('web-contacts')}}"
                             class="w-full text-sm font-medium text-neutral-600 focus:underline dark:text-neutral-300"

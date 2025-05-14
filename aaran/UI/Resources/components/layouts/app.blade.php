@@ -15,6 +15,11 @@
 
     @stack('custom-style')
 
+    <style>
+        body::-webkit-scrollbar{
+            display: none;
+        }
+    </style>
     <!-- Styles -->
     @fluxAppearance
 </head>
@@ -25,11 +30,13 @@
      class="min-h-screen bg-white print:bg-white">
     <div class="flex-1">
 
-        <x-Ui::menu.app.top-menu>{{$header}}</x-Ui::menu.app.top-menu>
+{{--        <x-Ui::menu.app.top-menu>{{$header}}</x-Ui::menu.app.top-menu>--}}
+        <x-Ui::menu.web.top-menu-2/>
+
         <x-Ui::menu.app.side-menu/>
 
         <!-- Page Content -->
-        <main class=" bg-[#F8F8FF] print:bg-white sm:p-5 p-2 ">
+        <main class=" bg-[#F8F8FF] print:bg-white sm:pt-5 pt-2 ">
             {{ $slot }}
         </main>
 
