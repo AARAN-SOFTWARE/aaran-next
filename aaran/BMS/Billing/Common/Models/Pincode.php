@@ -11,6 +11,8 @@ class Pincode extends Model
 {
     use HasFactory;
 
+    protected $table = 'pincodes';
+
     protected $guarded = [];
 
     public $timestamps = false;

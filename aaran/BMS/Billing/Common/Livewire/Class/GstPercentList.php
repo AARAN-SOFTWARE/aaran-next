@@ -18,7 +18,6 @@ class GstPercentList extends Component
     public string $description = '';
     public bool $active_id = true;
 
-    #region[Validation]
     public function rules(): array
     {
         return [
@@ -40,9 +39,7 @@ class GstPercentList extends Component
             'vname' => 'Gst Percent',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -61,9 +58,6 @@ class GstPercentList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -73,7 +67,6 @@ class GstPercentList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = GstPercent::on($this->getTenantConnection())->find($id)) {
@@ -92,9 +85,7 @@ class GstPercentList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -104,14 +95,12 @@ class GstPercentList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::gst-percent-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

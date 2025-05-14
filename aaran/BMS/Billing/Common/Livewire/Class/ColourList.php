@@ -17,7 +17,6 @@ class ColourList extends Component
     public string $vname = '';
     public bool $active_id = true;
 
-    #region[Validation]
     public function rules(): array
     {
         return [
@@ -39,9 +38,7 @@ class ColourList extends Component
             'vname' => 'Colour name',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -59,9 +56,6 @@ class ColourList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -70,7 +64,6 @@ class ColourList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = Colour::on($this->getTenantConnection())->find($id)) {
@@ -88,9 +81,7 @@ class ColourList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -100,14 +91,12 @@ class ColourList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::colour-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

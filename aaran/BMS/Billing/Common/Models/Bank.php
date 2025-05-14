@@ -11,6 +11,8 @@ class Bank extends Model
 {
     use HasFactory;
 
+    protected $table = 'banks';
+
     protected $guarded = [];
 
     public $timestamps = false;

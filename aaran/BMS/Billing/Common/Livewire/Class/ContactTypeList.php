@@ -39,9 +39,7 @@ class ContactTypeList extends Component
             'vname' => 'Contact Type',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -59,9 +57,6 @@ class ContactTypeList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -70,7 +65,6 @@ class ContactTypeList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = ContactType::on($this->getTenantConnection())->find($id)) {
@@ -88,9 +82,7 @@ class ContactTypeList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -100,14 +92,12 @@ class ContactTypeList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::contact-type-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

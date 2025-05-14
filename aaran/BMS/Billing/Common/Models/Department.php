@@ -11,6 +11,8 @@ class Department extends Model
 {
     use HasFactory;
 
+    protected $table = 'departments';
+
     protected $guarded = [];
 
     public $timestamps = false;

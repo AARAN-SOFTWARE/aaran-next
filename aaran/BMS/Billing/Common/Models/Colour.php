@@ -11,6 +11,7 @@ class Colour extends Model
 {
     use HasFactory;
 
+    protected $table = 'colours';
     protected $guarded = [];
 
     public $timestamps = false;
