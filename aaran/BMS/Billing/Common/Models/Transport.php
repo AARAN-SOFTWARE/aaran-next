@@ -11,6 +11,8 @@ class Transport extends Model
 {
     use HasFactory;
 
+    protected $table = 'transports';
+
     protected $guarded = [];
 
     public $timestamps = false;

@@ -11,6 +11,8 @@ class ReceiptType extends Model
 {
     use HasFactory;
 
+
+    protected $table = "gst_percents";
     protected $guarded = [];
 
     public $timestamps = false;

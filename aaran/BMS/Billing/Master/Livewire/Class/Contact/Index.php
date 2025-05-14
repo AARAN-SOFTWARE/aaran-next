@@ -105,79 +105,13 @@ class Index extends Component
     }
     #endregion
 
-    #region[city]
-    public $city_name = '';
-    public $cityCollection;
-    public $highlightCity = 0;
-    public $cityTyped = false;
-
-    public function decrementCity(): void
-    {
-        if ($this->highlightCity === 0) {
-            $this->highlightCity = count($this->cityCollection) - 1;
-            return;
-        }
-        $this->highlightCity--;
-    }
-
-    public function incrementCity(): void
-    {
-        if ($this->highlightCity === count($this->cityCollection) - 1) {
-            $this->highlightCity = 0;
-            return;
-        }
-        $this->highlightCity++;
-    }
-
-    public function setCity($name, $id): void
-    {
-        $this->city_name = $name;
-        $this->city_id = $id;
-        $this->getCityList();
-    }
-
-    public function enterCity(): void
-    {
-        $obj = $this->cityCollection[$this->highlightCity] ?? null;
-
-        $this->city_name = '';
-        $this->cityCollection = Collection::empty();
-        $this->highlightCity = 0;
-
-        $this->city_name = $obj->vname ?? '';;
-        $this->city_id = $obj->id ?? '';;
-    }
-
     #[On('refresh-city')]
     public function refreshCity($v): void
     {
-        $this->city_id = $v['id'];
-        $this->city_name = $v['name'];
-        $this->cityTyped = false;
+        $this->city_id = $v;
     }
 
-    public function citySave($name)
-    {
-        $obj = City::on($this->getTenantConnection())->create([
-            'vname' => $name,
-            'active_id' => '1'
-        ]);
-        $v = ['name' => $name, 'id' => $obj->id];
-        $this->refreshCity($v);
-    }
 
-    public function getCityList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->cityCollection = DB::connection($this->getTenantConnection())
-            ->table('cities')
-            ->when($this->city_name, fn($query) => $query->where('vname', 'like', "%{$this->city_name}%"))
-            ->get();
-    }
-    #endregion
 
     #region[state]
     public $state_name = '';
@@ -649,7 +583,6 @@ class Index extends Component
         $this->pincode_id = '';
         $this->country_id = '';
 
-        $this->city_name =  '';
         $this->state_name = '';
         $this->pincode_name = '';
         $this->country_name = '';
@@ -658,6 +591,8 @@ class Index extends Component
         $this->ifsc_code = '';
         $this->bank = '';
         $this->branch = '';
+
+        $this->dispatch('refresh-city-lookup', '');
     }
     #endregion
 
@@ -701,7 +636,9 @@ class Index extends Component
             $this->address_1 = $address->address_1;
             $this->address_2 = $address->address_2;
             $this->city_id = $address->city_id;
-            $this->city_name = optional($address->city)->vname;
+
+            $this->dispatch('refresh-city-lookup', optional($address->city)->vname);
+
             $this->state_id = $address->state_id;
             $this->state_name = optional($address->state)->vname;
             $this->pincode_id = $address->pincode_id;
@@ -760,7 +697,7 @@ class Index extends Component
     #region[render]
     public function render()
     {
-        $this->getCityList();
+//        $this->getCityList();
         $this->getStateList();
         $this->getPincodeList();
         $this->getMsmeTypeList();

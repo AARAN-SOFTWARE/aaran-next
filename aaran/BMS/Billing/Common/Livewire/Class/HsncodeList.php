@@ -18,7 +18,7 @@ class HsncodeList extends Component
     public string $description = '';
     public bool $active_id = true;
 
-    #region[Validation]
+
     public function rules(): array
     {
         return [
@@ -40,9 +40,7 @@ class HsncodeList extends Component
             'vname' => 'Hsn code',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -61,9 +59,6 @@ class HsncodeList extends Component
         $this->clearFields();
     }
 
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -73,7 +68,6 @@ class HsncodeList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = Hsncode::on($this->getTenantConnection())->find($id)) {
@@ -92,9 +86,7 @@ class HsncodeList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -104,14 +96,12 @@ class HsncodeList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::hsncode-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }

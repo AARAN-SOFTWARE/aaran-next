@@ -4,45 +4,31 @@ namespace Aaran\BMS\Billing\Common\Livewire\Class;
 
 use Aaran\Assets\Traits\ComponentStateTrait;
 use Aaran\Assets\Traits\TenantAwareTrait;
-use Aaran\BMS\Billing\Common\Models\State;
+use Aaran\BMS\Billing\Common\Models\District;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class StateList extends Component
+class DistrictList extends Component
 {
-    use ComponentStateTrait, TenantAwareTrait;
 
+    use ComponentStateTrait, TenantAwareTrait;
     #[Validate]
     public string $vname = '';
-    public string $state_code = '';
+
     public bool $active_id = true;
-
-
-    public function rules(): array
-    {
-        return [
-            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.states,vname"),
-            'state_code' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.states,state_code"),
-        ];
-    }
-
     public function messages(): array
     {
         return [
             'vname.required' => ':attribute is missing.',
             'vname.unique' => 'This :attribute is already created.',
-
-            'state_code.required' => ':attribute is missing.',
-            'state_code.unique' => 'This :attribute is already created.',
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'vname' => 'State name',
-            'state_code' => 'State Code',
+            'vname' => 'District name',
         ];
     }
 
@@ -51,11 +37,10 @@ class StateList extends Component
         $this->validate();
         $connection = $this->getTenantConnection();
 
-        State::on($connection)->updateOrCreate(
+        District::on($connection)->updateOrCreate(
             ['id' => $this->vid],
             [
                 'vname' => Str::ucfirst($this->vname),
-                'state_code' => $this->state_code,
                 'active_id' => $this->active_id
             ],
         );
@@ -68,24 +53,29 @@ class StateList extends Component
     {
         $this->vid = null;
         $this->vname = '';
-        $this->state_code = '';
         $this->active_id = true;
         $this->searches = '';
     }
 
     public function getObj(int $id): void
     {
-        if ($obj = State::on($this->getTenantConnection())->find($id)) {
+        if ($obj = District::on($this->getTenantConnection())->find($id)) {
             $this->vid = $obj->id;
             $this->vname = $obj->vname;
-            $this->state_code = $obj->state_code;
             $this->active_id = $obj->active_id;
         }
     }
 
+    public function rules(): array
+    {
+        return [
+            'vname' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.districts,vname"),
+        ];
+    }
+
     public function getList()
     {
-        return State::on($this->getTenantConnection())
+        return District::on($this->getTenantConnection())
             ->active($this->activeRecord)
             ->when($this->searches, fn($query) => $query->searchByName($this->searches))
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
@@ -96,7 +86,7 @@ class StateList extends Component
     {
         if (!$this->deleteId) return;
 
-        $obj = State::on($this->getTenantConnection())->find($this->deleteId);
+        $obj = District::on($this->getTenantConnection())->find($this->deleteId);
         if ($obj) {
             $obj->delete();
         }
@@ -104,7 +94,7 @@ class StateList extends Component
 
     public function render()
     {
-        return view('common::state-list', [
+        return view('common::district-list', [
             'list' => $this->getList()
         ]);
     }

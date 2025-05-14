@@ -11,13 +11,13 @@ use Livewire\Component;
 
 class CityList extends Component
 {
+
     use ComponentStateTrait, TenantAwareTrait;
 
     #[Validate]
     public string $vname = '';
     public bool $active_id = true;
 
-    #region[Validation]
     public function rules(): array
     {
         return [
@@ -39,9 +39,7 @@ class CityList extends Component
             'vname' => 'City name',
         ];
     }
-    #endregion
 
-    #region[Save]
     public function getSave(): void
     {
         $this->validate();
@@ -58,10 +56,6 @@ class CityList extends Component
         $this->dispatch('notify', ...['type' => 'success', 'content' => ($this->vid ? 'Updated' : 'Saved') . ' Successfully']);
         $this->clearFields();
     }
-
-    #endregion
-
-
     public function clearFields(): void
     {
         $this->vid = null;
@@ -70,7 +64,6 @@ class CityList extends Component
         $this->searches = '';
     }
 
-    #region[Fetch Data]
     public function getObj(int $id): void
     {
         if ($obj = City::on($this->getTenantConnection())->find($id)) {
@@ -88,9 +81,7 @@ class CityList extends Component
             ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
             ->paginate($this->perPage);
     }
-    #endregion
 
-    #region[Delete]
     public function deleteFunction(): void
     {
         if (!$this->deleteId) return;
@@ -100,14 +91,12 @@ class CityList extends Component
             $obj->delete();
         }
     }
-    #endregion
 
-    #region[Render]
     public function render()
     {
         return view('common::city-list', [
             'list' => $this->getList()
         ]);
     }
-    #endregion
+
 }
