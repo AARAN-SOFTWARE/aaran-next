@@ -16,7 +16,6 @@ class CityList extends Component
 
     #[Validate]
     public string $vname = '';
-
     public bool $active_id = true;
 
     public function rules(): array

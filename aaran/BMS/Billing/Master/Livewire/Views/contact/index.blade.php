@@ -143,30 +143,11 @@
                                 </div>
 
                                 <!-- City ----------------------------------------------------------------------------->
+                                <div>
+                                    @livewire('common::city.lookup',['initId' => $city_id])
+                                    <x-Ui::input.error-text wire:model="$city_id"/>
+                                </div>
 
-                                <x-Ui::dropdown.wrapper label="City" type="cityTyped">
-                                    <div class="relative ">
-                                        <x-Ui::dropdown.input label="City" id="city_name"
-                                                              wire:model.live="city_name"
-                                                              wire:keydown.arrow-up="decrementCity"
-                                                              wire:keydown.arrow-down="incrementCity"
-                                                              wire:keydown.enter="enterCity"/>
-                                        <x-Ui::dropdown.select>
-                                            @if($cityCollection)
-                                                @forelse ($cityCollection as $i => $city)
-                                                    <x-Ui::dropdown.option highlight="{{$highlightCity === $i  }}"
-                                                                           wire:click.prevent="setCity('{{$city->vname}}','{{$city->id}}')">
-                                                        {{ $city->vname }}
-                                                    </x-Ui::dropdown.option>
-                                                @empty
-                                                    <x-Ui::dropdown.create
-                                                        wire:click.prevent="citySave('{{$city_name}}')" label="City"/>
-                                                @endforelse
-                                            @endif
-                                        </x-Ui::dropdown.select>
-                                    </div>
-                                    <x-Ui::input.error-text wire:model="city_name"/>
-                                </x-Ui::dropdown.wrapper>
 
                                 <!-- State ---------------------------------------------------------------------------->
 
