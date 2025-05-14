@@ -697,7 +697,7 @@ class Index extends Component
     #region[render]
     public function render()
     {
-        $this->getCityList();
+//        $this->getCityList();
         $this->getStateList();
         $this->getPincodeList();
         $this->getMsmeTypeList();
