@@ -1,4 +1,4 @@
-<div class="text-black bg-gray-200">
+<div class="text-black bg-gray-200  scrollbar-hide">
     <div class="h-[40vh] text-center flex justify-center text-white items-center bg-blue-500">
         <div class="text-6xl">Products</div>
     </div>

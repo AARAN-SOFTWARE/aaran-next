@@ -15,11 +15,6 @@
 
     @stack('custom-style')
 
-    <style>
-        body::-webkit-scrollbar{
-            display: none;
-        }
-    </style>
     <!-- Styles -->
     @fluxAppearance
 </head>

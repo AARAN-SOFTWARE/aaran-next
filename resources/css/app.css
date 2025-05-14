@@ -93,3 +93,6 @@ select:focus[data-flux-control] {
     font-weight: 600;
     font-style: normal;
 }
+.scrollbar-hide::-webkit-scrollbar{
+    display: none;
+}
