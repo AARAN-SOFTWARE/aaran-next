@@ -11,6 +11,8 @@ class Hsncode extends Model
 {
     use HasFactory;
 
+    protected $table = 'hsncodes';
+
     protected $guarded = [];
 
     public $timestamps = false;

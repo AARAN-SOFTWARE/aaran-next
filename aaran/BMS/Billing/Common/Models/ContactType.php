@@ -10,6 +10,8 @@ class ContactType extends Model
 {
     use HasFactory;
 
+    protected $table = 'contact_types';
+
     protected $guarded = [];
 
     public $timestamps = false;
