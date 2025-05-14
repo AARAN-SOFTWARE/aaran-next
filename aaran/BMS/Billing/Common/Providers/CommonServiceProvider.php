@@ -37,6 +37,7 @@ class CommonServiceProvider extends ServiceProvider
         Livewire::component('common::account-type-list', Class\AccountTypeList::class);
 
 
+        Livewire::component('common::lookup.city', Class\Lookup\CityLookup::class);
         Livewire::component('common::lookup.colour', Class\Lookup\ColourLookup::class);
         Livewire::component('common::lookup.size', Class\Lookup\SizeLookup::class);
         Livewire::component('common::lookup.transport', Class\Lookup\TransportLookup::class);
