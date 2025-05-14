@@ -1,5 +1,7 @@
 <?php
 
+use Aaran\Website\Livewire\Class\PlanComparison;
+use Aaran\Website\Livewire\Class\Projects;
 use Illuminate\Support\Facades\Route;
 use Aaran\Website\Livewire\Class\Blog;
 use Aaran\Website\Livewire\Class\Service;
@@ -14,9 +16,9 @@ Route::middleware(['website'])->group(function () {
 //    Route::get('/web-contacts', \Aaran\Website\Livewire\Class\Contact::class)->name('contacts');
 //    Route::post('/web-contacts',[\Aaran\Website\Livewire\Class\Contact::class,'store_message'])->name('contact.message');
     Route::get('/service', Service::class)->name('services');
-
-
-
+    Route::get('/projects',Projects::class)->name('projects');
+    Route::get('/plan-details',\Aaran\Website\Livewire\Class\WebPlanDetails::class)->name('plan-details');
+    Route::get('plan-comparison',PlanComparison::class)->name('plan-comparison');
 
 
 
