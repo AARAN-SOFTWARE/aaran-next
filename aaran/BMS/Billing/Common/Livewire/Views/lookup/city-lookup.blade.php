@@ -31,7 +31,7 @@
                         bg-white text-gray-800 ring-1 ring-blue-600">
                     <ul class="overflow-y-scroll h-44 text-xs">
                         @forelse ($results as $index => $row)
-                            <li wire:click="selectTransport(@js($row))"
+                            <li wire:click="selectCity(@js($row))"
                                 class="cursor-pointer px-3 py-1 hover:font-bold hover:bg-zinc-100 text-blue-900 h-fit ml-2 mr-2 rounded-md
                                 {{ $highlightIndex === $index ? 'bg-blue-100 ' : '' }}">
                                 {{ $row->vname }}

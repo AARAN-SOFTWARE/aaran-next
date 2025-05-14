@@ -144,7 +144,7 @@
 
                                 <!-- City ----------------------------------------------------------------------------->
                                 <div>
-                                    @livewire('common::city.lookup',['initId' => $city_id])
+                                    @livewire('common::lookup.city')
                                     <x-Ui::input.error-text wire:model="$city_id"/>
                                 </div>
 
