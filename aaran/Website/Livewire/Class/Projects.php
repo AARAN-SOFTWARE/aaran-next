@@ -14,6 +14,7 @@ class Projects extends Component
     {
         $featured = [
             (object)['icon' => '/images/home/wp1.webp','title'=>'CRM','description'=>'Comprehensive CRM platform for customer-facing teams.'],
+            (object)['icon' => '/images/home/wp1.webp','title'=>'CRM','description'=>'Comprehensive CRM platform for customer-facing teams.'],
 
         ];
         $upcoming = [
