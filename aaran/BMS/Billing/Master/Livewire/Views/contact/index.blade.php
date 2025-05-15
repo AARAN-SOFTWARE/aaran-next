@@ -145,89 +145,29 @@
                                 <!-- City ----------------------------------------------------------------------------->
                                 <div>
                                     @livewire('common::lookup.city')
-                                    <x-Ui::input.error-text wire:model="$city_id"/>
+                                    <x-Ui::input.error-text wire:model="city_id"/>
                                 </div>
 
 
                                 <!-- State ---------------------------------------------------------------------------->
 
-                                <x-Ui::dropdown.wrapper label="State" type="stateTyped">
-                                    <div class="relative ">
-                                        <x-Ui::dropdown.input label="State" id="state_name"
-                                                              wire:model.live="state_name"
-                                                              wire:keydown.arrow-up="decrementState"
-                                                              wire:keydown.arrow-down="incrementState"
-                                                              wire:keydown.enter="enterState"/>
-                                        <x-Ui::dropdown.select>
-                                            @if($stateCollection)
-                                                @forelse ($stateCollection as $i => $states)
-                                                    <x-Ui::dropdown.option highlight="{{$highlightState === $i  }}"
-                                                                           wire:click.prevent="setState('{{$states->vname}}','{{$states->id}}')">
-                                                        {{ $states->vname }}
-                                                    </x-Ui::dropdown.option>
-                                                @empty
-                                                    <x-Ui::dropdown.create
-                                                        wire:click.prevent="stateSave('{{ $state_name }}')"
-                                                        label="State"/>
-                                                @endforelse
-                                            @endif
-                                        </x-Ui::dropdown.select>
-                                    </div>
-                                    <x-Ui::input.error-text wire:model="state_name"/>
-                                </x-Ui::dropdown.wrapper>
+                                <div>
+                                    @livewire('common::lookup.state')
+                                    <x-Ui::input.error-text wire:model="state_id"/>
+                                </div>
 
                                 <!-- Pin-code ------------------------------------------------------------------------->
 
-                                <x-Ui::dropdown.wrapper label="Pincode" type="pincodeTyped">
-                                    <div class="relative ">
-                                        <x-Ui::dropdown.input label="Pincode" id="pincode_name"
-                                                              wire:model.live="pincode_name"
-                                                              wire:keydown.arrow-up="decrementPincode"
-                                                              wire:keydown.arrow-down="incrementPincode"
-                                                              wire:keydown.enter="enterPincode"/>
-                                        <x-Ui::dropdown.select>
-                                            @if($pincodeCollection)
-                                                @forelse ($pincodeCollection as $i => $pincode)
-                                                    <x-Ui::dropdown.option highlight="{{$highlightPincode === $i  }}"
-                                                                           wire:click.prevent="setPincode('{{$pincode->vname}}','{{$pincode->id}}')">
-                                                        {{ $pincode->vname }}
-                                                    </x-Ui::dropdown.option>
-                                                @empty
-                                                    <x-Ui::dropdown.create
-                                                        wire:click.prevent="pincodeSave('{{$pincode_name}}')"
-                                                        label="Pincode"/>
-                                                @endforelse
-                                            @endif
-                                        </x-Ui::dropdown.select>
-                                    </div>
-                                    <x-Ui::input.error-text wire:model="pincode_name"/>
-                                </x-Ui::dropdown.wrapper>
+                                <div>
+                                    @livewire('common::lookup.pincode')
+                                    <x-Ui::input.error-text wire:model="pincode_id"/>
+                                </div>
 
                                 <!-- country ------------------------------------------------------------------------->
-                                <x-Ui::dropdown.wrapper label="Country" type="countryTyped">
-                                    <div class="relative">
-                                        <x-Ui::dropdown.input label="Country" id="country_name"
-                                                              wire:model.live="country_name"
-                                                              wire:keydown.arrow-up="decrementCountry"
-                                                              wire:keydown.arrow-down="incrementCountry"
-                                                              wire:keydown.enter="enterCountry"/>
-                                        <x-Ui::dropdown.select>
-                                            @if($countryCollection)
-                                                @forelse ($countryCollection as $i => $country)
-                                                    <x-Ui::dropdown.option highlight="{{$highlightCountry === $i}}"
-                                                                           wire:click.prevent="setCountry('{{$country->vname}}','{{$country->id}}')">
-                                                        {{ $country->vname }}
-                                                    </x-Ui::dropdown.option>
-                                                @empty
-                                                    <x-Ui::dropdown.create
-                                                        wire:click.prevent="countrySave('{{$country_name}}')"
-                                                        label="Country"/>
-                                                @endforelse
-                                            @endif
-                                        </x-Ui::dropdown.select>
-                                    </div>
-                                    <x-Ui::input.error-text wire:model="country_name"/>
-                                </x-Ui::dropdown.wrapper>
+                                <div>
+                                    @livewire('common::lookup.country')
+                                    <x-Ui::input.error-text wire:model="country_id"/>
+                                </div>
 
                             </div>
                         </x-Ui::tabs.content>
