@@ -67,10 +67,10 @@ class Index extends Component
             'gstin' => 'required' . ($this->vid ? '' : "|unique:{$this->getTenantConnection()}.companies,vname"),
             'address_1' => 'required',
             'address_2' => 'required',
-            'city_name' => 'required',
-            'state_name' => 'required',
-            'pincode_name' => 'required',
-            'country_name' => 'required',
+//            'city_name' => 'required',
+//            'state_name' => 'required',
+//            'pincode_name' => 'required',
+//            'country_name' => 'required',
         ];
     }
 
@@ -83,10 +83,10 @@ class Index extends Component
             'gstin.unique' => ' :attribute is already taken.',
             'address_1.required' => ' :attribute  is required.',
             'address_2.required' => ' :attribute  is required.',
-            'city_name.required' => ' :attribute  is required.',
-            'state_name.required' => ' :attribute  is required.',
-            'pincode_name.required' => ' :attribute  is required.',
-            'country_name.required' => ' :attribute  is required.',
+//            'city_name.required' => ' :attribute  is required.',
+//            'state_name.required' => ' :attribute  is required.',
+//            'pincode_name.required' => ' :attribute  is required.',
+//            'country_name.required' => ' :attribute  is required.',
         ];
     }
 
@@ -97,10 +97,10 @@ class Index extends Component
             'gstin' => 'GST No',
             'address_1' => 'Address',
             'address_2' => 'Area Road',
-            'city_name' => 'City',
-            'state_name' => 'State',
-            'pincode_name' => 'Pincode',
-            'country_name' => 'Country',
+//            'city_name' => 'City',
+//            'state_name' => 'State',
+//            'pincode_name' => 'Pincode',
+//            'country_name' => 'Country',
         ];
     }
     #endregion
@@ -114,227 +114,30 @@ class Index extends Component
 
 
     #region[state]
-    public $state_name = '';
-    public $stateCollection;
-    public $highlightState = 0;
-    public $stateTyped = false;
-
-    public function decrementState(): void
-    {
-        if ($this->highlightState === 0) {
-            $this->highlightState = count($this->stateCollection) - 1;
-            return;
-        }
-        $this->highlightState--;
-    }
-
-    public function incrementState(): void
-    {
-        if ($this->highlightState === count($this->stateCollection) - 1) {
-            $this->highlightState = 0;
-            return;
-        }
-        $this->highlightState++;
-    }
-
-    public function setState($name, $id): void
-    {
-        $this->state_name = $name;
-        $this->state_id = $id;
-        $this->getStateList();
-    }
-
-    public function enterState(): void
-    {
-        $obj = $this->stateCollection[$this->highlightState] ?? null;
-
-        $this->state_name = '';
-        $this->stateCollection = Collection::empty();
-        $this->highlightState = 0;
-
-        $this->state_name = $obj->vname ?? '';;
-        $this->state_id = $obj->id ?? '';;
-    }
-
     #[On('refresh-state')]
     public function refreshState($v): void
     {
-        $this->state_id = $v['id'];
-        $this->state_name = $v['name'];
-        $this->stateTyped = false;
-
-    }
-
-    public function stateSave($name): void
-    {
-        $obj = State::on($this->getTenantConnection())->create([
-            'vname' => $name,
-            'state_code' => '1',
-            'active_id' => '1'
-        ]);
-        $v = ['name' => $name, 'id' => $obj->id];
-        $this->refreshState($v);
-    }
-
-    public function getStateList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->stateCollection = DB::connection($this->getTenantConnection())
-            ->table('states')
-            ->when($this->state_name, fn($query) => $query->where('vname', 'like', "%{$this->state_name}%"))
-            ->get();
+        $this->state_id = $v;
     }
     #endregion
 
     #region[pin-code]
-    public $pincode_name = '';
-    public $pincodeCollection;
-    public $highlightPincode = 0;
-    public $pincodeTyped = false;
-
-    public function decrementPincode(): void
-    {
-        if ($this->highlightPincode === 0) {
-            $this->highlightPincode = count($this->pincodeCollection) - 1;
-            return;
-        }
-        $this->highlightPincode--;
-    }
-
-    public function incrementPincode(): void
-    {
-        if ($this->highlightPincode === count($this->pincodeCollection) - 1) {
-            $this->highlightPincode = 0;
-            return;
-        }
-        $this->highlightPincode++;
-    }
-
-    public function enterPincode(): void
-    {
-        $obj = $this->pincodeCollection[$this->highlightPincode] ?? null;
-
-        $this->pincode_name = '';
-        $this->pincodeCollection = Collection::empty();
-        $this->highlightPincode = 0;
-
-        $this->pincode_name = $obj->vname ?? '';;
-        $this->pincode_id = $obj->id ?? '';;
-    }
-
-    public function setPincode($name, $id): void
-    {
-        $this->pincode_name = $name;
-        $this->pincode_id = $id;
-        $this->getPincodeList();
-    }
-
     #[On('refresh-pincode')]
-    public function refreshPincode($v): void
+    public function refreshPinCode($v): void
     {
-        $this->pincode_id = $v['id'];
-        $this->pincode_name = $v['name'];
-        $this->pincodeTyped = false;
-    }
 
-    public function pincodeSave($name)
-    {
-        $obj = Pincode::on($this->getTenantConnection())->create([
-            'vname' => $name,
-            'active_id' => '1'
-        ]);
-        $v = ['name' => $name, 'id' => $obj->id];
-        $this->refreshPincode($v);
-    }
-
-    public function getPincodeList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->pincodeCollection = DB::connection($this->getTenantConnection())
-            ->table('pincodes')
-            ->when($this->pincode_name, fn($query) => $query->where('vname', 'like', "%{$this->pincode_name}%"))
-            ->get();
+        $this->pincode_id = $v;
 
     }
     #endregion
 
     #region[country]
-    public $country_name = '';
-    public $countryCollection;
-    public $highlightCountry = 0;
-    public $countryTyped = false;
-
-    public function decrementCountry(): void
-    {
-        if ($this->highlightCountry === 0) {
-            $this->highlightCountry = count($this->countryCollection) - 1;
-            return;
-        }
-        $this->highlightCountry--;
-    }
-
-    public function incrementCountry(): void
-    {
-        if ($this->highlightCountry === count($this->countryCollection) - 1) {
-            $this->highlightCountry = 0;
-            return;
-        }
-        $this->highlightCountry++;
-    }
-
-    public function setCountry($name, $id): void
-    {
-        $this->country_name = $name;
-        $this->country_id = $id;
-        $this->getCountryList();
-    }
-
-    public function enterCountry(): void
-    {
-        $obj = $this->countryCollection[$this->highlightCountry] ?? null;
-
-        $this->country_name = '';
-        $this->countryCollection = Collection::empty();
-        $this->highlightCountry = 0;
-
-        $this->country_name = $obj->vname ?? '';
-        $this->country_id = $obj->id ?? '';
-    }
-
     #[On('refresh-country')]
     public function refreshCountry($v): void
     {
-        $this->country_id = $v['id'];
-        $this->country_name = $v['name'];
-        $this->countryTyped = false;
-    }
 
-    public function countrySave($name)
-    {
-        $obj = Country::on($this->getTenantConnection())->create([
-            'vname' => $name,
-            'active_id' => '1'
-        ]);
-        $v = ['name' => $name, 'id' => $obj->id];
-        $this->refreshCountry($v);
-    }
+        $this->country_id = $v;
 
-    public function getCountryList(): void
-    {
-        if (!$this->getTenantConnection()) {
-            return; // Prevent execution if tenant is not set
-        }
-
-        $this->countryCollection = DB::connection($this->getTenantConnection())
-            ->table('countries')
-            ->when($this->country_name, fn($query) => $query->where('vname', 'like', "%{$this->country_name}%"))
-            ->get();
     }
     #endregion
 
@@ -578,11 +381,11 @@ class Index extends Component
         $this->address_type = 'primary';
         $this->address_1 = '';
         $this->address_2 = '';
-        $this->city_id = '';
-        $this->state_id = '';
+
         $this->pincode_id = '';
         $this->country_id = '';
 
+        $this->city_name = '';
         $this->state_name = '';
         $this->pincode_name = '';
         $this->country_name = '';
@@ -593,6 +396,9 @@ class Index extends Component
         $this->branch = '';
 
         $this->dispatch('refresh-city-lookup', '');
+        $this->dispatch('refresh-state-lookup', '');
+        $this->dispatch('refresh-pincode-lookup', '');
+        $this->dispatch('refresh-country-lookup', '');
     }
     #endregion
 
@@ -636,10 +442,14 @@ class Index extends Component
             $this->address_1 = $address->address_1;
             $this->address_2 = $address->address_2;
             $this->city_id = $address->city_id;
+            $this->state_id = $address->state_id;
 
             $this->dispatch('refresh-city-lookup', optional($address->city)->vname);
+            $this->dispatch('refresh-state-lookup', optional($address->state)->vname);
+            $this->dispatch('refresh-pincode-lookup', optional($address->state)->vname);
+            $this->dispatch('refresh-country-lookup', optional($address->state)->vname);
 
-            $this->state_id = $address->state_id;
+            $this->city_name = optional($address->city)->vname;
             $this->state_name = optional($address->state)->vname;
             $this->pincode_id = $address->pincode_id;
             $this->pincode_name = optional($address->pincode)->vname;
@@ -697,11 +507,10 @@ class Index extends Component
     #region[render]
     public function render()
     {
-//        $this->getCityList();
-        $this->getStateList();
-        $this->getPincodeList();
+
+
         $this->getMsmeTypeList();
-        $this->getCountryList();
+
         $this->getContactTypeList();
 
         return view('master::contact.index')->with([
